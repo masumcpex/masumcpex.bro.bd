@@ -180,6 +180,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="timeline-card">
           <h3 class="timeline-title">${escapeHTML(item.title)}</h3>
           <p class="timeline-desc">${escapeHTML(item.description)}</p>
+          ${item.link ? `
+          <a class="timeline-link" href="${escapeHTML(item.link)}" target="_blank" rel="noopener noreferrer">
+            ${escapeHTML(item.linkText || "বইটি পড়ুন")}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+          </a>` : ""}
         </div>
         <div class="timeline-node">
           <span class="timeline-dot"></span>

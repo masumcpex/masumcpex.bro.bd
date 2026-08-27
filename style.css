@@ -243,6 +243,10 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 .menu-icon-close{ display:none; }
 .menu-toggle.is-active .menu-icon-bars{ display:none; }
 .menu-toggle.is-active .menu-icon-close{ display:block; }
+.menu-icon-bars, .menu-icon-close{ transition:transform var(--transition-fast); }
+.menu-toggle.is-active:hover .menu-icon-close,
+.menu-toggle.is-active:active .menu-icon-close,
+.menu-toggle.is-active:focus-visible .menu-icon-close{ transform:rotate(90deg) scale(1.12); }
 
 @media (max-width: 860px){
   .main-nav{ display:none; }
@@ -261,14 +265,20 @@ a:focus-visible, button:focus-visible, input:focus-visible{
   padding:calc(64px + var(--space-3)) var(--space-3) var(--space-4);
   opacity:0;
   visibility:hidden;
-  transform:translateY(-10px);
+  transform:translateY(-10px) scale(0.98);
   transition:opacity var(--transition-normal), transform var(--transition-normal), visibility 0s linear var(--transition-normal);
 }
 .mobile-menu.is-open{
   opacity:1;
   visibility:visible;
-  transform:translateY(0);
+  transform:translateY(0) scale(1);
   transition:opacity var(--transition-normal), transform var(--transition-normal);
+}
+.mobile-menu.is-closing{
+  opacity:0;
+  visibility:visible;
+  transform:translateY(-6px) scale(0.97);
+  transition:opacity 220ms ease, transform 220ms ease;
 }
 .mobile-menu-nav{
   display:flex;
@@ -621,6 +631,19 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 .timeline-item.is-down .timeline-card{ top:calc(50% + 38px); }
 .timeline-title{ font-family:var(--font-display); font-size:1.02rem; margin-bottom:0.35rem; color:var(--color-text); }
 .timeline-desc{ color:var(--color-text-dim); font-size:0.85rem; line-height:1.6; }
+.timeline-link{
+  display:inline-flex;
+  align-items:center;
+  gap:0.28rem;
+  margin-top:0.65rem;
+  color:var(--color-accent);
+  font-size:0.82rem;
+  font-weight:600;
+  transition:opacity var(--transition-fast);
+}
+.timeline-link svg{ flex-shrink:0; transition:transform var(--transition-fast); }
+.timeline-link:hover{ opacity:0.75; }
+.timeline-link:hover svg{ transform:translate(1px,-1px); }
 
 .timeline-item:hover .timeline-dot{
   transform:scale(1.4);
