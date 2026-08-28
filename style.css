@@ -529,6 +529,33 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 }
 .empty-state strong{ display:block; color:var(--color-text-dim); font-family:var(--font-display); font-size:1.1rem; margin-bottom:0.4rem; line-height:1.4; }
 
+.empty-state-linked{
+  display:block;
+  cursor:pointer;
+  transition:border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.empty-state-linked:hover{
+  border-color:var(--color-accent);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-card-hover, var(--shadow-card));
+}
+.empty-state-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:68px;
+  height:68px;
+  margin:0 auto var(--space-2);
+  border-radius:50%;
+  background:color-mix(in srgb, var(--color-accent) 8%, transparent);
+  color:var(--color-accent);
+  transition:transform var(--transition-fast), background var(--transition-fast);
+}
+.empty-state-linked:hover .empty-state-icon{
+  background:color-mix(in srgb, var(--color-accent) 14%, transparent);
+  transform:scale(1.05);
+}
+
 @media (max-width:640px){
   .empty-state{ padding:var(--space-4) var(--space-2); }
 }

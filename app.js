@@ -46,7 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="card-desc">${escapeHTML(item.description || "")}</p>
       ${ctaBlock(item.url)}
     </article>
-  `, "এখনও কোনো বই যোগ করা হয়নি", "নতুন বই প্রকাশ হলে এখানে দেখা যাবে।");
+  `, "এখনও কোনো বই যোগ করা হয়নি", "নতুন বই প্রকাশ হলে এখানে দেখা যাবে।", {
+    link: "https://masumcpex.com/#library",
+    icon: `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>`
+  });
 
   renderListWithModal("journalList", SITE_DATA.journal, "journal",
     "এখনও কোনো জার্নাল এন্ট্রি নেই", "মনের কথা লিখলে এখানে যোগ হবে।");
@@ -194,11 +197,17 @@ document.addEventListener("DOMContentLoaded", () => {
     `).join("");
   }
 
-  function renderGrid(containerId, items, template, emptyTitle, emptyDesc) {
+  function renderGrid(containerId, items, template, emptyTitle, emptyDesc, emptyState) {
     const el = document.getElementById(containerId);
     if (!el) return;
     if (items && items.length) {
       el.innerHTML = items.map(template).join("");
+    } else if (emptyState && emptyState.link) {
+      el.innerHTML = `
+        <a class="empty-state empty-state-linked" href="${escapeHTML(emptyState.link)}">
+          <span class="empty-state-icon" aria-hidden="true">${emptyState.icon}</span>
+          <strong>${escapeHTML(emptyTitle)}</strong>${escapeHTML(emptyDesc)}
+        </a>`;
     } else {
       el.innerHTML = `<div class="empty-state"><strong>${escapeHTML(emptyTitle)}</strong>${escapeHTML(emptyDesc)}</div>`;
     }
