@@ -280,6 +280,23 @@ a:focus-visible, button:focus-visible, input:focus-visible{
   transform:translateY(-6px) scale(0.97);
   transition:opacity 220ms ease, transform 220ms ease;
 }
+.mobile-menu-close{
+  position:absolute;
+  top:calc(var(--space-3) + env(safe-area-inset-top, 0px));
+  right:var(--space-3);
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.18);
+  color:#fff;
+  z-index:1;
+}
+.mobile-menu-close:hover,
+.mobile-menu-close:focus-visible{
+  color:var(--color-accent);
+  border-color:var(--color-accent);
+  transform:rotate(90deg) scale(1.12);
+}
+.mobile-menu-close:active{ transform:rotate(90deg) scale(1.12); }
+
 .mobile-menu-nav{
   display:flex;
   flex-direction:column;

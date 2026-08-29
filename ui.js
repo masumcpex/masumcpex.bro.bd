@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const menuToggle = document.getElementById("menuToggle");
   const mobileMenu = document.getElementById("mobileMenu");
+  const mobileMenuClose = document.getElementById("mobileMenuClose");
   if (menuToggle && mobileMenu) {
     let closeTimer;
     const closeMobileMenu = (goHome = false) => {
@@ -38,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         openMobileMenu();
       }
     });
+    mobileMenuClose?.addEventListener("click", () => closeMobileMenu(true));
     mobileMenu.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", () => closeMobileMenu(false));
     });
