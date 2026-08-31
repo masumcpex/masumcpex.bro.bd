@@ -47,6 +47,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="attendance.css">
 </head>
 <body>
 
@@ -64,6 +65,7 @@
       <a href="https://masumcpex.com/index.html#library" data-nav="library">Library</a>
       <a href="#journal" data-nav="journal">Journal</a>
       <a href="#projects" data-nav="projects">Projects</a>
+      <a href="#attendance" data-nav="attendance">Attendance</a>
       <a href="#articles" data-nav="articles">Articles</a>
       <a href="#contact" data-nav="contact">Contact</a>
     </nav>
@@ -114,6 +116,10 @@
     </a>
     <a href="https://masumcpex.com/index.html#library" data-nav="library">
       <span>Library</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="#attendance" data-nav="attendance">
+      <span>Attendance</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
     </a>
     <a href="#articles" data-nav="articles">
@@ -195,6 +201,83 @@
       <p class="section-sub">গল্প, অনুভূতি আর দৈনন্দিন ভাবনার পাতা।</p>
       <div class="filter-row" id="journalFilters"></div>
       <div class="list-grid" id="journalList"></div>
+    </div>
+  </section>
+
+  <section class="page" id="attendance">
+    <div class="page-inner">
+      <div class="eyebrow">Attendance</div>
+
+      <div class="att-head">
+        <h2 class="section-title">Attendance</h2>
+        <div class="att-month-nav">
+          <button class="icon-btn" id="attPrevMonth" type="button" aria-label="আগের মাস">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <div class="att-month-label" id="attMonthLabel" aria-live="polite">—</div>
+          <button class="icon-btn" id="attNextMonth" type="button" aria-label="পরের মাস">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+          <button class="att-today-btn" id="attTodayBtn" type="button">Today</button>
+        </div>
+      </div>
+
+      <div class="att-summary-grid" id="attSummaryGrid"></div>
+
+      <div class="att-entry-card">
+        <h3 class="att-entry-title">Today's Attendance</h3>
+        <form class="att-entry-form" id="attEntryForm" novalidate>
+          <div class="att-field">
+            <span class="att-field-label" id="attEntryDateLabel">Date</span>
+            <div class="att-entry-date" id="attEntryDate" aria-labelledby="attEntryDateLabel">—</div>
+          </div>
+          <div class="att-field">
+            <label class="att-field-label" for="attEntryHours">Hours Worked</label>
+            <input type="number" id="attEntryHours" name="hours" inputmode="decimal" min="0" max="24" step="0.25" placeholder="e.g. 8">
+          </div>
+          <div class="att-field">
+            <label class="att-field-label" for="attEntryStatus">Status</label>
+            <select id="attEntryStatus" name="status">
+              <option value="duty">Duty</option>
+              <option value="leave">Leave</option>
+              <option value="off">Off</option>
+              <option value="holiday">Holiday</option>
+            </select>
+          </div>
+          <button type="submit" class="att-save-btn">Save Attendance</button>
+        </form>
+        <p class="att-form-msg" id="attEntryMsg" role="alert" aria-live="polite"></p>
+      </div>
+
+      <div class="att-calendar-card">
+        <div class="att-weekdays">
+          <span>Monday</span><span>Tuesday</span><span>Wednesday</span><span>Thursday</span><span>Friday</span><span>Saturday</span><span>Sunday</span>
+        </div>
+        <div class="att-calendar-grid" id="attCalendarGrid"></div>
+        <div class="att-legend">
+          <span class="att-legend-item"><i class="att-dot att-dot-duty"></i>Duty</span>
+          <span class="att-legend-item"><i class="att-dot att-dot-leave"></i>Leave</span>
+          <span class="att-legend-item"><i class="att-dot att-dot-off"></i>Off</span>
+          <span class="att-legend-item"><i class="att-dot att-dot-holiday"></i>Holiday</span>
+        </div>
+      </div>
+
+      <div class="att-history-wrap">
+        <h3 class="att-history-title">History</h3>
+        <div class="empty-state" id="attHistoryEmpty" hidden>
+          <strong>No attendance records yet</strong>
+          Start recording your daily working hours to see your monthly statistics here.
+          <button class="att-cta-btn" id="attEmptyCta" type="button">Mark Today's Attendance</button>
+        </div>
+        <div class="att-history-table-wrap" id="attHistoryTableWrap">
+          <table class="att-history-table">
+            <thead>
+              <tr><th>Date</th><th>Day</th><th>Hours</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="attHistoryBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -281,6 +364,39 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="attModal" role="dialog" aria-modal="true" aria-labelledby="attModalTitle">
+  <div class="modal-box att-modal-box">
+    <button class="icon-btn modal-close" id="attModalClose" type="button" aria-label="বন্ধ করুন">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h3 class="modal-title" id="attModalTitle">Edit Attendance</h3>
+    <div class="modal-date" id="attModalDateDisplay"></div>
+    <form class="att-entry-form" id="attEditForm" novalidate>
+      <input type="hidden" id="attEditDateKey">
+      <div class="att-field">
+        <label class="att-field-label" for="attEditHours">Hours Worked</label>
+        <input type="number" id="attEditHours" name="hours" inputmode="decimal" min="0" max="24" step="0.25" placeholder="e.g. 8">
+      </div>
+      <div class="att-field">
+        <label class="att-field-label" for="attEditStatus">Status</label>
+        <select id="attEditStatus" name="status">
+          <option value="duty">Duty</option>
+          <option value="leave">Leave</option>
+          <option value="off">Off</option>
+          <option value="holiday">Holiday</option>
+        </select>
+      </div>
+      <p class="att-form-msg" id="attEditMsg" role="alert" aria-live="polite"></p>
+      <div class="att-modal-actions">
+        <button type="button" class="att-delete-btn" id="attDeleteBtn">Delete</button>
+        <button type="submit" class="att-save-btn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="att-toast-wrap" id="attToastWrap" aria-live="polite"></div>
+
 <footer class="site-footer">
   <p>© 2026 <strong id="footerName">Masum</strong>. All Rights Reserved.</p>
 </footer>
@@ -288,6 +404,7 @@
 <script src="data.js"></script>
 <script src="app.js"></script>
 <script src="ui.js"></script>
+<script src="attendance.js"></script>
 <script>
 document.getElementById("brandName").textContent = SITE_DATA.hero.name;
 document.getElementById("footerName").textContent = SITE_DATA.hero.name;
