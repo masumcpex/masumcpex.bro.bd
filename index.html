@@ -208,84 +208,107 @@
     <div class="page-inner">
       <div class="eyebrow">Attendance</div>
       <h2 class="section-title">Team Attendance</h2>
-      <p class="section-sub">৯ জনের টিমের জন্য দৈনিক হাজিরা রেকর্ড ও মাসিক সারাংশ।</p>
+      <p class="section-sub">Track daily attendance and monthly working hours for your team.</p>
+
+      <div class="att-manage-wrap">
+        <h3 class="att-manage-title">Member Management</h3>
+        <form class="att-add-member-form" id="attAddMemberForm" novalidate>
+          <input type="text" id="attNewMemberName" name="memberName" placeholder="Enter member name..." maxlength="60" autocomplete="off">
+          <button type="submit" class="att-add-member-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Member
+          </button>
+        </form>
+        <p class="att-form-msg" id="attAddMemberMsg" role="alert" aria-live="polite"></p>
+      </div>
 
       <div class="att-team-wrap">
         <div class="att-team-head">
           <h3 class="att-team-title">Team Overview</h3>
           <span class="att-team-month" id="attTeamMonthLabel">—</span>
         </div>
+        <div class="empty-state" id="attMemberEmpty" hidden>
+          <strong>No members yet</strong>
+          Add your first member to start tracking attendance.
+        </div>
         <div class="att-team-list" id="attMemberList"></div>
       </div>
 
-      <div class="att-head">
-        <h3 class="att-person-title" id="attSelectedName">—</h3>
-        <div class="att-month-nav">
-          <button class="icon-btn" id="attPrevMonth" type="button" aria-label="আগের মাস">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </button>
-          <div class="att-month-label" id="attMonthLabel" aria-live="polite">—</div>
-          <button class="icon-btn" id="attNextMonth" type="button" aria-label="পরের মাস">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </button>
-          <button class="att-today-btn" id="attTodayBtn" type="button">Today</button>
-        </div>
+      <div class="empty-state" id="attNoMemberState" hidden>
+        <strong>Select or add a member</strong>
+        Add a team member above, then select their card to open their attendance dashboard.
       </div>
 
-      <div class="att-summary-grid" id="attSummaryGrid"></div>
-
-      <div class="att-entry-card">
-        <h3 class="att-entry-title">Today's Attendance <span class="att-entry-title-name" id="attEntryMemberName"></span></h3>
-        <form class="att-entry-form" id="attEntryForm" novalidate>
-          <div class="att-field">
-            <span class="att-field-label" id="attEntryDateLabel">Date</span>
-            <div class="att-entry-date" id="attEntryDate" aria-labelledby="attEntryDateLabel">—</div>
+      <div id="attDashboard" hidden>
+        <div class="att-head">
+          <h3 class="att-person-title" id="attSelectedName">—</h3>
+          <div class="att-month-nav">
+            <button class="icon-btn" id="attPrevMonth" type="button" aria-label="আগের মাস">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div class="att-month-label" id="attMonthLabel" aria-live="polite">—</div>
+            <button class="icon-btn" id="attNextMonth" type="button" aria-label="পরের মাস">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+            <button class="att-today-btn" id="attTodayBtn" type="button">Today</button>
           </div>
-          <div class="att-field">
-            <label class="att-field-label" for="attEntryHours">Hours Worked</label>
-            <input type="number" id="attEntryHours" name="hours" inputmode="decimal" min="0" max="24" step="0.25" placeholder="e.g. 8">
-          </div>
-          <div class="att-field">
-            <label class="att-field-label" for="attEntryStatus">Status</label>
-            <select id="attEntryStatus" name="status">
-              <option value="duty">Duty</option>
-              <option value="leave">Leave</option>
-              <option value="off">Off</option>
-              <option value="holiday">Holiday</option>
-            </select>
-          </div>
-          <button type="submit" class="att-save-btn">Save Attendance</button>
-        </form>
-        <p class="att-form-msg" id="attEntryMsg" role="alert" aria-live="polite"></p>
-      </div>
+        </div>
 
-      <div class="att-calendar-card">
-        <div class="att-weekdays">
-          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-        </div>
-        <div class="att-calendar-grid" id="attCalendarGrid"></div>
-        <div class="att-legend">
-          <span class="att-legend-item"><i class="att-dot att-dot-duty"></i>Duty</span>
-          <span class="att-legend-item"><i class="att-dot att-dot-leave"></i>Leave</span>
-          <span class="att-legend-item"><i class="att-dot att-dot-off"></i>Off</span>
-          <span class="att-legend-item"><i class="att-dot att-dot-holiday"></i>Holiday</span>
-        </div>
-      </div>
+        <div class="att-summary-grid" id="attSummaryGrid"></div>
 
-      <div class="att-history-wrap">
-        <h3 class="att-history-title">History</h3>
-        <div class="empty-state" id="attHistoryEmpty" hidden>
-          <strong>No attendance records yet</strong>
-          Start recording your daily working hours to see your monthly statistics here.
-          <button class="att-cta-btn" id="attEmptyCta" type="button">Mark Today's Attendance</button>
+        <div class="att-entry-card">
+          <h3 class="att-entry-title">Today's Attendance <span class="att-entry-title-name" id="attEntryMemberName"></span></h3>
+          <form class="att-entry-form" id="attEntryForm" novalidate>
+            <div class="att-field">
+              <span class="att-field-label" id="attEntryDateLabel">Date</span>
+              <div class="att-entry-date" id="attEntryDate" aria-labelledby="attEntryDateLabel">—</div>
+            </div>
+            <div class="att-field">
+              <label class="att-field-label" for="attEntryHours">Hours Worked</label>
+              <input type="number" id="attEntryHours" name="hours" inputmode="decimal" min="0" max="24" step="0.25" placeholder="e.g. 8">
+            </div>
+            <div class="att-field">
+              <label class="att-field-label" for="attEntryStatus">Status</label>
+              <select id="attEntryStatus" name="status">
+                <option value="duty">Duty</option>
+                <option value="leave">Leave</option>
+                <option value="off">Off</option>
+                <option value="holiday">Holiday</option>
+              </select>
+            </div>
+            <button type="submit" class="att-save-btn">Save Attendance</button>
+          </form>
+          <p class="att-form-msg" id="attEntryMsg" role="alert" aria-live="polite"></p>
         </div>
-        <div class="att-history-table-wrap" id="attHistoryTableWrap">
-          <table class="att-history-table">
-            <thead>
-              <tr><th>Date</th><th>Day</th><th>Hours</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody id="attHistoryBody"></tbody>
-          </table>
+
+        <div class="att-calendar-card">
+          <div class="att-weekdays">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div class="att-calendar-grid" id="attCalendarGrid"></div>
+          <div class="att-legend">
+            <span class="att-legend-item"><i class="att-dot att-dot-duty"></i>Duty</span>
+            <span class="att-legend-item"><i class="att-dot att-dot-leave"></i>Leave</span>
+            <span class="att-legend-item"><i class="att-dot att-dot-off"></i>Off</span>
+            <span class="att-legend-item"><i class="att-dot att-dot-holiday"></i>Holiday</span>
+          </div>
+        </div>
+
+        <div class="att-history-wrap">
+          <h3 class="att-history-title">History</h3>
+          <div class="empty-state" id="attHistoryEmpty" hidden>
+            <strong>No attendance records yet</strong>
+            Start recording your daily working hours to see your monthly statistics here.
+            <button class="att-cta-btn" id="attEmptyCta" type="button">Mark Today's Attendance</button>
+          </div>
+          <div class="att-history-table-wrap" id="attHistoryTableWrap">
+            <table class="att-history-table">
+              <thead>
+                <tr><th>Date</th><th>Day</th><th>Hours</th><th>Status</th><th>Action</th></tr>
+              </thead>
+              <tbody id="attHistoryBody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

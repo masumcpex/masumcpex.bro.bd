@@ -8,6 +8,62 @@
    attCalendarGrid, attModal, attToastWrap, etc.).
    ========================================================= */
 
+/* ---------- Member management (add member) ---------- */
+.att-manage-wrap{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  padding:var(--space-3);
+  box-shadow:var(--shadow-card);
+  margin-bottom:var(--space-3);
+}
+.att-manage-title{ font-size:1.05rem; margin-bottom:var(--space-2); }
+.att-add-member-form{
+  display:flex;
+  gap:0.6rem;
+}
+.att-add-member-form input{
+  flex:1;
+  min-width:0;
+  background:var(--color-bg);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  padding:0.7rem 0.9rem;
+  font-family:var(--font-body);
+  font-size:0.95rem;
+  color:var(--color-text);
+  transition:border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.att-add-member-form input:focus{
+  outline:none;
+  border-color:var(--color-accent);
+  box-shadow:0 0 0 3px var(--color-accent-soft);
+}
+.att-add-member-btn{
+  flex-shrink:0;
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+  background:var(--color-accent);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius-full);
+  font-weight:600;
+  font-size:0.9rem;
+  padding:0.7rem 1.1rem;
+  white-space:nowrap;
+  transition:all var(--transition-fast);
+}
+.att-add-member-btn:hover{ background:var(--color-accent-hover); transform:translateY(-1px); }
+.att-add-member-btn:active{ transform:translateY(0); }
+
+.att-manage-wrap .att-form-msg{ margin-top:var(--space-2); margin-bottom:0; }
+
+@media (max-width:480px){
+  .att-add-member-form{ flex-direction:column; }
+  .att-add-member-btn{ justify-content:center; }
+}
+
 /* ---------- Team overview / member selector ---------- */
 .att-team-wrap{
   background:var(--color-surface);
@@ -41,15 +97,14 @@
 .att-member-card{
   flex:0 0 auto;
   scroll-snap-align:start;
-  width:168px;
+  width:188px;
   display:flex;
   align-items:center;
-  gap:0.6rem;
+  gap:0.35rem;
   background:var(--color-bg);
   border:1.5px solid var(--color-border);
   border-radius:var(--radius-md);
-  padding:0.6rem 0.75rem;
-  text-align:left;
+  padding:0.5rem 0.5rem 0.5rem 0.6rem;
   transition:all var(--transition-fast);
 }
 .att-member-card:hover{ border-color:var(--color-accent-border); transform:translateY(-1px); }
@@ -57,6 +112,17 @@
   border-color:var(--color-accent);
   background:var(--color-accent-soft);
   box-shadow:0 0 0 3px var(--color-accent-soft);
+}
+.att-member-main{
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+  min-width:0;
+  flex:1;
+  text-align:left;
+  background:transparent;
+  border:none;
+  padding:0;
 }
 .att-member-avatar{
   flex-shrink:0;
@@ -89,9 +155,33 @@
   overflow:hidden;
   text-overflow:ellipsis;
 }
+.att-member-actions{
+  flex-shrink:0;
+  display:flex;
+  gap:0.2rem;
+}
+.att-member-action-btn{
+  flex-shrink:0;
+  width:26px; height:26px;
+  display:flex; align-items:center; justify-content:center;
+  background:transparent;
+  border:none;
+  border-radius:var(--radius-sm);
+  color:var(--color-muted);
+  transition:all var(--transition-fast);
+}
+.att-member-action-btn:hover{ background:var(--color-border); color:var(--color-text); }
+.att-member-action-danger:hover{ background:color-mix(in srgb, var(--color-error) 15%, transparent); color:var(--color-error); }
 
 @media (max-width:480px){
-  .att-member-card{ width:150px; }
+  .att-member-card{ width:172px; }
+}
+
+.att-team-wrap .empty-state{
+  margin-bottom:0;
+}
+#attNoMemberState.empty-state{
+  margin-bottom:var(--space-4);
 }
 
 

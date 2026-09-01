@@ -1,20 +1,81 @@
-const ATTENDANCE_MEMBERS = [
-  { id: "masum", name: "Masum" },
-  { id: "member2", name: "Member 2" },
-  { id: "member3", name: "Member 3" },
-  { id: "member4", name: "Member 4" },
-  { id: "member5", name: "Member 5" },
-  { id: "member6", name: "Member 6" },
-  { id: "member7", name: "Member 7" },
-  { id: "member8", name: "Member 8" },
-  { id: "member9", name: "Member 9" },
-];
+/* =========================================================
+   Attendance module — dynamic member management.
+   Members are fully user-managed (add / rename / delete),
+   persisted in LocalStorage, and each member's attendance is
+   stored separately keyed by a stable member ID (never by
+   name), so renaming never breaks history. Structure is kept
+   Firebase-migration-friendly: getMembers/addMember/updateMember/
+   deleteMember and getAttendance/saveAttendance/updateAttendance/
+   deleteAttendance are the only storage entry points used by the UI.
+   ========================================================= */
 
 const ATT_AVATAR_COLORS = [
   "#2563EB", "#16A34A", "#D97706", "#DC2626", "#7C3AED",
-  "#0891B2", "#DB2777", "#65A30D", "#334155",
+  "#0891B2", "#DB2777", "#65A30D", "#334155", "#EA580C",
+  "#0D9488", "#9333EA",
 ];
 
+/* ---------- Member storage (LocalStorage, Firebase-ready shape) ---------- */
+const MemberStorage = (() => {
+  const KEY = "masum_attendance_members_v1";
+
+  function readList() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      console.error("Members: could not read from storage", err);
+      return [];
+    }
+  }
+
+  function writeList(list) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(list));
+      return true;
+    } catch (err) {
+      console.error("Members: could not write to storage", err);
+      return false;
+    }
+  }
+
+  function genId() {
+    return `m_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  return {
+    async getMembers() {
+      return readList();
+    },
+
+    async addMember(name) {
+      const list = readList();
+      const member = { id: genId(), name: name.trim() };
+      list.push(member);
+      writeList(list);
+      return member;
+    },
+
+    async updateMember(id, newName) {
+      const list = readList();
+      const member = list.find((m) => m.id === id);
+      if (!member) return null;
+      member.name = newName.trim();
+      writeList(list);
+      return member;
+    },
+
+    async deleteMember(id) {
+      const list = readList().filter((m) => m.id !== id);
+      writeList(list);
+      return true;
+    },
+  };
+})();
+
+/* ---------- Attendance storage, keyed by member ID ---------- */
 const AttendanceStorage = (() => {
   const KEY = "masum_attendance_v2";
   const LEGACY_KEY = "masum_attendance_records_v1";
@@ -94,6 +155,13 @@ const AttendanceStorage = (() => {
       writeStore(store);
       return true;
     },
+
+    async deleteAllAttendance(memberId) {
+      const store = readStore();
+      delete store[memberId];
+      writeStore(store);
+      return true;
+    },
   };
 })();
 
@@ -166,8 +234,17 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!attSection) return;
 
   const els = {
+    addMemberForm: document.getElementById("attAddMemberForm"),
+    newMemberName: document.getElementById("attNewMemberName"),
+    addMemberMsg: document.getElementById("attAddMemberMsg"),
+
     memberList: document.getElementById("attMemberList"),
+    memberEmpty: document.getElementById("attMemberEmpty"),
     teamMonthLabel: document.getElementById("attTeamMonthLabel"),
+
+    dashboard: document.getElementById("attDashboard"),
+    noMemberState: document.getElementById("attNoMemberState"),
+
     selectedName: document.getElementById("attSelectedName"),
     entryMemberName: document.getElementById("attEntryMemberName"),
 
@@ -206,24 +283,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const SELECTED_KEY = "masum_attendance_selected_member";
 
-  let selectedMemberId;
+  let members = [];
+  let selectedMemberId = null;
   let viewYear;
   let viewMonth;
   let records = [];
 
   function memberById(id) {
-    return ATTENDANCE_MEMBERS.find((m) => m.id === id) || ATTENDANCE_MEMBERS[0];
+    return members.find((m) => m.id === id) || null;
   }
+
   function loadSelectedMemberId() {
     const saved = localStorage.getItem(SELECTED_KEY);
-    if (saved && ATTENDANCE_MEMBERS.some((m) => m.id === saved)) return saved;
-    return ATTENDANCE_MEMBERS[0].id;
+    if (saved && members.some((m) => m.id === saved)) return saved;
+    return members.length ? members[0].id : null;
   }
   function persistSelectedMemberId(id) {
-    try { localStorage.setItem(SELECTED_KEY, id); } catch (err) { /* ignore */ }
+    try {
+      if (id) localStorage.setItem(SELECTED_KEY, id);
+      else localStorage.removeItem(SELECTED_KEY);
+    } catch (err) { /* ignore */ }
   }
+
   function initials(name) {
-    return name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return "?";
+    return parts.map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   }
   function avatarColor(index) {
     return ATT_AVATAR_COLORS[index % ATT_AVATAR_COLORS.length];
@@ -278,9 +363,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return { ok: true, hours: n };
   }
 
+  /* ---------- Init ---------- */
   async function init() {
+    members = await MemberStorage.getMembers();
     selectedMemberId = loadSelectedMemberId();
-    records = await AttendanceStorage.getAttendance(selectedMemberId);
+    records = selectedMemberId ? await AttendanceStorage.getAttendance(selectedMemberId) : [];
+
     const now = new Date();
     viewYear = now.getFullYear();
     viewMonth = now.getMonth();
@@ -294,12 +382,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function render() {
     renderMonthLabel();
-    renderSelectedName();
     await renderMemberList();
+    toggleDashboard();
+    if (!selectedMemberId) return;
+
+    renderSelectedName();
     const summary = AttendanceCalc.summarize(records, viewYear, viewMonth);
     renderSummary(summary);
     renderCalendar();
     renderHistory();
+  }
+
+  function toggleDashboard() {
+    const hasSelection = Boolean(selectedMemberId);
+    if (els.dashboard) els.dashboard.hidden = !hasSelection;
+    if (els.noMemberState) els.noMemberState.hidden = hasSelection;
   }
 
   function renderMonthLabel() {
@@ -309,33 +406,72 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderSelectedName() {
-    const name = memberById(selectedMemberId).name;
+    const member = memberById(selectedMemberId);
+    const name = member ? member.name : "—";
     if (els.selectedName) els.selectedName.textContent = name;
-    if (els.entryMemberName) els.entryMemberName.textContent = `— ${name}`;
+    if (els.entryMemberName) els.entryMemberName.textContent = member ? `— ${name}` : "";
   }
 
+  /* ---------- Member management + selector ---------- */
   async function renderMemberList() {
     if (!els.memberList) return;
+
+    if (!members.length) {
+      els.memberList.innerHTML = "";
+      if (els.memberEmpty) els.memberEmpty.hidden = false;
+      return;
+    }
+    if (els.memberEmpty) els.memberEmpty.hidden = true;
+
     const rows = [];
-    for (let i = 0; i < ATTENDANCE_MEMBERS.length; i += 1) {
-      const member = ATTENDANCE_MEMBERS[i];
+    for (let i = 0; i < members.length; i += 1) {
+      const member = members[i];
       const memberRecords = await AttendanceStorage.getAttendance(member.id);
       const s = AttendanceCalc.summarize(memberRecords, viewYear, viewMonth);
       const isSelected = member.id === selectedMemberId;
       rows.push(`
-        <button type="button" class="att-member-card ${isSelected ? "is-selected" : ""}" data-member-id="${member.id}">
-          <span class="att-member-avatar" style="background:${avatarColor(i)}">${initials(member.name)}</span>
-          <span class="att-member-info">
-            <span class="att-member-name">${member.name}</span>
-            <span class="att-member-stats">${round1(s.totalHours)}h · ${s.dutyDays} Duty · ${s.leaveDays} Leave</span>
+        <div class="att-member-card ${isSelected ? "is-selected" : ""}" data-member-id="${member.id}">
+          <button type="button" class="att-member-main" data-select-id="${member.id}">
+            <span class="att-member-avatar" style="background:${avatarColor(i)}">${initials(member.name)}</span>
+            <span class="att-member-info">
+              <span class="att-member-name">👤 ${escapeHtml(member.name)}</span>
+              <span class="att-member-stats">${round1(s.totalHours)}h · ${s.dutyDays} Duty · ${s.leaveDays} Leave</span>
+            </span>
+          </button>
+          <span class="att-member-actions">
+            <button type="button" class="att-member-action-btn" data-rename-id="${member.id}" aria-label="Rename member" title="Rename">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
+            </button>
+            <button type="button" class="att-member-action-btn att-member-action-danger" data-delete-id="${member.id}" aria-label="Delete member" title="Delete">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+            </button>
           </span>
-        </button>
+        </div>
       `);
     }
     els.memberList.innerHTML = rows.join("");
-    els.memberList.querySelectorAll("[data-member-id]").forEach((btn) => {
-      btn.addEventListener("click", () => selectMember(btn.dataset.memberId));
+
+    els.memberList.querySelectorAll("[data-select-id]").forEach((btn) => {
+      btn.addEventListener("click", () => selectMember(btn.dataset.selectId));
     });
+    els.memberList.querySelectorAll("[data-rename-id]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        renameMember(btn.dataset.renameId);
+      });
+    });
+    els.memberList.querySelectorAll("[data-delete-id]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        removeMember(btn.dataset.deleteId);
+      });
+    });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   async function selectMember(memberId) {
@@ -346,6 +482,65 @@ document.addEventListener("DOMContentLoaded", () => {
     await render();
   }
 
+  els.addMemberForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = (els.newMemberName?.value || "").trim();
+    if (!name) {
+      setInlineMsg(els.addMemberMsg, "দয়া করে একটি নাম লিখুন।", "error");
+      return;
+    }
+    setInlineMsg(els.addMemberMsg, "", null);
+
+    const member = await MemberStorage.addMember(name);
+    members = await MemberStorage.getMembers();
+    const wasEmpty = !selectedMemberId;
+    if (wasEmpty) {
+      selectedMemberId = member.id;
+      persistSelectedMemberId(member.id);
+      records = await AttendanceStorage.getAttendance(member.id);
+    }
+    els.addMemberForm.reset();
+    await render();
+    showToast(`${member.name} সফলভাবে যোগ করা হয়েছে`, "success");
+  });
+
+  async function renameMember(memberId) {
+    const member = memberById(memberId);
+    if (!member) return;
+    const next = window.prompt("নতুন নাম লিখুন:", member.name);
+    if (next === null) return;
+    const trimmed = next.trim();
+    if (!trimmed || trimmed === member.name) return;
+
+    await MemberStorage.updateMember(memberId, trimmed);
+    members = await MemberStorage.getMembers();
+    await render();
+    showToast("নাম আপডেট হয়েছে", "success");
+  }
+
+  async function removeMember(memberId) {
+    const member = memberById(memberId);
+    if (!member) return;
+    const ok = window.confirm(
+      `"${member.name}" কে মুছে ফেলবেন? তার সকল হাজিরা রেকর্ডও মুছে যাবে। এটি পূর্বাবস্থায় ফেরানো যাবে না।`
+    );
+    if (!ok) return;
+
+    await MemberStorage.deleteMember(memberId);
+    await AttendanceStorage.deleteAllAttendance(memberId);
+    members = await MemberStorage.getMembers();
+
+    if (selectedMemberId === memberId) {
+      selectedMemberId = members.length ? members[0].id : null;
+      persistSelectedMemberId(selectedMemberId);
+      records = selectedMemberId ? await AttendanceStorage.getAttendance(selectedMemberId) : [];
+    }
+
+    await render();
+    showToast(`${member.name} মুছে ফেলা হয়েছে`, "success");
+  }
+
+  /* ---------- Summary / calendar / history ---------- */
   function renderSummary(s) {
     if (!els.summaryGrid) return;
     const cards = [
@@ -353,6 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { value: s.dutyDays, label: "Duty Days" },
       { value: s.leaveDays, label: "Leave" },
       { value: s.offDays, label: "Off Days" },
+      { value: s.holidayDays, label: "Holiday" },
       { value: s.markedDays, label: "Days Marked" },
       { value: `${round1(s.avgHours)}h`, label: "Avg / Duty Day" },
     ];
@@ -437,6 +633,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   els.entryForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!selectedMemberId) return;
     const status = els.entryStatus.value;
     const validation = validateHours(els.entryHours.value.trim(), status);
     if (!validation.ok) { setInlineMsg(els.entryMsg, validation.message, "error"); return; }
@@ -450,7 +647,7 @@ document.addEventListener("DOMContentLoaded", () => {
     viewYear = now.getFullYear();
     viewMonth = now.getMonth();
     await render();
-    showToast(`${memberById(selectedMemberId).name}-এর আজকের হাজিরা সেভ হয়েছে`, "success");
+    showToast(`${memberById(selectedMemberId)?.name || ""}-এর আজকের হাজিরা সেভ হয়েছে`, "success");
     els.entryForm.reset();
     els.entryStatus.value = "duty";
   });
@@ -482,6 +679,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function openEditModal(dateStr) {
+    if (!selectedMemberId) return;
     const rec = recordFor(dateStr);
     if (els.editDateKey) els.editDateKey.value = dateStr;
     if (els.modalDateDisplay) {
@@ -507,6 +705,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   els.editForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!selectedMemberId) return;
     const status = els.editStatus.value;
     const validation = validateHours(els.editHours.value.trim(), status);
     if (!validation.ok) { setInlineMsg(els.editMsg, validation.message, "error"); return; }
@@ -523,6 +722,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   els.deleteBtn?.addEventListener("click", async () => {
+    if (!selectedMemberId) return;
     const ok = window.confirm("এই তারিখের হাজিরা রেকর্ড মুছে ফেলবেন? এটি পূর্বাবস্থায় ফেরানো যাবে না।");
     if (!ok) return;
     await AttendanceStorage.deleteAttendance(selectedMemberId, els.editDateKey.value);
