@@ -1,35 +1,60 @@
-/* =========================================================
-   Attendance module
-   ---------------------------------------------------------
-   - AttendanceStorage: the ONLY place that talks to the data
-     backend. Every method is async and returns a Promise, so
-     swapping LocalStorage for Firebase Firestore later means
-     rewriting the inside of this object only — nothing else
-     in this file (or elsewhere on the site) needs to change.
-   - AttendanceCalc: pure functions, no DOM, no storage.
-   - AttendanceCalendarUtil: pure calendar-grid math.
-   - Everything below that renders to the DOM and wires events
-     targets the exact ids/classes already defined in the
-     Attendance section of index.html.
-   ========================================================= */
+const ATTENDANCE_MEMBERS = [
+  { id: "masum", name: "Masum" },
+  { id: "member2", name: "Member 2" },
+  { id: "member3", name: "Member 3" },
+  { id: "member4", name: "Member 4" },
+  { id: "member5", name: "Member 5" },
+  { id: "member6", name: "Member 6" },
+  { id: "member7", name: "Member 7" },
+  { id: "member8", name: "Member 8" },
+  { id: "member9", name: "Member 9" },
+];
+
+const ATT_AVATAR_COLORS = [
+  "#2563EB", "#16A34A", "#D97706", "#DC2626", "#7C3AED",
+  "#0891B2", "#DB2777", "#65A30D", "#334155",
+];
 
 const AttendanceStorage = (() => {
-  const KEY = "masum_attendance_records_v1";
+  const KEY = "masum_attendance_v2";
+  const LEGACY_KEY = "masum_attendance_records_v1";
+  const LEGACY_MEMBER_ID = "masum";
 
-  function readAll() {
+  function migrateLegacy() {
     try {
-      const raw = localStorage.getItem(KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
+      const raw = localStorage.getItem(LEGACY_KEY);
+      if (!raw) return {};
+      const oldRecords = JSON.parse(raw);
+      if (!Array.isArray(oldRecords) || !oldRecords.length) return {};
+      const map = {};
+      oldRecords.forEach((r) => {
+        map[r.date] = { hours: r.hours, status: r.status };
+      });
+      const store = { [LEGACY_MEMBER_ID]: map };
+      writeStore(store);
+      return store;
     } catch (err) {
-      console.error("Attendance: could not read from storage", err);
-      return [];
+      console.error("Attendance: legacy migration failed", err);
+      return {};
     }
   }
 
-  function writeAll(records) {
+  function readStore() {
     try {
-      localStorage.setItem(KEY, JSON.stringify(records));
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === "object" ? parsed : {};
+      }
+    } catch (err) {
+      console.error("Attendance: could not read from storage", err);
+    }
+    return migrateLegacy();
+  }
+
+  function writeStore(store) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(store));
       return true;
     } catch (err) {
       console.error("Attendance: could not write to storage", err);
@@ -37,35 +62,36 @@ const AttendanceStorage = (() => {
     }
   }
 
+  function toArray(memberMap) {
+    return Object.keys(memberMap || {}).map((date) => ({ date, ...memberMap[date] }));
+  }
+
   return {
-    // Returns every saved record: [{ date, hours, status }, ...]
-    async getAttendance() {
-      return readAll();
+    async getAttendance(memberId) {
+      const store = readStore();
+      return toArray(store[memberId]);
     },
 
-    // Upsert by date — saving the same date again always updates
-    // the existing record instead of creating a duplicate.
-    async saveAttendance(record) {
-      const all = readAll();
-      const idx = all.findIndex((r) => r.date === record.date);
-      if (idx >= 0) all[idx] = { ...all[idx], ...record };
-      else all.push(record);
-      writeAll(all);
+    async saveAttendance(memberId, record) {
+      const store = readStore();
+      if (!store[memberId]) store[memberId] = {};
+      store[memberId][record.date] = { hours: record.hours, status: record.status };
+      writeStore(store);
       return record;
     },
 
-    async updateAttendance(date, changes) {
-      const all = readAll();
-      const idx = all.findIndex((r) => r.date === date);
-      if (idx < 0) return null;
-      all[idx] = { ...all[idx], ...changes };
-      writeAll(all);
-      return all[idx];
+    async updateAttendance(memberId, date, changes) {
+      const store = readStore();
+      if (!store[memberId] || !store[memberId][date]) return null;
+      store[memberId][date] = { ...store[memberId][date], ...changes };
+      writeStore(store);
+      return store[memberId][date];
     },
 
-    async deleteAttendance(date) {
-      const all = readAll();
-      writeAll(all.filter((r) => r.date !== date));
+    async deleteAttendance(memberId, date) {
+      const store = readStore();
+      if (store[memberId]) delete store[memberId][date];
+      writeStore(store);
       return true;
     },
   };
@@ -112,13 +138,10 @@ const AttendanceCalc = {
 };
 
 const AttendanceCalendarUtil = {
-  // Returns an array of day numbers (1..N) padded with `null`
-  // at the front so the grid lines up Monday-first, matching
-  // the static weekday header in index.html.
   build(year, month) {
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    let startOffset = firstDay.getDay() - 1; // JS: 0=Sun..6=Sat -> Monday-first
+    let startOffset = firstDay.getDay() - 1;
     if (startOffset < 0) startOffset = 6;
     const cells = new Array(startOffset).fill(null);
     for (let d = 1; d <= daysInMonth; d += 1) cells.push(d);
@@ -140,9 +163,14 @@ const ATT_MONTH_NAMES = [
 
 document.addEventListener("DOMContentLoaded", () => {
   const attSection = document.getElementById("attendance");
-  if (!attSection) return; // Attendance markup isn't present — nothing to do.
+  if (!attSection) return;
 
   const els = {
+    memberList: document.getElementById("attMemberList"),
+    teamMonthLabel: document.getElementById("attTeamMonthLabel"),
+    selectedName: document.getElementById("attSelectedName"),
+    entryMemberName: document.getElementById("attEntryMemberName"),
+
     prevBtn: document.getElementById("attPrevMonth"),
     nextBtn: document.getElementById("attNextMonth"),
     monthLabel: document.getElementById("attMonthLabel"),
@@ -176,9 +204,30 @@ document.addEventListener("DOMContentLoaded", () => {
     toastWrap: document.getElementById("attToastWrap"),
   };
 
+  const SELECTED_KEY = "masum_attendance_selected_member";
+
+  let selectedMemberId;
   let viewYear;
-  let viewMonth; // 0-indexed
+  let viewMonth;
   let records = [];
+
+  function memberById(id) {
+    return ATTENDANCE_MEMBERS.find((m) => m.id === id) || ATTENDANCE_MEMBERS[0];
+  }
+  function loadSelectedMemberId() {
+    const saved = localStorage.getItem(SELECTED_KEY);
+    if (saved && ATTENDANCE_MEMBERS.some((m) => m.id === saved)) return saved;
+    return ATTENDANCE_MEMBERS[0].id;
+  }
+  function persistSelectedMemberId(id) {
+    try { localStorage.setItem(SELECTED_KEY, id); } catch (err) { /* ignore */ }
+  }
+  function initials(name) {
+    return name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  }
+  function avatarColor(index) {
+    return ATT_AVATAR_COLORS[index % ATT_AVATAR_COLORS.length];
+  }
 
   function todayDateStr() {
     return formatDateISO(new Date());
@@ -230,7 +279,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function init() {
-    records = await AttendanceStorage.getAttendance();
+    selectedMemberId = loadSelectedMemberId();
+    records = await AttendanceStorage.getAttendance(selectedMemberId);
     const now = new Date();
     viewYear = now.getFullYear();
     viewMonth = now.getMonth();
@@ -239,11 +289,13 @@ document.addEventListener("DOMContentLoaded", () => {
         weekday: "long", year: "numeric", month: "long", day: "numeric",
       });
     }
-    render();
+    await render();
   }
 
-  function render() {
+  async function render() {
     renderMonthLabel();
+    renderSelectedName();
+    await renderMemberList();
     const summary = AttendanceCalc.summarize(records, viewYear, viewMonth);
     renderSummary(summary);
     renderCalendar();
@@ -251,7 +303,47 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderMonthLabel() {
-    if (els.monthLabel) els.monthLabel.textContent = `${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`;
+    const text = `${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`;
+    if (els.monthLabel) els.monthLabel.textContent = text;
+    if (els.teamMonthLabel) els.teamMonthLabel.textContent = text;
+  }
+
+  function renderSelectedName() {
+    const name = memberById(selectedMemberId).name;
+    if (els.selectedName) els.selectedName.textContent = name;
+    if (els.entryMemberName) els.entryMemberName.textContent = `— ${name}`;
+  }
+
+  async function renderMemberList() {
+    if (!els.memberList) return;
+    const rows = [];
+    for (let i = 0; i < ATTENDANCE_MEMBERS.length; i += 1) {
+      const member = ATTENDANCE_MEMBERS[i];
+      const memberRecords = await AttendanceStorage.getAttendance(member.id);
+      const s = AttendanceCalc.summarize(memberRecords, viewYear, viewMonth);
+      const isSelected = member.id === selectedMemberId;
+      rows.push(`
+        <button type="button" class="att-member-card ${isSelected ? "is-selected" : ""}" data-member-id="${member.id}">
+          <span class="att-member-avatar" style="background:${avatarColor(i)}">${initials(member.name)}</span>
+          <span class="att-member-info">
+            <span class="att-member-name">${member.name}</span>
+            <span class="att-member-stats">${round1(s.totalHours)}h · ${s.dutyDays} Duty · ${s.leaveDays} Leave</span>
+          </span>
+        </button>
+      `);
+    }
+    els.memberList.innerHTML = rows.join("");
+    els.memberList.querySelectorAll("[data-member-id]").forEach((btn) => {
+      btn.addEventListener("click", () => selectMember(btn.dataset.memberId));
+    });
+  }
+
+  async function selectMember(memberId) {
+    if (memberId === selectedMemberId) return;
+    selectedMemberId = memberId;
+    persistSelectedMemberId(memberId);
+    records = await AttendanceStorage.getAttendance(memberId);
+    await render();
   }
 
   function renderSummary(s) {
@@ -343,7 +435,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------- Quick "today" entry ----------
   els.entryForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const status = els.entryStatus.value;
@@ -352,20 +443,18 @@ document.addEventListener("DOMContentLoaded", () => {
     setInlineMsg(els.entryMsg, "", null);
 
     const dateStr = todayDateStr();
-    await AttendanceStorage.saveAttendance({ date: dateStr, hours: validation.hours, status });
-    records = await AttendanceStorage.getAttendance();
+    await AttendanceStorage.saveAttendance(selectedMemberId, { date: dateStr, hours: validation.hours, status });
+    records = await AttendanceStorage.getAttendance(selectedMemberId);
 
     const now = new Date();
     viewYear = now.getFullYear();
     viewMonth = now.getMonth();
-    render();
-    showToast("আজকের হাজিরা সেভ হয়েছে", "success");
+    await render();
+    showToast(`${memberById(selectedMemberId).name}-এর আজকের হাজিরা সেভ হয়েছে`, "success");
     els.entryForm.reset();
     els.entryStatus.value = "duty";
   });
 
-  // Typing a positive number implies Duty, matching the stated rule,
-  // while still letting the user override the dropdown manually.
   els.entryHours?.addEventListener("input", () => {
     const raw = els.entryHours.value.trim();
     const n = Number(raw);
@@ -373,7 +462,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setInlineMsg(els.entryMsg, "", null);
   });
 
-  // ---------- Month navigation ----------
   function shiftMonth(delta) {
     viewMonth += delta;
     if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
@@ -389,12 +477,10 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   });
 
-  // ---------- Empty state CTA ----------
   els.emptyCta?.addEventListener("click", () => {
     els.entryHours?.focus();
   });
 
-  // ---------- Edit / delete modal ----------
   function openEditModal(dateStr) {
     const rec = recordFor(dateStr);
     if (els.editDateKey) els.editDateKey.value = dateStr;
@@ -425,24 +511,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const validation = validateHours(els.editHours.value.trim(), status);
     if (!validation.ok) { setInlineMsg(els.editMsg, validation.message, "error"); return; }
 
-    await AttendanceStorage.saveAttendance({
+    await AttendanceStorage.saveAttendance(selectedMemberId, {
       date: els.editDateKey.value,
       hours: validation.hours,
       status,
     });
-    records = await AttendanceStorage.getAttendance();
+    records = await AttendanceStorage.getAttendance(selectedMemberId);
     closeEditModal();
-    render();
+    await render();
     showToast("হাজিরা আপডেট হয়েছে", "success");
   });
 
   els.deleteBtn?.addEventListener("click", async () => {
     const ok = window.confirm("এই তারিখের হাজিরা রেকর্ড মুছে ফেলবেন? এটি পূর্বাবস্থায় ফেরানো যাবে না।");
     if (!ok) return;
-    await AttendanceStorage.deleteAttendance(els.editDateKey.value);
-    records = await AttendanceStorage.getAttendance();
+    await AttendanceStorage.deleteAttendance(selectedMemberId, els.editDateKey.value);
+    records = await AttendanceStorage.getAttendance(selectedMemberId);
     closeEditModal();
-    render();
+    await render();
     showToast("হাজিরা রেকর্ড মুছে ফেলা হয়েছে", "success");
   });
 

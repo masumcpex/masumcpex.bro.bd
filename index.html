@@ -207,9 +207,19 @@
   <section class="page" id="attendance">
     <div class="page-inner">
       <div class="eyebrow">Attendance</div>
+      <h2 class="section-title">Team Attendance</h2>
+      <p class="section-sub">৯ জনের টিমের জন্য দৈনিক হাজিরা রেকর্ড ও মাসিক সারাংশ।</p>
+
+      <div class="att-team-wrap">
+        <div class="att-team-head">
+          <h3 class="att-team-title">Team Overview</h3>
+          <span class="att-team-month" id="attTeamMonthLabel">—</span>
+        </div>
+        <div class="att-team-list" id="attMemberList"></div>
+      </div>
 
       <div class="att-head">
-        <h2 class="section-title">Attendance</h2>
+        <h3 class="att-person-title" id="attSelectedName">—</h3>
         <div class="att-month-nav">
           <button class="icon-btn" id="attPrevMonth" type="button" aria-label="আগের মাস">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -225,7 +235,7 @@
       <div class="att-summary-grid" id="attSummaryGrid"></div>
 
       <div class="att-entry-card">
-        <h3 class="att-entry-title">Today's Attendance</h3>
+        <h3 class="att-entry-title">Today's Attendance <span class="att-entry-title-name" id="attEntryMemberName"></span></h3>
         <form class="att-entry-form" id="attEntryForm" novalidate>
           <div class="att-field">
             <span class="att-field-label" id="attEntryDateLabel">Date</span>
@@ -251,7 +261,7 @@
 
       <div class="att-calendar-card">
         <div class="att-weekdays">
-          <span>Monday</span><span>Tuesday</span><span>Wednesday</span><span>Thursday</span><span>Friday</span><span>Saturday</span><span>Sunday</span>
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
         </div>
         <div class="att-calendar-grid" id="attCalendarGrid"></div>
         <div class="att-legend">
