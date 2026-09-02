@@ -1,4 +1,4 @@
-/* ATTENDANCE_JS_VERSION = 5 (member-card two-row layout + PDF export) */
+/* ATTENDANCE_JS_VERSION = 6 (member-card two-row layout + PDF export) */
 /* =========================================================
    Attendance module — dynamic member management.
    Members are fully user-managed (add / rename / delete),
@@ -827,9 +827,12 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
       });
 
-      const generatedStr = `Generated: ${new Date().toLocaleDateString("en-US", {
+      const generatedAt = new Date();
+      const generatedStr = `Generated: ${generatedAt.toLocaleDateString("en-US", {
         month: "short", day: "numeric", year: "numeric",
-      })}, ${new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`;
+      })}, ${generatedAt.toLocaleTimeString("en-US", {
+        hour: "numeric", minute: "2-digit", second: "2-digit",
+      })}`;
 
       function drawFooter() {
         const pageHeight = doc.internal.pageSize.getHeight();
