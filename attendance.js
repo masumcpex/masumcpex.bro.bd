@@ -1,3 +1,4 @@
+/* ATTENDANCE_JS_VERSION = 3 (member-card two-row layout + PDF export) */
 /* =========================================================
    Attendance module — dynamic member management.
    Members are fully user-managed (add / rename / delete),
@@ -253,6 +254,8 @@ document.addEventListener("DOMContentLoaded", () => {
     monthLabel: document.getElementById("attMonthLabel"),
     todayBtn: document.getElementById("attTodayBtn"),
 
+    exportPdfBtn: document.getElementById("attExportPdfBtn"),
+
     summaryGrid: document.getElementById("attSummaryGrid"),
 
     entryForm: document.getElementById("attEntryForm"),
@@ -432,18 +435,18 @@ document.addEventListener("DOMContentLoaded", () => {
       rows.push(`
         <div class="att-member-card ${isSelected ? "is-selected" : ""}" data-member-id="${member.id}">
           <button type="button" class="att-member-main" data-select-id="${member.id}">
-            <span class="att-member-avatar" style="background:${avatarColor(i)}">${initials(member.name)}</span>
-            <span class="att-member-info">
+            <span class="att-member-top">
+              <span class="att-member-avatar" style="background:${avatarColor(i)}">${initials(member.name)}</span>
               <span class="att-member-name">👤 ${escapeHtml(member.name)}</span>
-              <span class="att-member-stats">${round1(s.totalHours)}h · ${s.dutyDays} Duty · ${s.leaveDays} Leave</span>
             </span>
+            <span class="att-member-stats">${round1(s.totalHours)}h · ${s.dutyDays} Duty · ${s.leaveDays} Leave</span>
           </button>
           <span class="att-member-actions">
             <button type="button" class="att-member-action-btn" data-rename-id="${member.id}" aria-label="Rename member" title="Rename">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
             </button>
             <button type="button" class="att-member-action-btn att-member-action-danger" data-delete-id="${member.id}" aria-label="Delete member" title="Delete">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
             </button>
           </span>
         </div>
@@ -677,6 +680,153 @@ document.addEventListener("DOMContentLoaded", () => {
   els.emptyCta?.addEventListener("click", () => {
     els.entryHours?.focus();
   });
+
+  /* ---------- PDF report export ---------- */
+  const REPORT_LOGO_SRC = "masum.png";
+  const REPORT_BRAND_COLOR = [15, 118, 110];
+
+  function loadImageAsDataURL(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          resolve({
+            dataUrl: canvas.toDataURL("image/png"),
+            width: img.naturalWidth,
+            height: img.naturalHeight,
+          });
+        } catch (err) {
+          reject(err);
+        }
+      };
+      img.onerror = () => reject(new Error("logo failed to load"));
+      img.src = src;
+    });
+  }
+
+  async function exportMemberReportPdf() {
+    if (!selectedMemberId) return;
+    const member = memberById(selectedMemberId);
+    if (!member) return;
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      showToast("PDF তৈরি করা যায়নি, পেজ রিলোড করে আবার চেষ্টা করুন।", "error");
+      return;
+    }
+
+    if (els.exportPdfBtn) els.exportPdfBtn.disabled = true;
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: "pt", format: "a4" });
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 42;
+      let logo = null;
+      try {
+        logo = await loadImageAsDataURL(REPORT_LOGO_SRC);
+      } catch (err) {
+        logo = null;
+      }
+
+      let headTextX = margin;
+      const headTop = margin;
+
+      if (logo) {
+        const logoW = 44;
+        const logoH = (logo.height / logo.width) * logoW;
+        doc.addImage(logo.dataUrl, "PNG", margin, headTop - 4, logoW, logoH);
+        headTextX = margin + logoW + 14;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(20, 20, 20);
+      doc.text("WorkTrack — Attendance Management System", headTextX, headTop + 14);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(120, 120, 120);
+      doc.text("masumcpex.bro.bd", headTextX, headTop + 27);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(17);
+      doc.setTextColor(...REPORT_BRAND_COLOR);
+      doc.text("Attendance Report", pageWidth - margin, headTop + 12, { align: "right" });
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(120, 120, 120);
+      doc.text(`${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`, pageWidth - margin, headTop + 27, { align: "right" });
+
+      let cursorY = headTop + 42;
+      doc.setDrawColor(...REPORT_BRAND_COLOR);
+      doc.setLineWidth(1.4);
+      doc.line(margin, cursorY, pageWidth - margin, cursorY);
+      cursorY += 26;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(20, 20, 20);
+      doc.text(member.name, margin, cursorY);
+      cursorY += 18;
+
+      const s = AttendanceCalc.summarize(records, viewYear, viewMonth);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(70, 70, 70);
+      const summaryLine =
+        `Total Hours: ${round1(s.totalHours)}h    Duty Days: ${s.dutyDays}    ` +
+        `Leave: ${s.leaveDays}    Off: ${s.offDays}    Holiday: ${s.holidayDays}    ` +
+        `Avg / Duty Day: ${round1(s.avgHours)}h`;
+      doc.text(summaryLine, margin, cursorY);
+      cursorY += 20;
+
+      const monthRecords = AttendanceCalc.filterMonth(records, viewYear, viewMonth)
+        .slice()
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      const body = monthRecords.map((r) => {
+        const d = parseISO(r.date);
+        return [
+          d.toLocaleDateString("en-US", { day: "numeric", month: "short" }),
+          d.toLocaleDateString("en-US", { weekday: "long" }),
+          r.status === "duty" ? `${round1(r.hours)}h` : "—",
+          ATT_STATUS_META[r.status].label,
+        ];
+      });
+
+      if (typeof doc.autoTable === "function") {
+        doc.autoTable({
+          startY: cursorY,
+          margin: { left: margin, right: margin },
+          head: [["Date", "Day", "Hours", "Status"]],
+          body: body.length ? body : [["—", "—", "—", "No records this month"]],
+          theme: "grid",
+          headStyles: { fillColor: REPORT_BRAND_COLOR, textColor: 255, fontStyle: "bold", fontSize: 9 },
+          bodyStyles: { fontSize: 9, textColor: [40, 40, 40] },
+          alternateRowStyles: { fillColor: [246, 248, 247] },
+          styles: { cellPadding: 6 },
+        });
+      }
+
+      const safeName = member.name.trim().replace(/\s+/g, "_").replace(/[^\w-]/g, "") || "Member";
+      const fileName = `${safeName}_Attendance_${ATT_MONTH_NAMES[viewMonth]}_${viewYear}.pdf`;
+      doc.save(fileName);
+      showToast("PDF রিপোর্ট ডাউনলোড হয়েছে", "success");
+    } catch (err) {
+      console.error("PDF export failed", err);
+      showToast("PDF তৈরি করতে সমস্যা হয়েছে", "error");
+    } finally {
+      if (els.exportPdfBtn) els.exportPdfBtn.disabled = false;
+    }
+  }
+
+  els.exportPdfBtn?.addEventListener("click", exportMemberReportPdf);
 
   function openEditModal(dateStr) {
     if (!selectedMemberId) return;

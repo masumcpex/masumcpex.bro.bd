@@ -8,6 +8,8 @@
    attCalendarGrid, attModal, attToastWrap, etc.).
    ========================================================= */
 
+/* ATTENDANCE_CSS_VERSION = 3 (member-card two-row layout + PDF button styles) */
+
 /* ---------- Member management (add member) ---------- */
 .att-manage-wrap{
   background:var(--color-surface);
