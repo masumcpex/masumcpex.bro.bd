@@ -1,4 +1,4 @@
-/* ATTENDANCE_JS_VERSION = 3 (member-card two-row layout + PDF export) */
+/* ATTENDANCE_JS_VERSION = 5 (member-card two-row layout + PDF export) */
 /* =========================================================
    Attendance module — dynamic member management.
    Members are fully user-managed (add / rename / delete),
@@ -683,7 +683,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------- PDF report export ---------- */
   const REPORT_LOGO_SRC = "masum.png";
-  const REPORT_BRAND_COLOR = [15, 118, 110];
+  const REPORT_FALLBACK_COLOR = [37, 99, 235];
+
+  function cssColorToRgb(colorStr) {
+    if (!colorStr) return REPORT_FALLBACK_COLOR;
+    try {
+      const ctx = document.createElement("canvas").getContext("2d");
+      ctx.fillStyle = "#000000";
+      ctx.fillStyle = colorStr.trim();
+      const normalized = ctx.fillStyle;
+      if (normalized.startsWith("#")) {
+        let hex = normalized.slice(1);
+        if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
+        const bigint = parseInt(hex, 16);
+        return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+      }
+      const nums = normalized.match(/[\d.]+/g);
+      if (nums && nums.length >= 3) return nums.slice(0, 3).map((n) => Math.round(Number(n)));
+    } catch (err) { /* fall through */ }
+    return REPORT_FALLBACK_COLOR;
+  }
+
+  function getSiteAccentColor() {
+    const rootStyles = getComputedStyle(document.documentElement);
+    const raw = rootStyles.getPropertyValue("--color-accent");
+    return cssColorToRgb(raw);
+  }
 
   function loadImageAsDataURL(src) {
     return new Promise((resolve, reject) => {
@@ -726,6 +751,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const doc = new jsPDF({ unit: "pt", format: "a4" });
       const pageWidth = doc.internal.pageSize.getWidth();
       const margin = 42;
+      const REPORT_BRAND_COLOR = getSiteAccentColor();
       let logo = null;
       try {
         logo = await loadImageAsDataURL(REPORT_LOGO_SRC);
@@ -746,12 +772,13 @@ document.addEventListener("DOMContentLoaded", () => {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(20, 20, 20);
-      doc.text("WorkTrack — Attendance Management System", headTextX, headTop + 14);
+      doc.text("Attendance Management System", headTextX, headTop + 14);
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
       doc.setTextColor(120, 120, 120);
       doc.text("masumcpex.bro.bd", headTextX, headTop + 27);
+      doc.text("masumcpex.com", headTextX, headTop + 38);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(17);
@@ -763,7 +790,7 @@ document.addEventListener("DOMContentLoaded", () => {
       doc.setTextColor(120, 120, 120);
       doc.text(`${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`, pageWidth - margin, headTop + 27, { align: "right" });
 
-      let cursorY = headTop + 42;
+      let cursorY = headTop + 54;
       doc.setDrawColor(...REPORT_BRAND_COLOR);
       doc.setLineWidth(1.4);
       doc.line(margin, cursorY, pageWidth - margin, cursorY);
@@ -800,10 +827,27 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
       });
 
+      const generatedStr = `Generated: ${new Date().toLocaleDateString("en-US", {
+        month: "short", day: "numeric", year: "numeric",
+      })}, ${new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`;
+
+      function drawFooter() {
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const footerY = pageHeight - 24;
+        doc.setDrawColor(228, 228, 228);
+        doc.setLineWidth(0.6);
+        doc.line(margin, footerY - 12, pageWidth - margin, footerY - 12);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(130, 130, 130);
+        doc.text("masumcpex.com   |   admin@masumcpex.com", margin, footerY);
+        doc.text(generatedStr, pageWidth - margin, footerY, { align: "right" });
+      }
+
       if (typeof doc.autoTable === "function") {
         doc.autoTable({
           startY: cursorY,
-          margin: { left: margin, right: margin },
+          margin: { left: margin, right: margin, bottom: 46 },
           head: [["Date", "Day", "Hours", "Status"]],
           body: body.length ? body : [["—", "—", "—", "No records this month"]],
           theme: "grid",
@@ -811,7 +855,10 @@ document.addEventListener("DOMContentLoaded", () => {
           bodyStyles: { fontSize: 9, textColor: [40, 40, 40] },
           alternateRowStyles: { fillColor: [246, 248, 247] },
           styles: { cellPadding: 6 },
+          didDrawPage: drawFooter,
         });
+      } else {
+        drawFooter();
       }
 
       const safeName = member.name.trim().replace(/\s+/g, "_").replace(/[^\w-]/g, "") || "Member";
