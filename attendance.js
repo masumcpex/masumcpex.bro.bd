@@ -1,4 +1,4 @@
-/* ATTENDANCE_JS_VERSION = 6 (member-card two-row layout + PDF export) */
+/* ATTENDANCE_JS_VERSION = 7 (member-card two-row layout + PDF export) */
 /* =========================================================
    Attendance module — dynamic member management.
    Members are fully user-managed (add / rename / delete),
@@ -163,6 +163,20 @@ const AttendanceStorage = (() => {
       writeStore(store);
       return true;
     },
+
+    async deleteMonthAttendance(memberId, year, month) {
+      const store = readStore();
+      if (store[memberId]) {
+        Object.keys(store[memberId]).forEach((dateStr) => {
+          const d = new Date(`${dateStr}T00:00:00`);
+          if (d.getFullYear() === year && d.getMonth() === month) {
+            delete store[memberId][dateStr];
+          }
+        });
+      }
+      writeStore(store);
+      return true;
+    },
   };
 })();
 
@@ -255,6 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
     todayBtn: document.getElementById("attTodayBtn"),
 
     exportPdfBtn: document.getElementById("attExportPdfBtn"),
+    clearMonthBtn: document.getElementById("attClearMonthBtn"),
 
     summaryGrid: document.getElementById("attSummaryGrid"),
 
@@ -563,6 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `)
       .join("");
+    if (els.clearMonthBtn) els.clearMonthBtn.disabled = s.markedDays === 0;
   }
 
   function renderCalendar() {
@@ -679,6 +695,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   els.emptyCta?.addEventListener("click", () => {
     els.entryHours?.focus();
+  });
+
+  els.clearMonthBtn?.addEventListener("click", async () => {
+    if (!selectedMemberId) return;
+    const member = memberById(selectedMemberId);
+    if (!member) return;
+    const monthLabel = `${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`;
+    const ok = window.confirm(
+      `"${member.name}"-এর ${monthLabel} মাসের সব হাজিরা রেকর্ড মুছে ফেলবেন?\n\nসদস্যের নাম ও অন্য মাসের রেকর্ড অক্ষত থাকবে — শুধু এই মাসেরটাই মুছে যাবে। এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।`
+    );
+    if (!ok) return;
+
+    await AttendanceStorage.deleteMonthAttendance(selectedMemberId, viewYear, viewMonth);
+    records = await AttendanceStorage.getAttendance(selectedMemberId);
+    await render();
+    showToast(`${monthLabel}-এর হাজিরা মুছে ফেলা হয়েছে`, "success");
   });
 
   /* ---------- PDF report export ---------- */

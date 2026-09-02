@@ -8,7 +8,7 @@
    attCalendarGrid, attModal, attToastWrap, etc.).
    ========================================================= */
 
-/* ATTENDANCE_CSS_VERSION = 6 (member-card two-row layout + PDF button styles) */
+/* ATTENDANCE_CSS_VERSION = 7 (member-card two-row layout + PDF button styles) */
 
 /* ---------- Member management (add member) ---------- */
 .att-manage-wrap{
@@ -245,7 +245,9 @@
 /* ---------- Report actions ---------- */
 .att-actions-row{
   display:flex;
+  flex-wrap:wrap;
   justify-content:flex-end;
+  gap:0.6rem;
   margin-bottom:var(--space-3);
 }
 .att-pdf-btn{
@@ -265,9 +267,26 @@
 .att-pdf-btn:active{ transform:translateY(0); }
 .att-pdf-btn:disabled{ opacity:0.55; pointer-events:none; }
 
+.att-clear-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:0.45rem;
+  background:transparent;
+  border:1.5px solid color-mix(in srgb, var(--color-error) 45%, transparent);
+  color:var(--color-error);
+  font-weight:600;
+  font-size:0.85rem;
+  padding:0.55rem 1rem;
+  border-radius:var(--radius-full);
+  transition:all var(--transition-fast);
+}
+.att-clear-btn:hover{ background:color-mix(in srgb, var(--color-error) 10%, transparent); transform:translateY(-1px); }
+.att-clear-btn:active{ transform:translateY(0); }
+.att-clear-btn:disabled{ opacity:0.45; pointer-events:none; }
+
 @media (max-width:480px){
   .att-actions-row{ justify-content:stretch; }
-  .att-pdf-btn{ width:100%; justify-content:center; }
+  .att-pdf-btn, .att-clear-btn{ width:100%; justify-content:center; }
 }
 
 /* ---------- Summary cards ---------- */
