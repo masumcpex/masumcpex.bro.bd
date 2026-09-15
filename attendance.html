@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="attendance.css?v=7">
+<link rel="stylesheet" href="attendance.css?v=8">
 </head>
 <body>
 
@@ -162,7 +162,7 @@
     <div class="page-inner">
       <div class="eyebrow">Attendance</div>
       <h2 class="section-title">Team Attendance</h2>
-      <p class="section-sub">Track daily attendance and monthly working hours for your team.</p>
+      <p class="section-sub">Workforce attendance &amp; working-hour management</p>
 
       <div class="att-manage-wrap">
         <h3 class="att-manage-title">Member Management</h3>
@@ -178,7 +178,7 @@
 
       <div class="att-team-wrap">
         <div class="att-team-head">
-          <h3 class="att-team-title">Team Overview</h3>
+          <h3 class="att-team-title">Team Members</h3>
           <span class="att-team-month" id="attTeamMonthLabel">—</span>
         </div>
         <div class="empty-state" id="attMemberEmpty" hidden>
@@ -195,13 +195,19 @@
 
       <div id="attDashboard" hidden>
         <div class="att-head">
-          <h3 class="att-person-title" id="attSelectedName">—</h3>
+          <div class="att-selected-member">
+            <span class="att-selected-avatar" id="attSelectedAvatar" aria-hidden="true">—</span>
+            <span class="att-selected-text">
+              <h3 class="att-person-title" id="attSelectedName">—</h3>
+              <span class="att-selected-sub">Attendance overview</span>
+            </span>
+          </div>
           <div class="att-month-nav">
-            <button class="icon-btn" id="attPrevMonth" type="button" aria-label="আগের মাস">
+            <button class="icon-btn att-month-btn" id="attPrevMonth" type="button" aria-label="আগের মাস">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <div class="att-month-label" id="attMonthLabel" aria-live="polite">—</div>
-            <button class="icon-btn" id="attNextMonth" type="button" aria-label="পরের মাস">
+            <button class="icon-btn att-month-btn" id="attNextMonth" type="button" aria-label="পরের মাস">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
             <button class="att-today-btn" id="attTodayBtn" type="button">Today</button>
@@ -323,7 +329,7 @@
 <script src="ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<script src="attendance.js?v=7"></script>
+<script src="attendance.js?v=8"></script>
 <script>
 document.getElementById("brandName").textContent = SITE_DATA.hero.name;
 document.getElementById("footerName").textContent = SITE_DATA.hero.name;

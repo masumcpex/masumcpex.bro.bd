@@ -261,6 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
     noMemberState: document.getElementById("attNoMemberState"),
 
     selectedName: document.getElementById("attSelectedName"),
+    selectedAvatar: document.getElementById("attSelectedAvatar"),
     entryMemberName: document.getElementById("attEntryMemberName"),
 
     prevBtn: document.getElementById("attPrevMonth"),
@@ -426,7 +427,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderSelectedName() {
     const member = memberById(selectedMemberId);
     const name = member ? member.name : "—";
+    const memberIndex = member ? members.findIndex((m) => m.id === member.id) : -1;
     if (els.selectedName) els.selectedName.textContent = name;
+    if (els.selectedAvatar) {
+      els.selectedAvatar.textContent = member ? initials(member.name) : "—";
+      els.selectedAvatar.style.background = member ? avatarColor(Math.max(memberIndex, 0)) : "";
+    }
     if (els.entryMemberName) els.entryMemberName.textContent = member ? `— ${name}` : "";
   }
 
@@ -452,16 +458,25 @@ document.addEventListener("DOMContentLoaded", () => {
           <button type="button" class="att-member-main" data-select-id="${member.id}">
             <span class="att-member-top">
               <span class="att-member-avatar" style="background:${avatarColor(i)}">${initials(member.name)}</span>
-              <span class="att-member-name">👤 ${escapeHtml(member.name)}</span>
+              <span class="att-member-identity">
+                <span class="att-member-name">${escapeHtml(member.name)}</span>
+                ${isSelected ? `<span class="att-member-selected-tag">Selected</span>` : ``}
+              </span>
             </span>
-            <span class="att-member-stats">${round1(s.totalHours)}h · ${s.dutyDays} Duty · ${s.leaveDays} Leave</span>
+            <span class="att-member-stats">
+              <span class="att-member-stat"><strong>${round1(s.totalHours)}h</strong><em>Total Hours</em></span>
+              <span class="att-member-stat"><strong>${s.dutyDays}</strong><em>Duty Days</em></span>
+              <span class="att-member-stat"><strong>${s.leaveDays}</strong><em>Leave Days</em></span>
+            </span>
           </button>
           <span class="att-member-actions">
-            <button type="button" class="att-member-action-btn" data-rename-id="${member.id}" aria-label="Rename member" title="Rename">
+            <button type="button" class="att-member-action-btn" data-rename-id="${member.id}" aria-label="Edit member" title="Edit">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
+              <span>Edit</span>
             </button>
             <button type="button" class="att-member-action-btn att-member-action-danger" data-delete-id="${member.id}" aria-label="Delete member" title="Delete">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+              <span>Delete</span>
             </button>
           </span>
         </div>
@@ -562,17 +577,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderSummary(s) {
     if (!els.summaryGrid) return;
     const cards = [
-      { value: `${round1(s.totalHours)}h`, label: "Total Hours" },
-      { value: s.dutyDays, label: "Duty Days" },
-      { value: s.leaveDays, label: "Leave" },
-      { value: s.offDays, label: "Off Days" },
-      { value: s.holidayDays, label: "Holiday" },
-      { value: s.markedDays, label: "Days Marked" },
-      { value: `${round1(s.avgHours)}h`, label: "Avg / Duty Day" },
+      { value: `${round1(s.totalHours)}h`, label: "Total Hours", key: "total" },
+      { value: s.dutyDays, label: "Duty Days", key: "duty" },
+      { value: s.leaveDays, label: "Leave", key: "leave" },
+      { value: s.offDays, label: "Off Days", key: "off" },
+      { value: s.holidayDays, label: "Holiday", key: "holiday" },
+      { value: s.markedDays, label: "Days Marked", key: "marked" },
+      { value: `${round1(s.avgHours)}h`, label: "Avg / Duty Day", key: "avg" },
     ];
     els.summaryGrid.innerHTML = cards
       .map((c) => `
-        <div class="att-stat-card">
+        <div class="att-stat-card" data-stat="${c.key}">
           <div class="att-stat-value">${c.value}</div>
           <div class="att-stat-label">${c.label}</div>
         </div>
