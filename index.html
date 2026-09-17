@@ -290,28 +290,27 @@
   <p>© 2026 <strong id="footerName">Masum</strong>. All Rights Reserved.</p>
 </footer>
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: "AIzaSyAq3iFzmZdcUFr0IswztrmIh5cuJCGIBQQ",
+    apiKey: "AIzaSyAg31FzmZdCUFrOIswrzmInScujCOIBQQ",
     authDomain: "masumcpex-attendance.firebaseapp.com",
     projectId: "masumcpex-attendance",
     storageBucket: "masumcpex-attendance.firebasestorage.app",
     messagingSenderId: "412146945197",
     appId: "1:412146945197:web:3b043e83d796c2f9e14a24",
-    measurementId: "G-55W3CHQJDD"
+    measurementId: "G-5SW3CHQJD0"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+
+  const auth = getAuth(app);
+  window.auth = auth;
 </script>
+  
 <script src="data.js"></script>
 <script src="app.js"></script>
 <script src="ui.js"></script>
