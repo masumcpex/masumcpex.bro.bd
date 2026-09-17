@@ -1155,5 +1155,5 @@ document.addEventListener("DOMContentLoaded", () => {
     closeAllMenus();
   });
 
-  init();
+  window.attStartAttendanceApp = init;
 });
