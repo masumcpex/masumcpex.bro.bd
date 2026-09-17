@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /attendance_members/{uid} {
+      allow get: if request.auth != null
+        && (request.auth.uid == uid || request.auth.uid == "ZyPCiTwxSmU3piZ7hyI3jfjcpsB3");
+      allow list: if request.auth != null
+        && request.auth.uid == "ZyPCiTwxSmU3piZ7hyI3jfjcpsB3";
+      allow create, update, delete: if request.auth != null
+        && (request.auth.uid == uid || request.auth.uid == "ZyPCiTwxSmU3piZ7hyI3jfjcpsB3");
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

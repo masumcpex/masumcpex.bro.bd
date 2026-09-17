@@ -9,167 +9,100 @@ const ICON_EYE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
 const ICON_EDIT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>';
 const ICON_TRASH = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>';
 
-const MemberStorage = (() => {
-  const KEY = "masum_attendance_members_v1";
+const ATT_ADMIN_UID = "ZyPCiTwxSmU3piZ7hyI3jfjcpsB3";
+const ATT_MEMBERS_COLLECTION = "attendance_members";
 
-  function readList() {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (err) {
-      console.error("Members: could not read from storage", err);
-      return [];
-    }
-  }
+function attDb() {
+  return firebase.firestore();
+}
 
-  function writeList(list) {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(list));
-      return true;
-    } catch (err) {
-      console.error("Members: could not write to storage", err);
-      return false;
-    }
-  }
-
-  function genId() {
-    return `m_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-  }
-
-  return {
-    async getMembers() {
-      return readList();
-    },
-
-    async addMember(name) {
-      const list = readList();
-      const member = { id: genId(), name: name.trim() };
-      list.push(member);
-      writeList(list);
-      return member;
-    },
-
-    async updateMember(id, newName) {
-      const list = readList();
-      const member = list.find((m) => m.id === id);
-      if (!member) return null;
-      member.name = newName.trim();
-      writeList(list);
-      return member;
-    },
-
-    async deleteMember(id) {
-      const list = readList().filter((m) => m.id !== id);
-      writeList(list);
-      return true;
-    },
-  };
-})();
-
-const AttendanceStorage = (() => {
-  const KEY = "masum_attendance_v2";
-  const LEGACY_KEY = "masum_attendance_records_v1";
-  const LEGACY_MEMBER_ID = "masum";
-
-  function migrateLegacy() {
-    try {
-      const raw = localStorage.getItem(LEGACY_KEY);
-      if (!raw) return {};
-      const oldRecords = JSON.parse(raw);
-      if (!Array.isArray(oldRecords) || !oldRecords.length) return {};
-      const map = {};
-      oldRecords.forEach((r) => {
-        map[r.date] = { hours: r.hours, status: r.status };
+const MemberStorage = {
+  async ensureSelf(user) {
+    const ref = attDb().collection(ATT_MEMBERS_COLLECTION).doc(user.uid);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      await ref.set({
+        name: user.displayName || user.email || "Member",
+        photoURL: user.photoURL || "",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
-      const store = { [LEGACY_MEMBER_ID]: map };
-      writeStore(store);
-      return store;
-    } catch (err) {
-      console.error("Attendance: legacy migration failed", err);
-      return {};
     }
-  }
+    return ref;
+  },
 
-  function readStore() {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        return parsed && typeof parsed === "object" ? parsed : {};
+  async getMembers(currentUid, isAdmin) {
+    if (isAdmin) {
+      const snap = await attDb().collection(ATT_MEMBERS_COLLECTION).get();
+      return snap.docs.map((d) => ({ id: d.id, name: d.data().name || "Member" }));
+    }
+    const snap = await attDb().collection(ATT_MEMBERS_COLLECTION).doc(currentUid).get();
+    if (!snap.exists) return [];
+    return [{ id: snap.id, name: snap.data().name || "Member" }];
+  },
+
+  async updateMember(id, newName) {
+    const trimmed = newName.trim();
+    await attDb().collection(ATT_MEMBERS_COLLECTION).doc(id).update({ name: trimmed });
+    return { id, name: trimmed };
+  },
+
+  async deleteMember(id) {
+    await attDb().collection(ATT_MEMBERS_COLLECTION).doc(id).delete();
+    return true;
+  },
+};
+
+const AttendanceStorage = {
+  async getAttendance(memberId) {
+    const snap = await attDb().collection(ATT_MEMBERS_COLLECTION).doc(memberId).get();
+    const records = (snap.exists && snap.data().records) || {};
+    return Object.keys(records).map((date) => ({ date, ...records[date] }));
+  },
+
+  async saveAttendance(memberId, record) {
+    await attDb().collection(ATT_MEMBERS_COLLECTION).doc(memberId).set(
+      { records: { [record.date]: { hours: record.hours, status: record.status } } },
+      { merge: true }
+    );
+    return record;
+  },
+
+  async updateAttendance(memberId, date, changes) {
+    const ref = attDb().collection(ATT_MEMBERS_COLLECTION).doc(memberId);
+    const snap = await ref.get();
+    const existing = (snap.exists && snap.data().records && snap.data().records[date]) || {};
+    const merged = { ...existing, ...changes };
+    await ref.set({ records: { [date]: merged } }, { merge: true });
+    return merged;
+  },
+
+  async deleteAttendance(memberId, date) {
+    const ref = attDb().collection(ATT_MEMBERS_COLLECTION).doc(memberId);
+    await ref.update({ [`records.${date}`]: firebase.firestore.FieldValue.delete() });
+    return true;
+  },
+
+  async deleteAllAttendance(memberId) {
+    const ref = attDb().collection(ATT_MEMBERS_COLLECTION).doc(memberId);
+    await ref.update({ records: {} });
+    return true;
+  },
+
+  async deleteMonthAttendance(memberId, year, month) {
+    const ref = attDb().collection(ATT_MEMBERS_COLLECTION).doc(memberId);
+    const snap = await ref.get();
+    const records = (snap.exists && snap.data().records) || {};
+    const updates = {};
+    Object.keys(records).forEach((dateStr) => {
+      const d = new Date(`${dateStr}T00:00:00`);
+      if (d.getFullYear() === year && d.getMonth() === month) {
+        updates[`records.${dateStr}`] = firebase.firestore.FieldValue.delete();
       }
-    } catch (err) {
-      console.error("Attendance: could not read from storage", err);
-    }
-    return migrateLegacy();
-  }
-
-  function writeStore(store) {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(store));
-      return true;
-    } catch (err) {
-      console.error("Attendance: could not write to storage", err);
-      return false;
-    }
-  }
-
-  function toArray(memberMap) {
-    return Object.keys(memberMap || {}).map((date) => ({ date, ...memberMap[date] }));
-  }
-
-  return {
-    async getAttendance(memberId) {
-      const store = readStore();
-      return toArray(store[memberId]);
-    },
-
-    async saveAttendance(memberId, record) {
-      const store = readStore();
-      if (!store[memberId]) store[memberId] = {};
-      store[memberId][record.date] = { hours: record.hours, status: record.status };
-      writeStore(store);
-      return record;
-    },
-
-    async updateAttendance(memberId, date, changes) {
-      const store = readStore();
-      if (!store[memberId] || !store[memberId][date]) return null;
-      store[memberId][date] = { ...store[memberId][date], ...changes };
-      writeStore(store);
-      return store[memberId][date];
-    },
-
-    async deleteAttendance(memberId, date) {
-      const store = readStore();
-      if (store[memberId]) delete store[memberId][date];
-      writeStore(store);
-      return true;
-    },
-
-    async deleteAllAttendance(memberId) {
-      const store = readStore();
-      delete store[memberId];
-      writeStore(store);
-      return true;
-    },
-
-    async deleteMonthAttendance(memberId, year, month) {
-      const store = readStore();
-      if (store[memberId]) {
-        Object.keys(store[memberId]).forEach((dateStr) => {
-          const d = new Date(`${dateStr}T00:00:00`);
-          if (d.getFullYear() === year && d.getMonth() === month) {
-            delete store[memberId][dateStr];
-          }
-        });
-      }
-      writeStore(store);
-      return true;
-    },
-  };
-})();
+    });
+    if (Object.keys(updates).length) await ref.update(updates);
+    return true;
+  },
+};
 
 const AttendanceCalc = {
   filterMonth(records, year, month) {
@@ -308,17 +241,21 @@ document.addEventListener("DOMContentLoaded", () => {
   let viewMonth;
   let records = [];
   let confirmAction = null;
+  let currentUid = null;
+  let isAdmin = false;
 
   function memberById(id) {
     return members.find((m) => m.id === id) || null;
   }
 
   function loadSelectedMemberId() {
+    if (!isAdmin) return currentUid;
     const saved = localStorage.getItem(SELECTED_KEY);
     if (saved && members.some((m) => m.id === saved)) return saved;
     return members.length ? members[0].id : null;
   }
   function persistSelectedMemberId(id) {
+    if (!isAdmin) return;
     try {
       if (id) localStorage.setItem(SELECTED_KEY, id);
       else localStorage.removeItem(SELECTED_KEY);
@@ -422,8 +359,17 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmAction = null;
   }
 
-  async function init() {
-    members = await MemberStorage.getMembers();
+  async function start(user) {
+    currentUid = user.uid;
+    isAdmin = user.uid === ATT_ADMIN_UID;
+    await MemberStorage.ensureSelf(user);
+
+    const manageWrap = document.getElementById("attManageWrap");
+    if (manageWrap) manageWrap.hidden = true;
+    const teamWrap = document.getElementById("attTeamWrap");
+    if (teamWrap) teamWrap.hidden = !isAdmin;
+
+    members = await MemberStorage.getMembers(currentUid, isAdmin);
     selectedMemberId = loadSelectedMemberId();
     records = selectedMemberId ? await AttendanceStorage.getAttendance(selectedMemberId) : [];
 
@@ -545,7 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setInlineMsg(els.addMemberMsg, "", null);
 
     const member = await MemberStorage.addMember(name);
-    members = await MemberStorage.getMembers();
+    members = await MemberStorage.getMembers(currentUid, isAdmin);
     const wasEmpty = !selectedMemberId;
     if (wasEmpty) {
       selectedMemberId = member.id;
@@ -567,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!trimmed || trimmed === member.name) return;
 
     await MemberStorage.updateMember(memberId, trimmed);
-    members = await MemberStorage.getMembers();
+    members = await MemberStorage.getMembers(currentUid, isAdmin);
     await render();
     showToast("নাম আপডেট হয়েছে", "success");
   }
@@ -581,8 +527,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ok) return;
 
     await MemberStorage.deleteMember(memberId);
-    await AttendanceStorage.deleteAllAttendance(memberId);
-    members = await MemberStorage.getMembers();
+    members = await MemberStorage.getMembers(currentUid, isAdmin);
 
     if (selectedMemberId === memberId) {
       selectedMemberId = members.length ? members[0].id : null;
@@ -1155,5 +1100,14 @@ document.addEventListener("DOMContentLoaded", () => {
     closeAllMenus();
   });
 
-  window.attStartAttendanceApp = init;
+  function reset() {
+    currentUid = null;
+    isAdmin = false;
+    members = [];
+    selectedMemberId = null;
+    records = [];
+  }
+
+  window.attStartAttendanceApp = start;
+  window.attResetAttendanceApp = reset;
 });

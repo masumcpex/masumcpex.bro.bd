@@ -42,13 +42,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (userName) userName.textContent = user.displayName || user.email || "";
       if (!appStarted && typeof window.attStartAttendanceApp === "function") {
         appStarted = true;
-        window.attStartAttendanceApp();
+        window.attStartAttendanceApp(user);
       }
     } else {
       gate.hidden = false;
       userBar.hidden = true;
       mainContent.hidden = true;
       if (googleBtn) googleBtn.disabled = false;
+      appStarted = false;
+      if (typeof window.attResetAttendanceApp === "function") window.attResetAttendanceApp();
     }
   });
 });

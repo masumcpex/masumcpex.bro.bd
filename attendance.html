@@ -184,7 +184,7 @@
       <h2 class="section-title">Team Attendance</h2>
       <p class="section-sub">Track team attendance, working hours and monthly records in one place.</p>
 
-      <div class="att-manage-wrap">
+      <div class="att-manage-wrap" id="attManageWrap">
         <div class="att-manage-head">
           <div>
             <h3 class="att-manage-title">Team Members</h3>
@@ -197,7 +197,7 @@
         </div>
       </div>
 
-      <div class="att-team-wrap">
+      <div class="att-team-wrap" id="attTeamWrap">
         <div class="empty-state" id="attMemberEmpty" hidden>
           <strong>No members yet</strong>
           Add your first member to start tracking attendance.
@@ -383,6 +383,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAq3iFzmZdcUFr0IswztrmIh5cuJCGIBQQ",
