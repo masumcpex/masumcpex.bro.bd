@@ -1,22 +1,14 @@
-/* ATTENDANCE_JS_VERSION = 7 (member-card two-row layout + PDF export) */
-/* =========================================================
-   Attendance module — dynamic member management.
-   Members are fully user-managed (add / rename / delete),
-   persisted in LocalStorage, and each member's attendance is
-   stored separately keyed by a stable member ID (never by
-   name), so renaming never breaks history. Structure is kept
-   Firebase-migration-friendly: getMembers/addMember/updateMember/
-   deleteMember and getAttendance/saveAttendance/updateAttendance/
-   deleteAttendance are the only storage entry points used by the UI.
-   ========================================================= */
-
 const ATT_AVATAR_COLORS = [
   "#2563EB", "#16A34A", "#D97706", "#DC2626", "#7C3AED",
   "#0891B2", "#DB2777", "#65A30D", "#334155", "#EA580C",
   "#0D9488", "#9333EA",
 ];
 
-/* ---------- Member storage (LocalStorage, Firebase-ready shape) ---------- */
+const ICON_DOTS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"></circle><circle cx="12" cy="12" r="1.7"></circle><circle cx="12" cy="19" r="1.7"></circle></svg>';
+const ICON_EYE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+const ICON_EDIT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>';
+const ICON_TRASH = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>';
+
 const MemberStorage = (() => {
   const KEY = "masum_attendance_members_v1";
 
@@ -76,7 +68,6 @@ const MemberStorage = (() => {
   };
 })();
 
-/* ---------- Attendance storage, keyed by member ID ---------- */
 const AttendanceStorage = (() => {
   const KEY = "masum_attendance_v2";
   const LEGACY_KEY = "masum_attendance_records_v1";
@@ -249,13 +240,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!attSection) return;
 
   const els = {
+    addMemberOpen: document.getElementById("attAddMemberOpen"),
+    addMemberModal: document.getElementById("attAddMemberModal"),
+    addMemberModalClose: document.getElementById("attAddMemberModalClose"),
+    addMemberCancel: document.getElementById("attAddMemberCancel"),
     addMemberForm: document.getElementById("attAddMemberForm"),
     newMemberName: document.getElementById("attNewMemberName"),
     addMemberMsg: document.getElementById("attAddMemberMsg"),
 
     memberList: document.getElementById("attMemberList"),
     memberEmpty: document.getElementById("attMemberEmpty"),
-    teamMonthLabel: document.getElementById("attTeamMonthLabel"),
 
     dashboard: document.getElementById("attDashboard"),
     noMemberState: document.getElementById("attNoMemberState"),
@@ -297,6 +291,12 @@ document.addEventListener("DOMContentLoaded", () => {
     editMsg: document.getElementById("attEditMsg"),
     deleteBtn: document.getElementById("attDeleteBtn"),
 
+    confirmModal: document.getElementById("attConfirmModal"),
+    confirmModalTitle: document.getElementById("attConfirmModalTitle"),
+    confirmModalMessage: document.getElementById("attConfirmModalMessage"),
+    confirmModalCancel: document.getElementById("attConfirmModalCancel"),
+    confirmModalConfirm: document.getElementById("attConfirmModalConfirm"),
+
     toastWrap: document.getElementById("attToastWrap"),
   };
 
@@ -307,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let viewYear;
   let viewMonth;
   let records = [];
+  let confirmAction = null;
 
   function memberById(id) {
     return members.find((m) => m.id === id) || null;
@@ -321,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       if (id) localStorage.setItem(SELECTED_KEY, id);
       else localStorage.removeItem(SELECTED_KEY);
-    } catch (err) { /* ignore */ }
+    } catch (err) {}
   }
 
   function initials(name) {
@@ -350,6 +351,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function recordFor(dateStr) {
     return records.find((r) => r.date === dateStr);
+  }
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   function showToast(message, type = "success") {
@@ -382,7 +388,40 @@ document.addEventListener("DOMContentLoaded", () => {
     return { ok: true, hours: n };
   }
 
-  /* ---------- Init ---------- */
+  function closeAllMenus() {
+    document.querySelectorAll(".att-menu-dropdown.is-open").forEach((el) => {
+      el.classList.remove("is-open");
+      const toggle = el.previousElementSibling;
+      if (toggle) toggle.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function openAddMemberModal() {
+    if (els.newMemberName) els.newMemberName.value = "";
+    setInlineMsg(els.addMemberMsg, "", null);
+    els.addMemberModal?.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+    els.newMemberName?.focus();
+  }
+  function closeAddMemberModal() {
+    els.addMemberModal?.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+
+  function openConfirmModal(title, message, confirmLabel, action) {
+    if (els.confirmModalTitle) els.confirmModalTitle.textContent = title;
+    if (els.confirmModalMessage) els.confirmModalMessage.textContent = message;
+    if (els.confirmModalConfirm) els.confirmModalConfirm.textContent = confirmLabel;
+    confirmAction = action;
+    els.confirmModal?.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeConfirmModal() {
+    els.confirmModal?.classList.remove("is-open");
+    document.body.style.overflow = "";
+    confirmAction = null;
+  }
+
   async function init() {
     members = await MemberStorage.getMembers();
     selectedMemberId = loadSelectedMemberId();
@@ -421,7 +460,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderMonthLabel() {
     const text = `${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`;
     if (els.monthLabel) els.monthLabel.textContent = text;
-    if (els.teamMonthLabel) els.teamMonthLabel.textContent = text;
   }
 
   function renderSelectedName() {
@@ -436,7 +474,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (els.entryMemberName) els.entryMemberName.textContent = member ? `— ${name}` : "";
   }
 
-  /* ---------- Member management + selector ---------- */
   async function renderMemberList() {
     if (!els.memberList) return;
 
@@ -455,6 +492,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const isSelected = member.id === selectedMemberId;
       rows.push(`
         <div class="att-member-card ${isSelected ? "is-selected" : ""}" data-member-id="${member.id}">
+          <span class="att-menu att-member-menu">
+            <button type="button" class="att-menu-toggle" data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-label="সদস্যের অপশন">${ICON_DOTS}</button>
+            <span class="att-menu-dropdown" role="menu">
+              <button type="button" class="att-menu-item" data-view-id="${member.id}" role="menuitem">${ICON_EYE}<span>View Attendance</span></button>
+              <button type="button" class="att-menu-item" data-rename-id="${member.id}" role="menuitem">${ICON_EDIT}<span>Edit Member</span></button>
+              <button type="button" class="att-menu-item att-menu-item-danger" data-delete-id="${member.id}" role="menuitem">${ICON_TRASH}<span>Delete Member</span></button>
+            </span>
+          </span>
           <button type="button" class="att-member-main" data-select-id="${member.id}">
             <span class="att-member-top">
               <span class="att-member-avatar" style="background:${avatarColor(i)}">${initials(member.name)}</span>
@@ -469,42 +514,10 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="att-member-stat"><strong>${s.leaveDays}</strong><em>Leave Days</em></span>
             </span>
           </button>
-          <span class="att-member-actions">
-            <button type="button" class="att-member-action-btn" data-rename-id="${member.id}" aria-label="Edit member" title="Edit">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
-              <span>Edit</span>
-            </button>
-            <button type="button" class="att-member-action-btn att-member-action-danger" data-delete-id="${member.id}" aria-label="Delete member" title="Delete">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
-              <span>Delete</span>
-            </button>
-          </span>
         </div>
       `);
     }
     els.memberList.innerHTML = rows.join("");
-
-    els.memberList.querySelectorAll("[data-select-id]").forEach((btn) => {
-      btn.addEventListener("click", () => selectMember(btn.dataset.selectId));
-    });
-    els.memberList.querySelectorAll("[data-rename-id]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        renameMember(btn.dataset.renameId);
-      });
-    });
-    els.memberList.querySelectorAll("[data-delete-id]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        removeMember(btn.dataset.deleteId);
-      });
-    });
-  }
-
-  function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
   }
 
   async function selectMember(memberId) {
@@ -514,6 +527,13 @@ document.addEventListener("DOMContentLoaded", () => {
     records = await AttendanceStorage.getAttendance(memberId);
     await render();
   }
+
+  els.addMemberOpen?.addEventListener("click", openAddMemberModal);
+  els.addMemberModalClose?.addEventListener("click", closeAddMemberModal);
+  els.addMemberCancel?.addEventListener("click", closeAddMemberModal);
+  els.addMemberModal?.addEventListener("click", (e) => {
+    if (e.target === els.addMemberModal) closeAddMemberModal();
+  });
 
   els.addMemberForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -533,6 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
       records = await AttendanceStorage.getAttendance(member.id);
     }
     els.addMemberForm.reset();
+    closeAddMemberModal();
     await render();
     showToast(`${member.name} সফলভাবে যোগ করা হয়েছে`, "success");
   });
@@ -573,7 +594,6 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast(`${member.name} মুছে ফেলা হয়েছে`, "success");
   }
 
-  /* ---------- Summary / calendar / history ---------- */
   function renderSummary(s) {
     if (!els.summaryGrid) return;
     const cards = [
@@ -612,19 +632,15 @@ document.addEventListener("DOMContentLoaded", () => {
           ? rec.status === "duty"
             ? `${round1(rec.hours)}h`
             : ATT_STATUS_META[rec.status].label
-          : "";
+          : "—";
         return `
           <button type="button" class="att-cal-cell ${isToday ? "is-today" : ""} ${statusClass}" data-date="${dateStr}" aria-label="${dateStr}${rec ? `, ${ATT_STATUS_META[rec.status].label}` : ""}">
             <span class="att-cal-day">${day}</span>
-            ${badge ? `<span class="att-cal-hours">${badge}</span>` : ""}
+            <span class="att-cal-hours">${badge}</span>
           </button>
         `;
       })
       .join("");
-
-    els.calendarGrid.querySelectorAll("[data-date]").forEach((cell) => {
-      cell.addEventListener("click", () => openEditModal(cell.dataset.date));
-    });
   }
 
   function renderHistory() {
@@ -654,15 +670,29 @@ document.addEventListener("DOMContentLoaded", () => {
             <td data-label="Day">${dayName}</td>
             <td data-label="Hours">${hoursLabel}</td>
             <td data-label="Status"><span class="att-badge att-badge-${meta.dot}"><i class="att-dot att-dot-${meta.dot}"></i>${meta.label}</span></td>
-            <td data-label="Action"><button type="button" class="att-edit-link" data-date="${r.date}">Edit</button></td>
+            <td data-label="Action">
+              <span class="att-menu">
+                <button type="button" class="att-menu-toggle" data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-label="রেকর্ড অপশন">${ICON_DOTS}</button>
+                <span class="att-menu-dropdown" role="menu">
+                  <button type="button" class="att-menu-item" data-edit-date="${r.date}" role="menuitem">${ICON_EDIT}<span>Edit</span></button>
+                  <button type="button" class="att-menu-item att-menu-item-danger" data-delete-date="${r.date}" role="menuitem">${ICON_TRASH}<span>Delete</span></button>
+                </span>
+              </span>
+            </td>
           </tr>
         `;
       })
       .join("");
+  }
 
-    els.historyBody.querySelectorAll("[data-date]").forEach((btn) => {
-      btn.addEventListener("click", () => openEditModal(btn.dataset.date));
-    });
+  async function deleteRecord(dateStr) {
+    if (!selectedMemberId) return;
+    const ok = window.confirm("এই তারিখের হাজিরা রেকর্ড মুছে ফেলবেন? এটি পূর্বাবস্থায় ফেরানো যাবে না।");
+    if (!ok) return;
+    await AttendanceStorage.deleteAttendance(selectedMemberId, dateStr);
+    records = await AttendanceStorage.getAttendance(selectedMemberId);
+    await render();
+    showToast("হাজিরা রেকর্ড মুছে ফেলা হয়েছে", "success");
   }
 
   els.entryForm?.addEventListener("submit", async (e) => {
@@ -712,23 +742,34 @@ document.addEventListener("DOMContentLoaded", () => {
     els.entryHours?.focus();
   });
 
-  els.clearMonthBtn?.addEventListener("click", async () => {
+  els.clearMonthBtn?.addEventListener("click", () => {
     if (!selectedMemberId) return;
     const member = memberById(selectedMemberId);
     if (!member) return;
     const monthLabel = `${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`;
-    const ok = window.confirm(
-      `"${member.name}"-এর ${monthLabel} মাসের সব হাজিরা রেকর্ড মুছে ফেলবেন?\n\nসদস্যের নাম ও অন্য মাসের রেকর্ড অক্ষত থাকবে — শুধু এই মাসেরটাই মুছে যাবে। এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।`
+    openConfirmModal(
+      `Clear ${monthLabel}?`,
+      `This will permanently remove all attendance records for "${member.name}" in ${monthLabel}. Their name and other months stay untouched. This cannot be undone.`,
+      "Clear Month",
+      async () => {
+        await AttendanceStorage.deleteMonthAttendance(selectedMemberId, viewYear, viewMonth);
+        records = await AttendanceStorage.getAttendance(selectedMemberId);
+        await render();
+        showToast(`${monthLabel}-এর হাজিরা মুছে ফেলা হয়েছে`, "success");
+      }
     );
-    if (!ok) return;
-
-    await AttendanceStorage.deleteMonthAttendance(selectedMemberId, viewYear, viewMonth);
-    records = await AttendanceStorage.getAttendance(selectedMemberId);
-    await render();
-    showToast(`${monthLabel}-এর হাজিরা মুছে ফেলা হয়েছে`, "success");
   });
 
-  /* ---------- PDF report export ---------- */
+  els.confirmModalCancel?.addEventListener("click", closeConfirmModal);
+  els.confirmModal?.addEventListener("click", (e) => {
+    if (e.target === els.confirmModal) closeConfirmModal();
+  });
+  els.confirmModalConfirm?.addEventListener("click", async () => {
+    const action = confirmAction;
+    closeConfirmModal();
+    if (action) await action();
+  });
+
   const REPORT_LOGO_SRC = "masum.png";
   const REPORT_FALLBACK_COLOR = [37, 99, 235];
 
@@ -747,7 +788,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const nums = normalized.match(/[\d.]+/g);
       if (nums && nums.length >= 3) return nums.slice(0, 3).map((n) => Math.round(Number(n)));
-    } catch (err) { /* fall through */ }
+    } catch (err) {}
     return REPORT_FALLBACK_COLOR;
   }
 
@@ -797,8 +838,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: "pt", format: "a4" });
       const pageWidth = doc.internal.pageSize.getWidth();
-      const margin = 42;
+      const margin = 40;
+      const contentWidth = pageWidth - margin * 2;
       const REPORT_BRAND_COLOR = getSiteAccentColor();
+      const GRAY_TEXT = [120, 120, 120];
+      const DARK_TEXT = [20, 20, 20];
+      const BOX_BORDER = [226, 232, 240];
+      const BOX_FILL = [248, 250, 252];
+
       let logo = null;
       try {
         logo = await loadImageAsDataURL(REPORT_LOGO_SRC);
@@ -810,7 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const headTop = margin;
 
       if (logo) {
-        const logoW = 44;
+        const logoW = 42;
         const logoH = (logo.height / logo.width) * logoW;
         doc.addImage(logo.dataUrl, "PNG", margin, headTop - 4, logoW, logoH);
         headTextX = margin + logoW + 14;
@@ -818,52 +865,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
-      doc.setTextColor(20, 20, 20);
-      doc.text("Attendance Management System", headTextX, headTop + 14);
+      doc.setTextColor(...DARK_TEXT);
+      doc.text("Attendance Management System", headTextX, headTop + 12);
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
-      doc.setTextColor(120, 120, 120);
-      doc.text("masumcpex.bro.bd", headTextX, headTop + 27);
-      doc.text("masumcpex.com", headTextX, headTop + 38);
+      doc.setFontSize(8);
+      doc.setTextColor(...GRAY_TEXT);
+      doc.text("masumcpex.bro.bd", headTextX, headTop + 24);
+      doc.text("masumcpex.com", headTextX, headTop + 35);
 
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(17);
+      doc.setFontSize(16);
       doc.setTextColor(...REPORT_BRAND_COLOR);
-      doc.text("Attendance Report", pageWidth - margin, headTop + 12, { align: "right" });
+      doc.text("Attendance Report", pageWidth - margin, headTop + 10, { align: "right" });
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.setTextColor(120, 120, 120);
-      doc.text(`${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`, pageWidth - margin, headTop + 27, { align: "right" });
+      doc.setTextColor(...DARK_TEXT);
+      doc.text(`${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`, pageWidth - margin, headTop + 24, { align: "right" });
+
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      const pad2 = (n) => String(n).padStart(2, "0");
+      const periodStr =
+        `${pad2(1)} ${ATT_MONTH_NAMES[viewMonth]} ${viewYear}  \u2013  ` +
+        `${pad2(daysInMonth)} ${ATT_MONTH_NAMES[viewMonth]} ${viewYear}`;
+      doc.setFontSize(8);
+      doc.setTextColor(...GRAY_TEXT);
+      doc.text(periodStr, pageWidth - margin, headTop + 36, { align: "right" });
 
       let cursorY = headTop + 54;
       doc.setDrawColor(...REPORT_BRAND_COLOR);
-      doc.setLineWidth(1.4);
+      doc.setLineWidth(1.2);
       doc.line(margin, cursorY, pageWidth - margin, cursorY);
-      cursorY += 26;
+      cursorY += 22;
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(13);
-      doc.setTextColor(20, 20, 20);
-      doc.text(member.name, margin, cursorY);
-      cursorY += 18;
+      const infoFields = [{ label: "EMPLOYEE NAME", value: member.name }];
+      if (member.employeeId) infoFields.push({ label: "EMPLOYEE ID", value: member.employeeId });
+      if (member.department) infoFields.push({ label: "DEPARTMENT", value: member.department });
+      if (member.position) infoFields.push({ label: "POSITION", value: member.position });
+
+      const infoBoxHeight = 34;
+      doc.setDrawColor(...BOX_BORDER);
+      doc.setFillColor(...BOX_FILL);
+      doc.roundedRect(margin, cursorY, contentWidth, infoBoxHeight, 3, 3, "FD");
+
+      const infoColWidth = contentWidth / infoFields.length;
+      infoFields.forEach((f, i) => {
+        const x = margin + 14 + i * infoColWidth;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.setTextColor(...GRAY_TEXT);
+        doc.text(f.label, x, cursorY + 13);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11.5);
+        doc.setTextColor(...DARK_TEXT);
+        doc.text(String(f.value), x, cursorY + 27);
+      });
+      cursorY += infoBoxHeight + 20;
 
       const s = AttendanceCalc.summarize(records, viewYear, viewMonth);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
-      doc.setTextColor(70, 70, 70);
-      const summaryLine =
-        `Total Hours: ${round1(s.totalHours)}h    Duty Days: ${s.dutyDays}    ` +
-        `Leave: ${s.leaveDays}    Off: ${s.offDays}    Holiday: ${s.holidayDays}    ` +
-        `Avg / Duty Day: ${round1(s.avgHours)}h`;
-      doc.text(summaryLine, margin, cursorY);
-      cursorY += 20;
+      const summaryCards = [
+        { value: `${round1(s.totalHours)}h`, label: "Total Hours" },
+        { value: String(s.dutyDays), label: "Duty Days" },
+        { value: String(s.offDays), label: "Off Days" },
+        { value: String(s.leaveDays), label: "Leave" },
+        { value: String(s.holidayDays), label: "Holiday" },
+        { value: `${round1(s.avgHours)}h`, label: "Avg / Duty Day" },
+      ];
+      const cardGap = 6;
+      const cardWidth = (contentWidth - cardGap * (summaryCards.length - 1)) / summaryCards.length;
+      const cardHeight = 42;
+      summaryCards.forEach((c, i) => {
+        const x = margin + i * (cardWidth + cardGap);
+        doc.setDrawColor(...BOX_BORDER);
+        doc.setFillColor(...BOX_FILL);
+        doc.roundedRect(x, cursorY, cardWidth, cardHeight, 3, 3, "FD");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12.5);
+        doc.setTextColor(...REPORT_BRAND_COLOR);
+        doc.text(c.value, x + cardWidth / 2, cursorY + 19, { align: "center" });
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(6.6);
+        doc.setTextColor(...GRAY_TEXT);
+        doc.text(c.label.toUpperCase(), x + cardWidth / 2, cursorY + 33, { align: "center" });
+      });
+      cursorY += cardHeight + 20;
 
       const monthRecords = AttendanceCalc.filterMonth(records, viewYear, viewMonth)
         .slice()
         .sort((a, b) => a.date.localeCompare(b.date));
 
+      const rowStatuses = monthRecords.map((r) => r.status);
       const body = monthRecords.map((r) => {
         const d = parseISO(r.date);
         return [
@@ -878,37 +970,75 @@ document.addEventListener("DOMContentLoaded", () => {
       const generatedStr = `Generated: ${generatedAt.toLocaleDateString("en-US", {
         month: "short", day: "numeric", year: "numeric",
       })}, ${generatedAt.toLocaleTimeString("en-US", {
-        hour: "numeric", minute: "2-digit", second: "2-digit",
+        hour: "numeric", minute: "2-digit",
       })}`;
 
-      function drawFooter() {
+      function drawFooterLine() {
         const pageHeight = doc.internal.pageSize.getHeight();
-        const footerY = pageHeight - 24;
-        doc.setDrawColor(228, 228, 228);
+        const footerY = pageHeight - 34;
+        doc.setDrawColor(...BOX_BORDER);
         doc.setLineWidth(0.6);
-        doc.line(margin, footerY - 12, pageWidth - margin, footerY - 12);
+        doc.line(margin, footerY, pageWidth - margin, footerY);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
-        doc.setTextColor(130, 130, 130);
-        doc.text("masumcpex.com   |   admin@masumcpex.com", margin, footerY);
-        doc.text(generatedStr, pageWidth - margin, footerY, { align: "right" });
+        doc.setTextColor(...GRAY_TEXT);
+        doc.text("masumcpex.com   |   Attendance Management System", margin, footerY + 14);
+        doc.text(generatedStr, pageWidth - margin, footerY + 14, { align: "right" });
       }
+
+      const STATUS_BADGE_STYLE = {
+        duty: { fill: [219, 234, 254], text: [29, 78, 216] },
+        holiday: { fill: [219, 234, 254], text: [29, 78, 216] },
+        off: { fill: [241, 245, 249], text: [100, 116, 139] },
+        leave: { fill: [241, 245, 249], text: [100, 116, 139] },
+      };
 
       if (typeof doc.autoTable === "function") {
         doc.autoTable({
           startY: cursorY,
-          margin: { left: margin, right: margin, bottom: 46 },
+          margin: { left: margin, right: margin, bottom: 58 },
           head: [["Date", "Day", "Hours", "Status"]],
           body: body.length ? body : [["—", "—", "—", "No records this month"]],
           theme: "grid",
-          headStyles: { fillColor: REPORT_BRAND_COLOR, textColor: 255, fontStyle: "bold", fontSize: 9 },
-          bodyStyles: { fontSize: 9, textColor: [40, 40, 40] },
-          alternateRowStyles: { fillColor: [246, 248, 247] },
-          styles: { cellPadding: 6 },
-          didDrawPage: drawFooter,
+          headStyles: {
+            fillColor: REPORT_BRAND_COLOR,
+            textColor: 255,
+            fontStyle: "bold",
+            fontSize: 8.5,
+          },
+          bodyStyles: { fontSize: 8.8, textColor: [40, 40, 40], cellPadding: 6 },
+          alternateRowStyles: { fillColor: [248, 250, 252] },
+          columnStyles: {
+            0: { cellWidth: 90 },
+            1: { cellWidth: 130 },
+            2: { halign: "center", cellWidth: 80 },
+            3: { halign: "center" },
+          },
+          didParseCell(data) {
+            if (data.section === "body" && data.column.index === 3) {
+              const status = rowStatuses[data.row.index];
+              const style = STATUS_BADGE_STYLE[status];
+              if (style) {
+                data.cell.styles.fillColor = style.fill;
+                data.cell.styles.textColor = style.text;
+                data.cell.styles.fontStyle = "bold";
+              }
+            }
+          },
+          didDrawPage: drawFooterLine,
         });
       } else {
-        drawFooter();
+        drawFooterLine();
+      }
+
+      const totalPages = doc.internal.getNumberOfPages();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      for (let p = 1; p <= totalPages; p += 1) {
+        doc.setPage(p);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(...GRAY_TEXT);
+        doc.text(`Page ${p} of ${totalPages}`, pageWidth - margin, pageHeight - 34 + 26, { align: "right" });
       }
 
       const safeName = member.name.trim().replace(/\s+/g, "_").replace(/[^\w-]/g, "") || "Member";
@@ -979,9 +1109,50 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast("হাজিরা রেকর্ড মুছে ফেলা হয়েছে", "success");
   });
 
+  document.addEventListener("click", (e) => {
+    const toggle = e.target.closest("[data-menu-toggle]");
+    if (toggle) {
+      e.stopPropagation();
+      const dropdown = toggle.nextElementSibling;
+      const willOpen = !dropdown.classList.contains("is-open");
+      closeAllMenus();
+      if (willOpen) {
+        dropdown.classList.add("is-open");
+        toggle.setAttribute("aria-expanded", "true");
+      }
+      return;
+    }
+
+    const selectBtn = e.target.closest("[data-select-id]");
+    if (selectBtn) { closeAllMenus(); selectMember(selectBtn.dataset.selectId); return; }
+
+    const viewBtn = e.target.closest("[data-view-id]");
+    if (viewBtn) { closeAllMenus(); selectMember(viewBtn.dataset.viewId); return; }
+
+    const renameBtn = e.target.closest("[data-rename-id]");
+    if (renameBtn) { closeAllMenus(); renameMember(renameBtn.dataset.renameId); return; }
+
+    const deleteMemberBtn = e.target.closest("[data-delete-id]");
+    if (deleteMemberBtn) { closeAllMenus(); removeMember(deleteMemberBtn.dataset.deleteId); return; }
+
+    const dateCell = e.target.closest("[data-date]");
+    if (dateCell) { closeAllMenus(); openEditModal(dateCell.dataset.date); return; }
+
+    const editDateBtn = e.target.closest("[data-edit-date]");
+    if (editDateBtn) { closeAllMenus(); openEditModal(editDateBtn.dataset.editDate); return; }
+
+    const deleteDateBtn = e.target.closest("[data-delete-date]");
+    if (deleteDateBtn) { closeAllMenus(); deleteRecord(deleteDateBtn.dataset.deleteDate); return; }
+
+    if (!e.target.closest(".att-menu")) closeAllMenus();
+  });
+
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    if (els.modal?.classList.contains("is-open")) closeEditModal();
+    if (els.modal?.classList.contains("is-open")) { closeEditModal(); return; }
+    if (els.addMemberModal?.classList.contains("is-open")) { closeAddMemberModal(); return; }
+    if (els.confirmModal?.classList.contains("is-open")) { closeConfirmModal(); return; }
+    closeAllMenus();
   });
 
   init();
