@@ -328,9 +328,38 @@
       </div>
 
       <div class="att-user-bar" id="attUserBar" hidden>
-        <img class="att-user-photo" id="attUserPhoto" alt="" width="30" height="30">
-        <span class="att-user-name" id="attUserName"></span>
-        <button type="button" class="att-signout-btn" id="attSignOutBtn">Sign out</button>
+        <div class="att-profile" id="attProfile">
+          <button type="button" class="att-profile-trigger" id="attProfileTrigger" aria-haspopup="true" aria-expanded="false">
+            <span class="att-profile-avatar-wrap">
+              <img class="att-profile-avatar" id="attUserPhoto" alt="" hidden>
+              <span class="att-profile-avatar-fallback" id="attUserAvatarFallback" hidden></span>
+            </span>
+            <span class="att-profile-name" id="attUserName"></span>
+            <svg class="att-profile-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <div class="att-profile-dropdown" id="attProfileDropdown" role="menu" hidden>
+            <div class="att-profile-dropdown-header">
+              <span class="att-profile-dropdown-avatar-wrap">
+                <img class="att-profile-dropdown-avatar" id="attUserPhotoLarge" alt="" hidden>
+                <span class="att-profile-dropdown-avatar-fallback" id="attUserAvatarFallbackLarge" hidden></span>
+              </span>
+              <span class="att-profile-dropdown-name" id="attUserNameFull"></span>
+              <span class="att-profile-dropdown-email" id="attUserEmail"></span>
+            </div>
+            <div class="att-profile-dropdown-divider"></div>
+            <button type="button" class="att-profile-signout" id="attSignOutBtn" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Sign out
+            </button>
+          </div>
+        </div>
       </div>
 
       <div id="attMainContent" hidden>

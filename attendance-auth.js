@@ -6,8 +6,75 @@ document.addEventListener("DOMContentLoaded", () => {
   const signOutBtn = document.getElementById("attSignOutBtn");
   const userPhoto = document.getElementById("attUserPhoto");
   const userName = document.getElementById("attUserName");
+  const userAvatarFallback = document.getElementById("attUserAvatarFallback");
+  const userPhotoLarge = document.getElementById("attUserPhotoLarge");
+  const userAvatarFallbackLarge = document.getElementById("attUserAvatarFallbackLarge");
+  const userNameFull = document.getElementById("attUserNameFull");
+  const userEmail = document.getElementById("attUserEmail");
+  const profileWrap = document.getElementById("attProfile");
+  const profileTrigger = document.getElementById("attProfileTrigger");
+  const profileDropdown = document.getElementById("attProfileDropdown");
 
   if (!gate || !mainContent) return;
+
+  /* ---------------- Profile dropdown ---------------- */
+  function openProfileDropdown() {
+    if (!profileDropdown) return;
+    profileDropdown.hidden = false;
+    requestAnimationFrame(() => profileDropdown.classList.add("is-open"));
+    profileTrigger?.setAttribute("aria-expanded", "true");
+  }
+  function closeProfileDropdown() {
+    if (!profileDropdown) return;
+    profileDropdown.classList.remove("is-open");
+    profileTrigger?.setAttribute("aria-expanded", "false");
+    window.setTimeout(() => {
+      if (!profileDropdown.classList.contains("is-open")) profileDropdown.hidden = true;
+    }, 160);
+  }
+  profileTrigger?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (profileDropdown?.classList.contains("is-open")) closeProfileDropdown();
+    else openProfileDropdown();
+  });
+  document.addEventListener("click", (e) => {
+    if (!profileWrap || !profileDropdown?.classList.contains("is-open")) return;
+    if (!profileWrap.contains(e.target)) closeProfileDropdown();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeProfileDropdown();
+  });
+
+  function getInitials(name, email) {
+    const source = (name || "").trim();
+    if (source) {
+      const parts = source.split(/\s+/).filter(Boolean);
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    if (email) return email.slice(0, 2).toUpperCase();
+    return "?";
+  }
+
+  function renderAvatar(imgEl, fallbackEl, photoURL, name, email) {
+    if (!imgEl || !fallbackEl) return;
+    fallbackEl.textContent = getInitials(name, email);
+    if (photoURL) {
+      imgEl.onerror = () => {
+        imgEl.hidden = true;
+        fallbackEl.hidden = false;
+      };
+      imgEl.src = photoURL;
+      imgEl.alt = name || "";
+      imgEl.hidden = false;
+      fallbackEl.hidden = true;
+    } else {
+      imgEl.onerror = null;
+      imgEl.removeAttribute("src");
+      imgEl.hidden = true;
+      fallbackEl.hidden = false;
+    }
+  }
 
   let appStarted = false;
 
@@ -229,6 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------------- Sign out ---------------- */
   signOutBtn?.addEventListener("click", async () => {
+    closeProfileDropdown();
     try {
       await firebase.auth().signOut();
     } catch (err) {
@@ -242,11 +310,11 @@ document.addEventListener("DOMContentLoaded", () => {
       gate.hidden = true;
       userBar.hidden = false;
       mainContent.hidden = false;
-      if (userPhoto) {
-        userPhoto.src = user.photoURL || "yellow.webp";
-        userPhoto.alt = user.displayName || "";
-      }
+      renderAvatar(userPhoto, userAvatarFallback, user.photoURL, user.displayName, user.email);
+      renderAvatar(userPhotoLarge, userAvatarFallbackLarge, user.photoURL, user.displayName, user.email);
       if (userName) userName.textContent = user.displayName || user.email || "";
+      if (userNameFull) userNameFull.textContent = user.displayName || "";
+      if (userEmail) userEmail.textContent = user.email || "";
       if (!appStarted && typeof window.attStartAttendanceApp === "function") {
         appStarted = true;
         window.attStartAttendanceApp(user);
@@ -257,6 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mainContent.hidden = true;
       if (googleBtn) googleBtn.disabled = false;
       appStarted = false;
+      closeProfileDropdown();
 
       // Reset all auth forms back to a clean Sign In state for the next visitor.
       signInForm?.reset();
