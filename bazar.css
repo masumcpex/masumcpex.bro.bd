@@ -10,45 +10,61 @@
   justify-content:center;
   padding:var(--space-5) 0;
 }
+.baz-gate[hidden]{ display:none !important; }
 .baz-gate-box{
   background:var(--color-surface);
   border:1px solid var(--color-border);
   border-radius:var(--baz-radius-card);
   box-shadow:var(--shadow-card);
-  padding:var(--space-4);
+  padding:var(--space-5) var(--space-4);
   max-width:400px;
   width:100%;
   text-align:center;
 }
 .baz-gate-icon{
-  width:56px; height:56px;
-  border-radius:var(--radius-full);
-  background:var(--color-accent-soft);
+  width:60px; height:60px;
+  border-radius:18px;
+  background:linear-gradient(160deg, var(--color-accent-soft), var(--color-bg-soft));
+  border:1px solid var(--color-accent-border);
   color:var(--color-accent);
   display:flex; align-items:center; justify-content:center;
-  margin:0 auto var(--space-2);
+  margin:0 auto var(--space-3);
 }
 .baz-gate-title{ font-size:1.15rem; margin-bottom:0.4rem; }
 .baz-gate-sub{ color:var(--color-text-dim); font-size:0.92rem; line-height:1.6; margin-bottom:var(--space-3); }
 .baz-gate-msg{ font-size:0.85rem; color:var(--color-error); min-height:1.2em; margin-top:0.6rem; }
 
-.baz-social-row{ display:flex; flex-wrap:nowrap; gap:0.7rem; }
+.baz-gate-divider{
+  display:flex; align-items:center; gap:0.7rem;
+  margin:var(--space-3) 0 var(--space-2);
+  color:var(--color-muted);
+  font-size:0.78rem;
+}
+.baz-gate-divider::before,
+.baz-gate-divider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--color-border);
+}
+
+.baz-social-row{ display:flex; flex-wrap:nowrap; gap:0.7rem; justify-content:center; }
 .baz-social-btn{
   flex:1 1 0; min-width:0;
   display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
-  font-weight:600; font-size:0.88rem;
-  height:48px; min-height:44px;
-  border-radius:12px; border:1px solid transparent;
+  font-weight:600; font-size:0.85rem;
+  height:52px; min-height:44px;
+  border-radius:14px; border:1px solid var(--color-border);
+  background:var(--color-bg-soft);
+  color:var(--color-text);
   white-space:nowrap;
   transition:all var(--transition-fast);
   cursor:pointer;
 }
 .baz-social-btn svg{ flex-shrink:0; }
 .baz-social-btn:disabled{ opacity:0.6; pointer-events:none; }
-.baz-google-btn{ background:var(--color-bg-soft); border-color:var(--color-bg-soft); color:var(--color-text); }
-.baz-google-btn:hover{ background:var(--color-border); border-color:var(--color-border); }
-.baz-facebook-btn{ background:var(--color-accent); border-color:var(--color-accent); color:#fff; }
-.baz-facebook-btn:hover{ background:var(--color-accent-hover); border-color:var(--color-accent-hover); }
+.baz-social-btn:hover{ background:var(--color-border); border-color:var(--color-accent-border); }
+.baz-google-btn, .baz-facebook-btn{ background:var(--color-bg-soft); border-color:var(--color-border); color:var(--color-text); }
 
 /* ---------------- Top user bar ---------------- */
 .baz-userbar{
