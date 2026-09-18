@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal — Attendance</title>
+<style>
+  :root{
+    --teal:#0d9488;
+    --teal-dark:#0f766e;
+    --text:#1e293b;
+    --text-dim:#64748b;
+    --border:#e2e8f0;
+    --bg:#f8fafc;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:2.5rem 1.25rem 4rem;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    gap:0.75rem;
+    margin-bottom:1.25rem;
+  }
+  .logo{
+    width:38px; height:38px;
+    border-radius:10px;
+    background:linear-gradient(160deg, var(--teal) 0%, var(--teal-dark) 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:1rem; flex-shrink:0;
+  }
+  h1{ font-size:1.6rem; margin:0; color:var(--text); }
+  .updated{ color:var(--text-dim); font-size:0.85rem; margin:0.15rem 0 0; }
+
+  nav{
+    display:flex;
+    gap:0.5rem;
+    flex-wrap:wrap;
+    margin-bottom:1.5rem;
+    position:sticky;
+    top:0;
+    background:var(--bg);
+    padding:0.6rem 0;
+    z-index:5;
+  }
+  nav a{
+    font-size:0.85rem;
+    font-weight:600;
+    color:var(--teal-dark);
+    background:#fff;
+    border:1px solid var(--border);
+    padding:0.4rem 0.85rem;
+    border-radius:999px;
+    text-decoration:none;
+  }
+  nav a:hover{ background:var(--bg); }
+
+  section{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:1.75rem 1.5rem;
+    box-shadow:0 1px 2px rgba(15,23,42,0.04);
+    margin-bottom:1.5rem;
+    scroll-margin-top:4.2rem;
+  }
+  section > h2:first-child{ margin-top:0; }
+  h2{ font-size:1.25rem; margin:0 0 0.75rem; color:var(--text); }
+  h3{ font-size:1.05rem; margin:1.5rem 0 0.5rem; color:var(--text); }
+  h3:first-of-type{ margin-top:0; }
+  p, li{ color:#334155; font-size:0.96rem; }
+  ul{ margin:0.4rem 0; padding-left:1.3rem; }
+  li{ margin-bottom:0.35rem; }
+  a{ color:var(--teal-dark); }
+  .contact{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:1rem 1.1rem;
+    margin-top:0.5rem;
+    font-size:0.95rem;
+  }
+  footer{ text-align:center; color:var(--text-dim); font-size:0.8rem; margin-top:1rem; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">A</div>
+      <div>
+        <h1>Legal</h1>
+        <p class="updated">Last updated: September 2026</p>
+      </div>
+    </header>
+
+    <nav>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms of Service</a>
+      <a href="#cookies">Cookie Policy</a>
+    </nav>
+
+    <!-- ================= PRIVACY POLICY ================= -->
+    <section id="privacy">
+      <h2>Privacy Policy</h2>
+      <p>This Privacy Policy explains how the Attendance app ("we", "our", "the app") collects, uses, and protects information when you sign in and use the app to track attendance and working hours for your team.</p>
+
+      <h3>Information we collect</h3>
+      <ul>
+        <li><strong>Account information:</strong> when you sign in with email/password, Google, or Facebook, we receive your name, email address, and profile photo (if provided by that sign-in method).</li>
+        <li><strong>Attendance data:</strong> daily attendance records, status (present/absent), and timestamps that you or your team enter into the app.</li>
+        <li><strong>Team member data:</strong> names of team members added to the app, and who added them.</li>
+      </ul>
+
+      <h3>How we use this information</h3>
+      <ul>
+        <li>To let you sign in securely and identify your account.</li>
+        <li>To display your name and profile photo inside the app (e.g. in the account menu).</li>
+        <li>To record and display attendance and working-hour data for your team.</li>
+        <li>To generate summaries and downloadable reports (e.g. PDF) at your request.</li>
+      </ul>
+      <p>We do not sell, rent, or share your personal information with third parties for advertising or marketing purposes.</p>
+
+      <h3>How we store and protect information</h3>
+      <p>Data is stored using Firebase (a Google Cloud service) with access rules that require you to be signed in before any data can be read or written. We take reasonable technical measures to protect your data from unauthorized access.</p>
+
+      <h3>Sign in with Google and Facebook</h3>
+      <p>If you choose to sign in with Google or Facebook, we only request basic profile information (name, email address, and profile photo) needed to create and identify your account. We do not post to your Google or Facebook account or access any other data from those services.</p>
+
+      <h3>Data retention and deletion</h3>
+      <p>We keep your account and attendance data for as long as your account is active, or as needed to provide the app's functionality. You can request deletion of your account and associated data at any time by contacting us using the details below.</p>
+
+      <h3>Children's privacy</h3>
+      <p>This app is intended for workplace attendance tracking and is not directed at children. We do not knowingly collect information from children.</p>
+
+      <h3>Changes to this policy</h3>
+      <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last updated" date.</p>
+    </section>
+
+    <!-- ================= TERMS OF SERVICE ================= -->
+    <section id="terms">
+      <h2>Terms of Service</h2>
+      <p>By creating an account or using the Attendance app, you agree to the following terms.</p>
+
+      <h3>Use of the service</h3>
+      <ul>
+        <li>The app is provided to help you and your team record and manage daily attendance and working hours.</li>
+        <li>You are responsible for the accuracy of the attendance data you enter.</li>
+        <li>You agree not to use the app for any unlawful purpose or to attempt to access another user's account or data without authorization.</li>
+      </ul>
+
+      <h3>Accounts</h3>
+      <p>You are responsible for keeping your login credentials confidential and for all activity that happens under your account. Notify us immediately if you suspect unauthorized use of your account.</p>
+
+      <h3>Availability and changes</h3>
+      <p>We aim to keep the app available and working correctly, but we do not guarantee uninterrupted or error-free service. Features may be added, changed, or removed at any time.</p>
+
+      <h3>Disclaimer and limitation of liability</h3>
+      <p>The app is provided "as is" without warranties of any kind. To the fullest extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from your use of the app.</p>
+
+      <h3>Termination</h3>
+      <p>We may suspend or terminate access to the app for any account that violates these Terms or is used in a way that could harm the service or other users.</p>
+
+      <h3>Changes to these Terms</h3>
+      <p>We may update these Terms from time to time. Continued use of the app after changes are posted means you accept the updated Terms.</p>
+    </section>
+
+    <!-- ================= COOKIE POLICY ================= -->
+    <section id="cookies">
+      <h2>Cookie Policy</h2>
+      <p>This app uses cookies and similar local storage technologies (such as browser local storage) to support core functionality.</p>
+
+      <h3>What we use them for</h3>
+      <ul>
+        <li><strong>Keeping you signed in:</strong> so you don't have to log in again every time you open the app.</li>
+        <li><strong>Remembering preferences:</strong> such as your last-used view or settings within the app.</li>
+        <li><strong>Security:</strong> authentication providers (Google, Facebook, Firebase) may set their own cookies as part of the sign-in process.</li>
+      </ul>
+      <p>We do not use cookies for third-party advertising or cross-site tracking.</p>
+
+      <h3>Managing cookies</h3>
+      <p>You can clear cookies and site data at any time through your browser settings. Doing so may sign you out of the app and reset any saved preferences.</p>
+    </section>
+
+    <div class="contact">
+      Questions about any of the above? Contact us at <a href="mailto:info@masumcpex.com">info@masumcpex.com</a>
+    </div>
+
+    <footer>&copy; 2026 Attendance. All rights reserved.</footer>
+  </div>
+</body>
+</html>
