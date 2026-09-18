@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bazar — মাসিক বাজার ও খরচ হিসাব | Masum</title>
+<meta name="description" content="প্রতিদিনের বাজার ও খরচ এক জায়গায় ট্র্যাক করুন। মাসিক সামারি, ক্যাটাগরি অনুযায়ী ফিল্টার ও ডাউনলোডযোগ্য PDF রিপোর্টসহ Masum-এর তৈরি একটি ব্যক্তিগত Bazar Management System।">
+<meta name="theme-color" content="#F0F3F7">
+<link rel="canonical" href="https://masumcpex.bro.bd/bazar.html">
+<link rel="icon" href="yellow.webp" type="image/webp">
+<link rel="apple-touch-icon" href="yellow.webp">
+<link rel="manifest" href="site.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bazar — মাসিক বাজার ও খরচ হিসাব | Masum">
+<meta property="og:description" content="প্রতিদিনের বাজার ও খরচ এক জায়গায় ট্র্যাক করুন। মাসিক সামারি, ক্যাটাগরি ফিল্টার ও PDF রিপোর্টসহ একটি ব্যক্তিগত Bazar Management System।">
+<meta property="og:image" content="https://masumcpex.bro.bd/bd.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="500">
+<meta property="og:image:height" content="500">
+<meta property="og:url" content="https://masumcpex.bro.bd/bazar.html">
+<meta property="og:locale" content="bn_BD">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bazar — মাসিক বাজার ও খরচ হিসাব | Masum">
+<meta name="twitter:description" content="প্রতিদিনের বাজার ও খরচ এক জায়গায় ট্র্যাক করুন — মাসিক সামারি, ক্যাটাগরি ফিল্টার ও PDF রিপোর্টসহ।">
+<meta name="twitter:image" content="https://masumcpex.bro.bd/bd.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Bazar — Personal Expense Tracker",
+  "url": "https://masumcpex.bro.bd/bazar.html",
+  "description": "প্রতিদিনের বাজার ও খরচ ট্র্যাক করার জন্য একটি ব্যক্তিগত Bazar Management System। মাসিক সামারি, ক্যাটাগরি ফিল্টার ও PDF রিপোর্ট ডাউনলোডের সুবিধাসহ।",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Any (Web Browser)",
+  "isAccessibleForFree": true,
+  "image": "https://masumcpex.bro.bd/bd.png",
+  "author": { "@type": "Person", "name": "Masum Billah", "url": "https://masumcpex.bro.bd/" }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="bazar.css">
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="index.html#home" class="brand" data-nav="home">
+      <span class="brand-mark"><img src="yellow.webp" alt="Masum" width="50" height="50"></span>
+      <span class="brand-name" id="brandName">Masum</span>
+    </a>
+
+    <nav class="main-nav" id="mainNav" aria-label="প্রধান মেনু">
+      <a href="index.html#home" data-nav="home">Home</a>
+      <a href="index.html#about" data-nav="about">About</a>
+      <a href="index.html#journey" data-nav="journey">Journey</a>
+      <a href="https://masumcpex.com/index.html#library" data-nav="library">Library</a>
+      <a href="index.html#journal" data-nav="journal">Journal</a>
+      <a href="index.html#projects" data-nav="projects">Projects</a>
+      <a href="attendance.html" data-nav="attendance">Attendance</a>
+      <a href="bazar.html" data-nav="bazar">Bazar</a>
+      <a href="index.html#articles" data-nav="articles">Articles</a>
+      <a href="index.html#contact" data-nav="contact">Contact</a>
+    </nav>
+
+    <div class="header-tools">
+      <a href="index.html#contact" class="header-cta" data-nav="contact">
+        Let's Talk
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+      </a>
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="মেনু" aria-expanded="false">
+        <svg class="menu-icon-bars" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <svg class="menu-icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="icon-btn mobile-menu-close" id="mobileMenuClose" aria-label="মেনু বন্ধ করুন">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  </button>
+  <nav class="mobile-menu-nav" aria-label="মোবাইল মেনু">
+    <a href="index.html#home" data-nav="home">
+      <span>Home</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#about" data-nav="about">
+      <span>About</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#journey" data-nav="journey">
+      <span>Journey</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="https://masumcpex.com/index.html#library" data-nav="library">
+      <span>Library</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="attendance.html" data-nav="attendance">
+      <span>Attendance</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="bazar.html" data-nav="bazar">
+      <span>Bazar</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#articles" data-nav="articles">
+      <span>Articles</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#contact" data-nav="contact">
+      <span>Contact</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+  </nav>
+
+  <div class="mobile-menu-social">
+    <a href="https://www.facebook.com/masumcpex" target="_blank" rel="noopener" aria-label="Facebook">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </a>
+    <a href="https://www.instagram.com/masumcpex" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+    </a>
+    <a href="https://t.me/masumcpex" target="_blank" rel="noopener" aria-label="Telegram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4z"></path></svg>
+    </a>
+  </div>
+</div>
+
+<main>
+  <section class="page" id="bazar">
+    <div class="page-inner">
+
+      <!-- Logged-out gate -->
+      <div class="baz-gate" id="bazGate" hidden>
+        <div class="baz-gate-box">
+          <div class="baz-gate-icon" id="bazGateIcon"></div>
+          <h1 class="baz-gate-title">বাজার হিসাব</h1>
+          <p class="baz-gate-sub">আপনার ব্যক্তিগত বাজার ও খরচের হিসাব দেখতে সাইন-ইন করুন। Attendance-এর মতো একই অ্যাকাউন্ট এখানে ব্যবহার হয়।</p>
+          <div class="baz-social-row">
+            <button type="button" class="baz-social-btn baz-facebook-btn" id="bazFacebookSignIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.89h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"></path></svg>
+              Facebook
+            </button>
+            <button type="button" class="baz-social-btn baz-google-btn" id="bazGoogleSignIn">
+              <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6.1 29.6 4 24 4c-7.7 0-14.3 4.4-17.7 10.7z"></path><path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 35.1 27 36 24 36c-5.3 0-9.7-3.1-11.3-7.9l-6.6 5.1C9.6 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.4-2.3 4.4-4.3 5.9l6.6 5.6C40.9 36.7 44 31 44 24c0-1.3-.1-2.7-.4-3.5z"></path></svg>
+              Google
+            </button>
+          </div>
+          <p class="baz-gate-msg" id="bazGateMsg"></p>
+        </div>
+      </div>
+
+      <!-- Signed-in main app -->
+      <div class="baz-main" id="bazMain" hidden>
+
+        <div class="baz-userbar">
+          <span id="bazUserGreeting"></span>
+          <button type="button" class="baz-signout-btn" id="bazSignOutBtn"></button>
+        </div>
+
+        <div class="baz-head">
+          <div>
+            <div class="baz-head-title">
+              <span id="bazHeadIcon"></span>
+              <h1>বাজার হিসাব</h1>
+            </div>
+            <p class="baz-head-sub">প্রতিদিনের বাজার ও খরচ এক জায়গায় ট্র্যাক করুন</p>
+          </div>
+          <div class="baz-head-actions" style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+            <div class="baz-month-nav">
+              <button type="button" class="baz-month-btn" id="bazPrevMonth" aria-label="আগের মাস"></button>
+              <span class="baz-month-label" id="bazMonthLabel"></span>
+              <button type="button" class="baz-month-btn" id="bazNextMonth" aria-label="পরের মাস"></button>
+            </div>
+            <button type="button" class="baz-add-btn" id="bazAddBtn"></button>
+          </div>
+        </div>
+
+        <div class="baz-summary" id="bazSummaryCards"></div>
+
+        <div class="baz-toolbar">
+          <label for="bazSearchInput" class="sr-only">বাজার খুঁজুন</label>
+          <div class="baz-search">
+            <span id="bazSearchIcon"></span>
+            <input type="text" id="bazSearchInput" placeholder="বিবরণ বা নোট খুঁজুন...">
+          </div>
+          <div class="baz-toolbar-actions">
+            <button type="button" class="btn btn-outline" id="bazPrintBtn"></button>
+            <button type="button" class="btn btn-primary" id="bazPdfBtn"></button>
+          </div>
+        </div>
+
+        <div class="baz-filters" id="bazFilters"></div>
+
+        <div class="baz-history" id="bazHistoryList"></div>
+
+        <div class="baz-monthly" id="bazMonthlySummary"></div>
+
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- Add / Edit modal -->
+<div class="modal-overlay" id="bazFormModal">
+  <div class="modal-box">
+    <button class="icon-btn modal-close" id="bazFormClose" aria-label="বন্ধ করুন">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="modal-eyebrow" id="bazFormEyebrow">Bazar</div>
+    <h3 class="modal-title" id="bazFormTitle">বাজার যোগ করুন</h3>
+
+    <form id="bazForm" novalidate>
+      <input type="hidden" id="bazEntryId" value="">
+      <div class="baz-form-grid">
+        <div class="baz-field">
+          <label for="bazDate">তারিখ</label>
+          <input type="date" id="bazDate" required>
+        </div>
+        <div class="baz-field">
+          <label for="bazCategory">ক্যাটাগরি</label>
+          <select id="bazCategory"></select>
+        </div>
+        <div class="baz-field span-2">
+          <label for="bazDescription">বিবরণ</label>
+          <input type="text" id="bazDescription" placeholder="যেমন: সাপ্তাহিক বাজার" required>
+        </div>
+        <div class="baz-field span-2">
+          <label for="bazAmount">পরিমাণ (RM)</label>
+          <input type="number" id="bazAmount" inputmode="decimal" step="0.01" min="0" placeholder="0.00" required>
+          <div class="baz-quick-row" id="bazQuickAmounts"></div>
+        </div>
+        <div class="baz-field span-2">
+          <label for="bazNote">নোট (ঐচ্ছিক)</label>
+          <textarea id="bazNote" placeholder="অতিরিক্ত কোনো তথ্য..."></textarea>
+        </div>
+      </div>
+      <p class="baz-form-msg" id="bazFormMsg"></p>
+      <div class="baz-form-actions">
+        <button type="button" class="btn btn-outline" id="bazFormCancel">বাতিল</button>
+        <button type="submit" class="btn btn-primary" id="bazFormSave">সেভ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="modal-overlay" id="bazConfirmModal">
+  <div class="modal-box">
+    <button class="icon-btn modal-close" id="bazConfirmClose" aria-label="বন্ধ করুন">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h3 class="modal-title">বাজার মুছে ফেলুন?</h3>
+    <p class="baz-confirm-text">এই এন্ট্রিটি স্থায়ীভাবে মুছে যাবে, এটি ফিরিয়ে আনা যাবে না।</p>
+    <div class="baz-form-actions">
+      <button type="button" class="btn btn-outline" id="bazConfirmCancel">বাতিল</button>
+      <button type="button" class="btn btn-primary" id="bazConfirmDelete" style="background:var(--color-error);">মুছে ফেলুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="baz-toast-wrap" id="bazToastWrap" aria-live="polite"></div>
+
+<footer class="site-footer">
+  <p>© 2026 <strong id="footerName">Masum</strong>. All Rights Reserved.</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAq3iFzmZdcUFr0IswztrmIh5cuJCGIBQQ",
+  authDomain: "masumcpex-attendance.firebaseapp.com",
+  projectId: "masumcpex-attendance",
+  storageBucket: "masumcpex-attendance.firebasestorage.app",
+  messagingSenderId: "412146945197",
+  appId: "1:412146945197:web:3b043e83d796c2f9e14a24",
+  measurementId: "G-55W3CHQJDD"
+};
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+</script>
+<script src="bazar.js"></script>
+<script>
+document.getElementById("brandName").textContent = SITE_DATA.hero.name;
+document.getElementById("footerName").textContent = SITE_DATA.hero.name;
+</script>
+</body>
+</html>
