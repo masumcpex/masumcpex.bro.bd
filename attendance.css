@@ -924,6 +924,23 @@
 }
 .att-auth-input::placeholder{ color:var(--color-muted); opacity:0.8; }
 
+/* Kill native browser password icons (Edge reveal, Chrome autofill key/contact icon)
+   so only our custom eye button shows — this was the "duplicate icon" bug. */
+.att-auth-input::-ms-reveal,
+.att-auth-input::-ms-clear{
+  display:none;
+  width:0; height:0;
+}
+.att-auth-input::-webkit-credentials-auto-fill-button,
+.att-auth-input::-webkit-contacts-auto-fill-button,
+.att-auth-input::-webkit-caps-lock-indicator{
+  visibility:hidden;
+  display:none !important;
+  pointer-events:none;
+  position:absolute;
+  right:0;
+}
+
 .att-auth-eye{
   position:absolute;
   right:12px;
@@ -1010,38 +1027,46 @@
 
 .att-social-row{
   display:flex;
+  flex-wrap:nowrap;
   gap:0.7rem;
   margin:var(--space-2) 0;
 }
 .att-social-btn{
-  flex:1;
+  flex:1 1 0;
+  min-width:0;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:0.55rem;
+  gap:0.5rem;
   font-weight:600;
-  font-size:0.9rem;
+  font-size:0.88rem;
   height:48px;
   min-height:44px;
   border-radius:12px;
+  border:1px solid transparent;
+  white-space:nowrap;
   transition:all var(--transition-fast);
   cursor:pointer;
 }
+.att-social-btn svg{ flex-shrink:0; }
 .att-social-btn:disabled{ opacity:0.6; pointer-events:none; }
 
+/* Google — light gray, matches page background tone */
 .att-google-btn{
-  background:#fff;
-  border:1px solid var(--color-border);
+  background:#F0F3F7;
+  border-color:#F0F3F7;
   color:var(--color-text);
 }
-.att-google-btn:hover{ border-color:var(--color-accent-border); box-shadow:var(--shadow-card); }
+.att-google-btn:hover{ background:#E4E9EF; border-color:#E4E9EF; }
 
+/* Facebook — brand teal, to match the app's own accent rather than FB blue */
 .att-facebook-btn{
-  background:#1877F2;
-  border:1px solid #1877F2;
+  background:var(--att-teal);
+  border-color:var(--att-teal);
   color:#fff;
 }
-.att-facebook-btn:hover{ background:#166FE0; border-color:#166FE0; }
+.att-facebook-btn:hover{ background:var(--att-teal-dark); border-color:var(--att-teal-dark); }
+.att-facebook-btn svg{ color:#fff; }
 
 .att-auth-switch{
   text-align:center;
