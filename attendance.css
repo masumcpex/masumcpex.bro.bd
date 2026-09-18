@@ -1308,3 +1308,78 @@
   }
   .att-profile-dropdown.is-open{ transform:translateY(0) scale(1); }
 }
+
+/* ===== "Your card up front + one Team card" redesign ===== */
+.att-self-tags{ display:flex; gap:0.3rem; margin-bottom:0.15rem; flex-wrap:wrap; }
+.att-self-tag{ background:var(--att-teal-soft); color:var(--att-teal-dark); border-color:var(--att-teal-border); }
+.att-member-card-self{ border-color:var(--att-teal-border); background:var(--att-teal-soft); }
+
+.att-team-summary-card{
+  flex-direction:row;
+  align-items:center;
+  gap:0.75rem;
+  width:100%;
+  text-align:left;
+  font:inherit;
+  cursor:pointer;
+}
+.att-team-summary-icon{
+  flex-shrink:0;
+  width:44px; height:44px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--color-accent-soft);
+  color:var(--color-accent);
+}
+.att-team-summary-text{ flex:1; display:flex; flex-direction:column; gap:0.15rem; min-width:0; }
+.att-team-summary-count{ font-size:0.8rem; color:var(--color-muted); }
+.att-team-summary-arrow{ flex-shrink:0; color:var(--color-muted); transition:color var(--transition-fast), transform var(--transition-fast); }
+.att-team-summary-card:hover .att-team-summary-arrow{ color:var(--color-accent); transform:translateX(2px); }
+
+/* Team modal (built dynamically by attendance.js, reuses the site's modal-overlay/modal-box) */
+.att-team-modal-box{ max-width:480px; }
+.att-team-modal-list{
+  display:flex;
+  flex-direction:column;
+  gap:0.6rem;
+  max-height:60vh;
+  overflow-y:auto;
+  margin-top:var(--space-2);
+}
+.att-team-row{
+  display:flex;
+  align-items:center;
+  gap:0.7rem;
+  border:1px solid var(--color-border);
+  border-radius:12px;
+  padding:0.65rem 0.75rem;
+  transition:border-color var(--transition-fast), background var(--transition-fast);
+}
+.att-team-row:hover{ border-color:var(--color-accent-border); }
+.att-team-row.is-selected{ background:var(--color-accent-soft); border-color:var(--color-accent-border); }
+.att-team-row-avatar{ width:36px; height:36px; font-size:0.8rem; }
+.att-team-row-info{ flex:1; min-width:0; display:flex; flex-direction:column; gap:0.1rem; }
+.att-team-row-stats{ font-size:0.74rem; color:var(--color-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.att-team-view-btn{
+  flex-shrink:0;
+  display:inline-flex;
+  align-items:center;
+  gap:0.35rem;
+  background:var(--color-accent);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-size:0.8rem;
+  font-weight:600;
+  padding:0.4rem 0.7rem;
+  transition:background var(--transition-fast);
+}
+.att-team-view-btn:hover{ background:var(--color-accent-hover); }
+.att-team-row-menu{ flex-shrink:0; }
+
+.att-cal-cell{ font:inherit; cursor:pointer; }
+
+@media (max-width:480px){
+  .att-team-row{ flex-wrap:wrap; }
+  .att-team-view-btn span{ display:none; }
+}
