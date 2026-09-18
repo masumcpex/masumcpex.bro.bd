@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const userBar = document.getElementById("attUserBar");
   const mainContent = document.getElementById("attMainContent");
   const googleBtn = document.getElementById("attGoogleSignIn");
+  const facebookBtn = document.getElementById("attFacebookSignIn");
   const signOutBtn = document.getElementById("attSignOutBtn");
   const userPhoto = document.getElementById("attUserPhoto");
   const userName = document.getElementById("attUserName");
@@ -291,6 +292,18 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Google sign-in failed", err);
       googleBtn.disabled = false;
+    }
+  });
+
+  /* ---------------- Facebook sign-in ---------------- */
+  facebookBtn?.addEventListener("click", async () => {
+    facebookBtn.disabled = true;
+    try {
+      const provider = new firebase.auth.FacebookAuthProvider();
+      await firebase.auth().signInWithPopup(provider);
+    } catch (err) {
+      console.error("Facebook sign-in failed", err);
+      facebookBtn.disabled = false;
     }
   });
 

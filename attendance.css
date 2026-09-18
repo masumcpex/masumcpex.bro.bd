@@ -1008,25 +1008,40 @@
   background:var(--color-border);
 }
 
-.att-google-btn{
-  width:100%;
+.att-social-row{
+  display:flex;
+  gap:0.7rem;
+  margin:var(--space-2) 0;
+}
+.att-social-btn{
+  flex:1;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:0.6rem;
-  background:#fff;
-  border:1px solid var(--color-border);
-  color:var(--color-text);
+  gap:0.55rem;
   font-weight:600;
-  font-size:0.92rem;
+  font-size:0.9rem;
   height:48px;
   min-height:44px;
   border-radius:12px;
   transition:all var(--transition-fast);
   cursor:pointer;
 }
+.att-social-btn:disabled{ opacity:0.6; pointer-events:none; }
+
+.att-google-btn{
+  background:#fff;
+  border:1px solid var(--color-border);
+  color:var(--color-text);
+}
 .att-google-btn:hover{ border-color:var(--color-accent-border); box-shadow:var(--shadow-card); }
-.att-google-btn:disabled{ opacity:0.6; pointer-events:none; }
+
+.att-facebook-btn{
+  background:#1877F2;
+  border:1px solid #1877F2;
+  color:#fff;
+}
+.att-facebook-btn:hover{ background:#166FE0; border-color:#166FE0; }
 
 .att-auth-switch{
   text-align:center;
