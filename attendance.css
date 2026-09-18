@@ -1098,6 +1098,9 @@
   justify-content:flex-end;
   margin-bottom:var(--space-2);
 }
+.att-user-bar[hidden]{
+  display:none;
+}
 
 /* ============ Profile trigger + dropdown ============ */
 .att-profile{
