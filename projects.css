@@ -1,0 +1,42 @@
+.projects-sub{
+  color:var(--color-text-dim);
+  font-size:0.96rem;
+  line-height:1.7;
+  max-width:640px;
+  margin-bottom:var(--space-4);
+}
+
+.tool-card{
+  display:flex;
+  flex-direction:column;
+}
+.tool-icon-badge{
+  width:46px; height:46px;
+  border-radius:13px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--color-accent-soft);
+  color:var(--color-accent);
+  margin-bottom:var(--space-2);
+}
+.tool-status{
+  display:inline-flex; align-items:center; gap:0.35rem;
+  font-size:0.7rem; font-weight:700;
+  color:#15803D;
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+  margin-bottom:0.4rem;
+}
+.tool-status::before{
+  content:"";
+  width:6px; height:6px;
+  border-radius:50%;
+  background:#15803D;
+}
+.tool-card .card-desc{ flex:1; }
+
+.projects-group-title{
+  font-family:var(--font-display);
+  font-size:1.05rem;
+  margin:var(--space-4) 0 var(--space-2);
+}
+.projects-group-title:first-of-type{ margin-top:var(--space-2); }

@@ -59,15 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "এখনও কোনো আর্টিকেল প্রকাশিত হয়নি", "নতুন লেখা প্রকাশ হলে এখানে দেখা যাবে।");
   renderFilters("articleFilters", SITE_DATA.articles, "articleList", "articles");
 
-  renderGrid("projectGrid", SITE_DATA.projects, (item) => `
-    <article class="card">
-      <div class="card-eyebrow">${escapeHTML(item.status || "Project")}</div>
-      <h3 class="card-title">${escapeHTML(item.title)}</h3>
-      <p class="card-desc">${escapeHTML(item.description || "")}</p>
-      ${ctaBlock(item.url)}
-    </article>
-  `, "এখনও কোনো প্রজেক্ট যোগ করা হয়নি", "নতুন কিছু তৈরি করলে এখানে যোগ হবে।");
-
   const contact = SITE_DATA.contact;
   setText("contactLocation", contact.location || "");
   const phoneEl = document.getElementById("contactPhone");
