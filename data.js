@@ -33,6 +33,25 @@ const SITE_DATA = {
 
   projects: [],
 
+  tools: [
+    {
+      id: "attendance",
+      icon: "calendar",
+      status: "Live",
+      title: "Attendance",
+      description: "দলের সদস্যদের দৈনিক হাজিরা, কর্মঘণ্টা ও মাসিক ছুটি এক জায়গায় ট্র্যাক করুন। মাসিক ক্যালেন্ডার, সামারি স্ট্যাটস ও ডাউনলোডযোগ্য PDF রিপোর্টসহ।",
+      url: "attendance.html"
+    },
+    {
+      id: "bazar",
+      icon: "cart",
+      status: "Live",
+      title: "Bazar",
+      description: "প্রতিদিনের বাজার ও খরচ এক জায়গায় ট্র্যাক করুন। মাসিক সামারি, ক্যাটাগরি ফিল্টার ও ডাউনলোডযোগ্য PDF রিপোর্টসহ।",
+      url: "bazar.html"
+    }
+  ],
+
   contact: {
     location: "Lorong Haji Taib 5, Chow Kit, 50350 Malaysia",
     phone: "(+60) 1133192963",
