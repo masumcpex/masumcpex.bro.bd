@@ -11,6 +11,8 @@ const ICON_TRASH = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" 
 const ICON_USERS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>';
 const ICON_CHEVRON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
 const ICON_CLOSE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+const ICON_SHARE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="10.6" x2="15.4" y2="6.4"></line><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"></line></svg>';
+const ICON_PLUS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
 
 const ATT_ADMIN_UID = "ZyPCiTwxSmU3piZ7hyI3jfjcpsB3";
 const ATT_MEMBERS_COLLECTION = "attendance_members";
@@ -62,6 +64,25 @@ const MemberStorage = {
   async deleteMember(id) {
     await attDb().collection(ATT_MEMBERS_COLLECTION).doc(id).delete();
     return true;
+  },
+
+  async getShareInfo(id) {
+    const snap = await attDb().collection(ATT_MEMBERS_COLLECTION).doc(id).get();
+    if (!snap.exists) return { shareEnabled: false };
+    return { shareEnabled: Boolean(snap.data().shareEnabled) };
+  },
+
+  async setShareEnabled(id, enabled) {
+    await attDb().collection(ATT_MEMBERS_COLLECTION).doc(id).update({ shareEnabled: Boolean(enabled) });
+    return enabled;
+  },
+
+  // Public, unauthenticated lookup used by the shared (self-service) link.
+  // Firestore rules only allow this "get" when shareEnabled === true on that doc.
+  async getSharedMember(id) {
+    const snap = await attDb().collection(ATT_MEMBERS_COLLECTION).doc(id).get();
+    if (!snap.exists || !snap.data().shareEnabled) return null;
+    return { id: snap.id, name: snap.data().name || "Member" };
   },
 };
 
@@ -263,6 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let confirmAction = null;
   let currentUid = null;
   let isAdmin = false;
+  let sharedMode = false;
   let teamModalBuilt = false;
 
   function memberById(id) {
@@ -463,6 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="att-menu att-team-row-menu">
             <button type="button" class="att-menu-toggle" data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-label="অপশন">${ICON_DOTS}</button>
             <span class="att-menu-dropdown" role="menu">
+              <button type="button" class="att-menu-item" data-share-id="${member.id}" role="menuitem">${ICON_SHARE}<span>Share</span></button>
               <button type="button" class="att-menu-item" data-rename-id="${member.id}" role="menuitem">${ICON_EDIT}<span>Rename</span></button>
               <button type="button" class="att-menu-item att-menu-item-danger" data-delete-id="${member.id}" role="menuitem">${ICON_TRASH}<span>Delete</span></button>
             </span>
@@ -486,6 +509,44 @@ document.addEventListener("DOMContentLoaded", () => {
     members = await MemberStorage.getMembers(currentUid, isAdmin);
     selectedMemberId = loadSelectedMemberId();
     records = selectedMemberId ? await AttendanceStorage.getAttendance(selectedMemberId) : [];
+
+    const now = new Date();
+    viewYear = now.getFullYear();
+    viewMonth = now.getMonth();
+    if (els.entryDate) {
+      els.entryDate.textContent = now.toLocaleDateString("en-US", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric",
+      });
+    }
+    await render();
+  }
+
+  // Public self-service entry point for a "?share=<memberId>" link. No Firebase
+  // Auth sign-in happens here — Firestore rules allow this specific doc's
+  // get/update directly when that member's shareEnabled flag is true.
+  async function startShared(memberId) {
+    sharedMode = true;
+    isAdmin = false;
+    currentUid = null;
+
+    const member = await MemberStorage.getSharedMember(memberId);
+    if (!member) {
+      if (els.noMemberState) {
+        els.noMemberState.hidden = false;
+        els.noMemberState.innerHTML = `<strong>লিংকটি কাজ করছে না</strong>এই শেয়ার লিংক বন্ধ করা হয়েছে বা আর বৈধ নয়।`;
+      }
+      return;
+    }
+
+    members = [member];
+    selectedMemberId = member.id;
+    records = await AttendanceStorage.getAttendance(member.id);
+
+    const manageWrap = document.getElementById("attManageWrap");
+    if (manageWrap) manageWrap.hidden = true;
+    const teamWrap = document.getElementById("attTeamWrap");
+    if (teamWrap) teamWrap.hidden = true;
+    if (els.memberList) els.memberList.hidden = true;
 
     const now = new Date();
     viewYear = now.getFullYear();
@@ -624,7 +685,17 @@ document.addEventListener("DOMContentLoaded", () => {
       othersCache = [];
     }
 
+    if (isAdmin) {
+      html += `
+        <button type="button" class="att-member-card att-add-member-card" id="attAddMemberCard">
+          ${ICON_PLUS}
+          <span class="att-member-name">Add Member</span>
+        </button>
+      `;
+    }
+
     els.memberList.innerHTML = html;
+    document.getElementById("attAddMemberCard")?.addEventListener("click", openAddMemberModal);
     if (els.teamModal?.classList.contains("is-open")) renderTeamModalList();
   }
 
@@ -744,6 +815,90 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  /* ---------------- Share link modal ---------------- */
+  let shareModalBuilt = false;
+  let shareModalMemberId = null;
+
+  function ensureShareModal() {
+    if (shareModalBuilt) return;
+    shareModalBuilt = true;
+    const markup = `
+      <div class="modal-overlay" id="attShareModal" role="dialog" aria-modal="true" aria-labelledby="attShareModalTitle">
+        <div class="modal-box att-modal-box">
+          <button class="icon-btn modal-close" id="attShareModalClose" type="button" aria-label="বন্ধ করুন">${ICON_CLOSE}</button>
+          <h3 class="modal-title" id="attShareModalTitle">Share Attendance Link</h3>
+          <p class="att-form-msg" id="attShareModalName"></p>
+          <label class="att-share-toggle">
+            <input type="checkbox" id="attShareToggle">
+            <span>এই লিংক দিয়ে শেয়ার চালু করুন</span>
+          </label>
+          <div class="att-share-link-row" id="attShareLinkRow" hidden>
+            <input type="text" id="attShareLinkInput" readonly>
+            <button type="button" class="btn btn-primary" id="attShareCopyBtn">Copy</button>
+          </div>
+          <p class="att-form-msg">যাকে লিংক দেবেন সে শুধু নিজের হাজিরা দেখতে ও মার্ক করতে পারবে। বন্ধ করলে লিংক সাথে সাথে কাজ করা বন্ধ হয়ে যাবে।</p>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", markup);
+    document.getElementById("attShareModalClose")?.addEventListener("click", closeShareModal);
+    document.getElementById("attShareModal")?.addEventListener("click", (e) => {
+      if (e.target.id === "attShareModal") closeShareModal();
+    });
+    document.getElementById("attShareToggle")?.addEventListener("change", async (e) => {
+      if (!shareModalMemberId) return;
+      const enabled = e.target.checked;
+      await MemberStorage.setShareEnabled(shareModalMemberId, enabled);
+      updateShareLinkRow(enabled);
+      showToast(enabled ? "শেয়ার চালু করা হয়েছে" : "শেয়ার বন্ধ করা হয়েছে", "success");
+    });
+    document.getElementById("attShareCopyBtn")?.addEventListener("click", async () => {
+      const input = document.getElementById("attShareLinkInput");
+      if (!input) return;
+      try {
+        await navigator.clipboard.writeText(input.value);
+      } catch (err) {
+        input.select();
+        document.execCommand("copy");
+      }
+      showToast("লিংক কপি হয়েছে", "success");
+    });
+  }
+
+  function updateShareLinkRow(enabled) {
+    const row = document.getElementById("attShareLinkRow");
+    const input = document.getElementById("attShareLinkInput");
+    if (!row || !input) return;
+    row.hidden = !enabled;
+    if (enabled && shareModalMemberId) {
+      const url = new URL(location.href);
+      url.search = `?share=${encodeURIComponent(shareModalMemberId)}`;
+      url.hash = "";
+      input.value = url.toString();
+    }
+  }
+
+  async function openShareModal(memberId) {
+    const member = memberById(memberId) || othersCache.find((o) => o.member.id === memberId)?.member;
+    if (!member) return;
+    ensureShareModal();
+    shareModalMemberId = memberId;
+    const nameEl = document.getElementById("attShareModalName");
+    if (nameEl) nameEl.textContent = member.name;
+    const info = await MemberStorage.getShareInfo(memberId);
+    const toggle = document.getElementById("attShareToggle");
+    if (toggle) toggle.checked = info.shareEnabled;
+    updateShareLinkRow(info.shareEnabled);
+    document.getElementById("attShareModal")?.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeShareModal() {
+    document.getElementById("attShareModal")?.classList.remove("is-open");
+    document.body.style.overflow = "";
+    shareModalMemberId = null;
+  }
+
   /* ---------------- Shared click handler for member cards / team modal rows ---------------- */
   async function handleMemberListClick(e) {
     const menuToggle = e.target.closest("[data-menu-toggle]");
@@ -764,6 +919,13 @@ document.addEventListener("DOMContentLoaded", () => {
       closeAllMenus();
       closeTeamModal();
       await selectMember(viewBtn.getAttribute("data-view-id"));
+      return;
+    }
+
+    const shareBtn = e.target.closest("[data-share-id]");
+    if (shareBtn) {
+      closeAllMenus();
+      await openShareModal(shareBtn.getAttribute("data-share-id"));
       return;
     }
 
@@ -1048,4 +1210,5 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------- Hook up to attendance-auth.js ---------------- */
   window.attStartAttendanceApp = start;
   window.attResetAttendanceApp = reset;
+  window.attStartSharedMode = startShared;
 });

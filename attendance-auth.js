@@ -18,6 +18,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!gate || !mainContent) return;
 
+  /* ---------------- Public share link (no sign-in required) ---------------- */
+  const shareMemberId = new URLSearchParams(location.search).get("share");
+  if (shareMemberId) {
+    gate.hidden = true;
+    userBar.hidden = true;
+    mainContent.hidden = false;
+    if (typeof window.attStartSharedMode === "function") {
+      window.attStartSharedMode(shareMemberId);
+    }
+    return; // Skip the normal email/Google/Facebook auth flow entirely.
+  }
+
   /* ---------------- Profile dropdown ---------------- */
   function openProfileDropdown() {
     if (!profileDropdown) return;

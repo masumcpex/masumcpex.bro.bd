@@ -1,6 +1,6 @@
 /* ============================================================
    Projects page — renders two data-driven grids:
-   1) SITE_DATA.tools    → apps/tools built on this site (Attendance, Bazar, ...)
+   1) SITE_DATA.tools    → apps/tools built on this site (Attendance, ...)
    2) SITE_DATA.projects → other/creative projects (shown only when non-empty)
    Add a new tool or project in data.js and it appears here
    automatically — no HTML changes needed.

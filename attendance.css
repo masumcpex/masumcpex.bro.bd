@@ -1383,3 +1383,43 @@
   .att-team-row{ flex-wrap:wrap; }
   .att-team-view-btn span{ display:none; }
 }
+
+/* ===== Add Member card tile ===== */
+.att-add-member-card{
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  gap:0.5rem;
+  width:100%;
+  cursor:pointer;
+  color:var(--color-accent);
+  border-style:dashed;
+  font-weight:600;
+}
+.att-add-member-card:hover{ background:var(--color-accent-soft); }
+
+/* ===== Share link modal ===== */
+.att-share-toggle{
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+  margin:0.9rem 0;
+  cursor:pointer;
+  font-size:0.95rem;
+}
+.att-share-toggle input{ width:18px; height:18px; }
+.att-share-link-row{
+  display:flex;
+  gap:0.5rem;
+  margin-bottom:0.9rem;
+}
+.att-share-link-row input{
+  flex:1;
+  min-width:0;
+  padding:0.55rem 0.7rem;
+  border:1px solid var(--color-border);
+  border-radius:8px;
+  background:var(--color-surface);
+  font-size:0.85rem;
+  color:var(--color-muted);
+}
