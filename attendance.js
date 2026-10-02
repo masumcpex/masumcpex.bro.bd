@@ -77,7 +77,7 @@ const MemberStorage = {
     return enabled;
   },
 
-  // Public, unauthenticated lookup used by the shared (self-service) link.
+  // Public, unauthenticated, READ-ONLY lookup used by the shared view link.
   // Firestore rules only allow this "get" when shareEnabled === true on that doc.
   async getSharedMember(id) {
     const snap = await attDb().collection(ATT_MEMBERS_COLLECTION).doc(id).get();
@@ -284,7 +284,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let confirmAction = null;
   let currentUid = null;
   let isAdmin = false;
-  let sharedMode = false;
   let teamModalBuilt = false;
 
   function memberById(id) {
@@ -521,14 +520,12 @@ document.addEventListener("DOMContentLoaded", () => {
     await render();
   }
 
-  // Public self-service entry point for a "?share=<memberId>" link. No Firebase
-  // Auth sign-in happens here — Firestore rules allow this specific doc's
-  // get/update directly when that member's shareEnabled flag is true.
+  // Public, read-only self-service link: "attendance.html?share=<memberId>".
+  // No Firebase Auth sign-in happens here — Firestore rules allow this one
+  // document's "get" directly when that member's shareEnabled flag is true.
+  // The viewer can only VIEW the calendar/history and download the PDF —
+  // marking, editing, and deleting are all disabled in this mode.
   async function startShared(memberId) {
-    sharedMode = true;
-    isAdmin = false;
-    currentUid = null;
-
     const member = await MemberStorage.getSharedMember(memberId);
     if (!member) {
       if (els.noMemberState) {
@@ -538,6 +535,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    document.body.classList.add("att-shared-view");
+    isAdmin = false;
+    currentUid = null;
     members = [member];
     selectedMemberId = member.id;
     records = await AttendanceStorage.getAttendance(member.id);
@@ -551,11 +551,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const now = new Date();
     viewYear = now.getFullYear();
     viewMonth = now.getMonth();
-    if (els.entryDate) {
-      els.entryDate.textContent = now.toLocaleDateString("en-US", {
-        weekday: "long", year: "numeric", month: "long", day: "numeric",
-      });
-    }
     await render();
   }
 
@@ -836,7 +831,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <input type="text" id="attShareLinkInput" readonly>
             <button type="button" class="btn btn-primary" id="attShareCopyBtn">Copy</button>
           </div>
-          <p class="att-form-msg">যাকে লিংক দেবেন সে শুধু নিজের হাজিরা দেখতে ও মার্ক করতে পারবে। বন্ধ করলে লিংক সাথে সাথে কাজ করা বন্ধ হয়ে যাবে।</p>
+          <p class="att-form-msg">যাকে লিংক দেবেন সে শুধু হাজিরা ক্যালেন্ডার/হিস্টরি দেখতে পারবে এবং PDF ডাউনলোড করতে পারবে — মার্ক, এডিট বা ডিলিট করতে পারবে না। বন্ধ করলে লিংক সাথে সাথে কাজ করা বন্ধ হয়ে যাবে।</p>
         </div>
       </div>
     `;

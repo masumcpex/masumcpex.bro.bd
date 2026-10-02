@@ -1398,6 +1398,7 @@
 }
 .att-add-member-card:hover{ background:var(--color-accent-soft); }
 
+
 /* ===== Share link modal ===== */
 .att-share-toggle{
   display:flex;
@@ -1422,4 +1423,18 @@
   background:var(--color-surface);
   font-size:0.85rem;
   color:var(--color-muted);
+}
+
+/* ===== Read-only shared view (?share=<id>) ===== */
+.att-shared-view .att-entry-card,
+.att-shared-view #attClearMonthBtn,
+.att-shared-view .att-manage-wrap,
+.att-shared-view #attTeamWrap,
+.att-shared-view #attHistoryTableWrap th:last-child,
+.att-shared-view #attHistoryTableWrap td:last-child{
+  display:none !important;
+}
+.att-shared-view .att-cal-cell{
+  pointer-events:none;
+  cursor:default;
 }

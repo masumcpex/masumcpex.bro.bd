@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!gate || !mainContent) return;
 
-  /* ---------------- Public share link (no sign-in required) ---------------- */
+  /* ---------------- Public, read-only share link (no sign-in required) ---------------- */
   const shareMemberId = new URLSearchParams(location.search).get("share");
   if (shareMemberId) {
     gate.hidden = true;
