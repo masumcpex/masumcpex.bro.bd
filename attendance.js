@@ -231,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
     todayBtn: document.getElementById("attTodayBtn"),
 
     exportPdfBtn: document.getElementById("attExportPdfBtn"),
+    shareSelfBtn: document.getElementById("attShareSelfBtn"),
     clearMonthBtn: document.getElementById("attClearMonthBtn"),
 
     summaryGrid: document.getElementById("attSummaryGrid"),
@@ -1127,6 +1128,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ---------------- PDF export ---------------- */
+  els.shareSelfBtn?.addEventListener("click", async () => {
+    if (!selectedMemberId) return;
+    await openShareModal(selectedMemberId);
+  });
+
   els.exportPdfBtn?.addEventListener("click", () => {
     if (!selectedMemberId || typeof window.jspdf === "undefined") return;
     const member = memberById(selectedMemberId);

@@ -1425,7 +1425,24 @@
   color:var(--color-muted);
 }
 
+.att-share-self-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+  padding:0.45rem 0.85rem;
+  border:1px solid var(--color-accent-border, var(--color-border));
+  border-radius:999px;
+  background:var(--color-surface);
+  color:var(--color-accent);
+  font-size:0.85rem;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.att-share-self-btn:hover{ background:var(--color-accent-soft); }
+
 /* ===== Read-only shared view (?share=<id>) ===== */
+.att-shared-view #attShareSelfBtn{ display:none !important; }
 .att-shared-view .att-entry-card,
 .att-shared-view #attClearMonthBtn,
 .att-shared-view .att-manage-wrap,
