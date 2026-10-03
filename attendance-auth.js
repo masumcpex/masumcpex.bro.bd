@@ -19,15 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!gate || !mainContent) return;
 
   /* ---------------- Public, read-only share link (no sign-in required) ---------------- */
-  const shareMemberId = new URLSearchParams(location.search).get("share");
-  if (shareMemberId) {
-    gate.hidden = true;
-    userBar.hidden = true;
-    mainContent.hidden = false;
-    if (typeof window.attStartSharedMode === "function") {
-      window.attStartSharedMode(shareMemberId);
-    }
-    return; // Skip the normal email/Google/Facebook auth flow entirely.
+  // attendance.js detects "?share=<id>" itself and handles the whole view —
+  // this file just has to stay out of the way (no sign-in gate, no
+  // onAuthStateChanged) so it can never race with or override that.
+  if (new URLSearchParams(location.search).get("share")) {
+    return;
   }
 
   /* ---------------- Profile dropdown ---------------- */

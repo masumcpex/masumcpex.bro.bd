@@ -285,6 +285,20 @@ document.addEventListener("DOMContentLoaded", () => {
     teamModalTitle: null,
   };
 
+  // Public, read-only share link: "attendance.html?share=<memberId>".
+  // Handled entirely here (not in attendance-auth.js) so there is no race
+  // between two separate DOMContentLoaded listeners in two different files —
+  // startShared() is defined in this same scope, so it is always ready.
+  const attShareMemberId = new URLSearchParams(location.search).get("share");
+  if (attShareMemberId) {
+    const gate = document.getElementById("attAuthGate");
+    const userBar = document.getElementById("attUserBar");
+    const mainContent = document.getElementById("attMainContent");
+    if (gate) gate.hidden = true;
+    if (userBar) userBar.hidden = true;
+    if (mainContent) mainContent.hidden = false;
+  }
+
   const SELECTED_KEY = "masum_attendance_selected_member";
 
   let members = [];
@@ -1344,5 +1358,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------- Hook up to attendance-auth.js ---------------- */
   window.attStartAttendanceApp = start;
   window.attResetAttendanceApp = reset;
-  window.attStartSharedMode = startShared;
+
+  if (attShareMemberId) {
+    startShared(attShareMemberId);
+  }
 });
