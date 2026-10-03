@@ -393,6 +393,20 @@
         <div class="att-team-list" id="attMemberList"></div>
       </div>
 
+      <div class="att-reports-wrap" id="attReportsWrap" hidden>
+        <div class="att-manage-head">
+          <div>
+            <h3 class="att-manage-title">Issue Reports</h3>
+            <p class="att-manage-sub">শেয়ার লিংক থেকে জমা হওয়া রিপোর্ট</p>
+          </div>
+        </div>
+        <div class="empty-state" id="attReportsEmpty" hidden>
+          <strong>কোনো রিপোর্ট নেই</strong>
+          এখনো কেউ কোনো সমস্যা রিপোর্ট করেনি।
+        </div>
+        <div class="att-reports-list" id="attReportsList"></div>
+      </div>
+
       <div class="empty-state" id="attNoMemberState" hidden>
         <strong>Select or add a member</strong>
         Add a team member above, then select their card to open their attendance dashboard.
@@ -427,6 +441,10 @@
           <button class="att-pdf-btn" id="attExportPdfBtn" type="button">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Download PDF Report
+          </button>
+          <button class="att-report-btn" id="attReportIssueBtn" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Report an Issue
           </button>
           <button class="att-clear-btn" id="attClearMonthBtn" type="button">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
@@ -527,6 +545,38 @@
         <button type="button" class="att-delete-btn" id="attDeleteBtn">Delete</button>
         <button type="submit" class="att-save-btn">Save</button>
       </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="attReportIssueModal" role="dialog" aria-modal="true" aria-labelledby="attReportIssueModalTitle">
+  <div class="modal-box att-modal-box">
+    <button class="icon-btn modal-close" id="attReportIssueModalClose" type="button" aria-label="বন্ধ করুন">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h3 class="modal-title" id="attReportIssueModalTitle">Report an Issue</h3>
+    <form class="att-entry-form" id="attReportIssueForm" novalidate>
+      <div class="att-field">
+        <label class="att-field-label" for="attReportCategory">সমস্যার ধরন</label>
+        <select id="attReportCategory" class="att-select" required>
+          <option value="wrong_hours">ভুল ঘণ্টা (Wrong Hours)</option>
+          <option value="missing_entry">অনুপস্থিত/মার্ক না করা দিন (Missing Entry)</option>
+          <option value="wrong_status">ভুল স্ট্যাটাস (Wrong Status)</option>
+          <option value="duplicate">ডুপ্লিকেট এন্ট্রি (Duplicate Record)</option>
+          <option value="technical">টেকনিক্যাল সমস্যা (Technical Issue)</option>
+          <option value="other">অন্য কিছু (Other)</option>
+        </select>
+      </div>
+      <div class="att-field">
+        <label class="att-field-label" for="attReportDate">কোন তারিখ নিয়ে সমস্যা (ঐচ্ছিক)</label>
+        <input type="date" id="attReportDate">
+      </div>
+      <div class="att-field">
+        <label class="att-field-label" for="attReportDescription">বিস্তারিত লিখুন</label>
+        <textarea id="attReportDescription" rows="4" maxlength="1000" placeholder="সমস্যাটি বিস্তারিত লিখুন..." required></textarea>
+      </div>
+      <p class="att-form-msg" id="attReportFormMsg"></p>
+      <button type="submit" class="att-save-btn">Submit Report</button>
     </form>
   </div>
 </div>

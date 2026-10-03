@@ -1441,8 +1441,78 @@
 }
 .att-share-self-btn:hover{ background:var(--color-accent-soft); }
 
+/* ===== Report an Issue (shared view only) ===== */
+.att-report-btn{
+  display:none;
+  align-items:center;
+  gap:0.4rem;
+  padding:0.7rem 1.1rem;
+  border:1px solid var(--color-border);
+  border-radius:10px;
+  background:var(--color-surface);
+  color:var(--color-warning, #b45309);
+  font-weight:600;
+  font-size:0.9rem;
+  cursor:pointer;
+}
+.att-report-btn:hover{ background:var(--color-accent-soft); }
+.att-select{
+  width:100%;
+  padding:0.6rem 0.7rem;
+  border:1px solid var(--color-border);
+  border-radius:8px;
+  background:var(--color-surface);
+  font-size:0.9rem;
+}
+#attReportDescription{
+  width:100%;
+  padding:0.6rem 0.7rem;
+  border:1px solid var(--color-border);
+  border-radius:8px;
+  background:var(--color-surface);
+  font-size:0.9rem;
+  resize:vertical;
+}
+
+/* ===== Admin Reports panel ===== */
+.att-reports-wrap{ margin:1.5rem 0; }
+.att-reports-list{ display:flex; flex-direction:column; gap:0.75rem; }
+.att-report-row{
+  border:1px solid var(--color-border);
+  border-radius:10px;
+  padding:0.9rem 1rem;
+  background:var(--color-surface);
+}
+.att-report-row-main{ display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+.att-report-tag{
+  font-size:0.75rem;
+  font-weight:600;
+  padding:0.15rem 0.55rem;
+  border-radius:999px;
+  background:var(--color-accent-soft);
+  color:var(--color-accent);
+}
+.att-report-date{ font-size:0.8rem; color:var(--color-muted); }
+.att-report-desc{ margin:0.5rem 0; font-size:0.9rem; color:var(--color-text); }
+.att-report-row-foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:0.78rem;
+  color:var(--color-muted);
+}
+.att-report-dismiss{
+  border:none;
+  background:none;
+  color:var(--color-error);
+  cursor:pointer;
+  font-weight:600;
+  font-size:0.8rem;
+}
+
 /* ===== Read-only shared view (?share=<id>) ===== */
 .att-shared-view #attShareSelfBtn{ display:none !important; }
+.att-shared-view #attReportIssueBtn{ display:inline-flex !important; }
 .att-shared-view .att-entry-card,
 .att-shared-view #attClearMonthBtn,
 .att-shared-view .att-manage-wrap,

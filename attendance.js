@@ -232,6 +232,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     exportPdfBtn: document.getElementById("attExportPdfBtn"),
     shareSelfBtn: document.getElementById("attShareSelfBtn"),
+    reportIssueBtn: document.getElementById("attReportIssueBtn"),
+    reportIssueModal: document.getElementById("attReportIssueModal"),
+    reportIssueModalClose: document.getElementById("attReportIssueModalClose"),
+    reportIssueForm: document.getElementById("attReportIssueForm"),
+    reportCategory: document.getElementById("attReportCategory"),
+    reportDate: document.getElementById("attReportDate"),
+    reportDescription: document.getElementById("attReportDescription"),
+    reportFormMsg: document.getElementById("attReportFormMsg"),
+    reportsWrap: document.getElementById("attReportsWrap"),
+    reportsEmpty: document.getElementById("attReportsEmpty"),
+    reportsList: document.getElementById("attReportsList"),
     clearMonthBtn: document.getElementById("attClearMonthBtn"),
 
     summaryGrid: document.getElementById("attSummaryGrid"),
@@ -519,6 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
     await render();
+    await loadReportsPanel();
   }
 
   // Public, read-only self-service link: "attendance.html?share=<memberId>".
@@ -894,6 +906,108 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "";
     shareModalMemberId = null;
   }
+
+  /* ---------------- Report an Issue (shared view only) ---------------- */
+  function openReportIssueModal() {
+    if (els.reportIssueForm) els.reportIssueForm.reset();
+    setInlineMsg(els.reportFormMsg, "", null);
+    els.reportIssueModal?.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeReportIssueModal() {
+    els.reportIssueModal?.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+  els.reportIssueBtn?.addEventListener("click", openReportIssueModal);
+  els.reportIssueModalClose?.addEventListener("click", closeReportIssueModal);
+  els.reportIssueModal?.addEventListener("click", (e) => {
+    if (e.target.id === "attReportIssueModal") closeReportIssueModal();
+  });
+  els.reportIssueForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const description = (els.reportDescription?.value || "").trim();
+    if (!description) {
+      setInlineMsg(els.reportFormMsg, "বিস্তারিত লিখুন।", "error");
+      return;
+    }
+    const member = memberById(selectedMemberId);
+    try {
+      await attDb().collection("attendance_reports").add({
+        memberId: selectedMemberId || null,
+        memberName: member?.name || "Unknown",
+        category: els.reportCategory?.value || "other",
+        date: els.reportDate?.value || null,
+        description,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      showToast("রিপোর্ট জমা হয়েছে, ধন্যবাদ!", "success");
+      closeReportIssueModal();
+    } catch (err) {
+      setInlineMsg(els.reportFormMsg, "রিপোর্ট জমা দেওয়া যায়নি, আবার চেষ্টা করুন।", "error");
+    }
+  });
+
+  const REPORT_CATEGORY_LABELS = {
+    wrong_hours: "ভুল ঘণ্টা",
+    missing_entry: "অনুপস্থিত দিন",
+    wrong_status: "ভুল স্ট্যাটাস",
+    duplicate: "ডুপ্লিকেট এন্ট্রি",
+    technical: "টেকনিক্যাল সমস্যা",
+    other: "অন্য কিছু",
+  };
+
+  async function loadReportsPanel() {
+    if (!isAdmin || !els.reportsWrap) return;
+    els.reportsWrap.hidden = false;
+    try {
+      const snap = await attDb()
+        .collection("attendance_reports")
+        .orderBy("createdAt", "desc")
+        .limit(50)
+        .get();
+      if (snap.empty) {
+        if (els.reportsEmpty) els.reportsEmpty.hidden = false;
+        if (els.reportsList) els.reportsList.innerHTML = "";
+        return;
+      }
+      if (els.reportsEmpty) els.reportsEmpty.hidden = true;
+      const rows = snap.docs.map((doc) => {
+        const r = doc.data();
+        const when = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleString("en-US") : "";
+        return `
+          <div class="att-report-row" data-report-id="${doc.id}">
+            <div class="att-report-row-main">
+              <strong>${escapeHtml(r.memberName || "Unknown")}</strong>
+              <span class="att-report-tag">${escapeHtml(REPORT_CATEGORY_LABELS[r.category] || r.category || "Other")}</span>
+              ${r.date ? `<span class="att-report-date">${escapeHtml(r.date)}</span>` : ""}
+            </div>
+            <p class="att-report-desc">${escapeHtml(r.description || "")}</p>
+            <div class="att-report-row-foot">
+              <span>${escapeHtml(when)}</span>
+              <button type="button" class="att-report-dismiss" data-dismiss-report="${doc.id}">Dismiss</button>
+            </div>
+          </div>
+        `;
+      });
+      if (els.reportsList) els.reportsList.innerHTML = rows.join("");
+    } catch (err) {
+      // Silently skip if the admin's query fails (e.g. rules not yet published).
+    }
+  }
+
+  els.reportsList?.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-dismiss-report]");
+    if (!btn) return;
+    try {
+      await attDb().collection("attendance_reports").doc(btn.getAttribute("data-dismiss-report")).delete();
+      btn.closest(".att-report-row")?.remove();
+      if (els.reportsList && !els.reportsList.children.length && els.reportsEmpty) {
+        els.reportsEmpty.hidden = false;
+      }
+    } catch (err) {
+      showToast("রিপোর্ট মুছে ফেলা যায়নি।", "error");
+    }
+  });
 
   /* ---------------- Shared click handler for member cards / team modal rows ---------------- */
   async function handleMemberListClick(e) {
