@@ -539,32 +539,51 @@ document.addEventListener("DOMContentLoaded", () => {
   // The viewer can only VIEW the calendar/history and download the PDF —
   // marking, editing, and deleting are all disabled in this mode.
   async function startShared(memberId) {
-    const member = await MemberStorage.getSharedMember(memberId);
-    if (!member) {
-      if (els.noMemberState) {
-        els.noMemberState.hidden = false;
-        els.noMemberState.innerHTML = `<strong>লিংকটি কাজ করছে না</strong>এই শেয়ার লিংক বন্ধ করা হয়েছে বা আর বৈধ নয়।`;
-      }
-      return;
-    }
-
+    // Hide the admin/manage UI FIRST, before any network call — so a failed
+    // or denied fetch below can never leave the logged-in-looking layout
+    // (Team Members / Add Member) exposed to a public, unauthenticated visitor.
     document.body.classList.add("att-shared-view");
     isAdmin = false;
     currentUid = null;
-    members = [member];
-    selectedMemberId = member.id;
-    records = await AttendanceStorage.getAttendance(member.id);
-
     const manageWrap = document.getElementById("attManageWrap");
     if (manageWrap) manageWrap.hidden = true;
     const teamWrap = document.getElementById("attTeamWrap");
     if (teamWrap) teamWrap.hidden = true;
     if (els.memberList) els.memberList.hidden = true;
+    const dashboard = document.getElementById("attDashboard");
+    if (dashboard) dashboard.hidden = true;
 
-    const now = new Date();
-    viewYear = now.getFullYear();
-    viewMonth = now.getMonth();
-    await render();
+    function showShareError(message) {
+      if (els.noMemberState) {
+        els.noMemberState.hidden = false;
+        els.noMemberState.innerHTML = `<strong>লিংকটি কাজ করছে না</strong>${message}`;
+      }
+    }
+
+    let member = null;
+    try {
+      member = await MemberStorage.getSharedMember(memberId);
+    } catch (err) {
+      showShareError("এই লিংক দিয়ে ডেটা আনতে সমস্যা হচ্ছে। লিংকটি সঠিক কিনা, বা শেয়ারিং এখনো চালু আছে কিনা যাচাই করুন।");
+      return;
+    }
+    if (!member) {
+      showShareError("এই শেয়ার লিংক বন্ধ করা হয়েছে বা আর বৈধ নয়।");
+      return;
+    }
+
+    try {
+      members = [member];
+      selectedMemberId = member.id;
+      records = await AttendanceStorage.getAttendance(member.id);
+      if (dashboard) dashboard.hidden = false;
+      const now = new Date();
+      viewYear = now.getFullYear();
+      viewMonth = now.getMonth();
+      await render();
+    } catch (err) {
+      showShareError("হাজিরার তথ্য লোড করা যায়নি। একটু পর আবার চেষ্টা করুন।");
+    }
   }
 
   function reset() {
