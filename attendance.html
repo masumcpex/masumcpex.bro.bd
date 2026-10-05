@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="attendance.css?v=12">
+<link rel="stylesheet" href="attendance.css?v=13">
 </head>
 <body>
 
@@ -455,8 +455,11 @@
         <div class="att-summary-grid" id="attSummaryGrid"></div>
 
         <div class="att-grid-2col">
-          <div class="att-entry-card">
-            <h3 class="att-entry-title">Mark Attendance <span class="att-entry-title-name" id="attEntryMemberName"></span></h3>
+          <div class="att-entry-card" id="attEntryCard">
+            <button type="button" class="att-entry-toggle" id="attEntryToggle" aria-expanded="true">
+              <h3 class="att-entry-title">Mark Attendance <span class="att-entry-title-name" id="attEntryMemberName"></span></h3>
+              <svg class="att-entry-toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
             <form class="att-entry-form" id="attEntryForm" novalidate>
               <div class="att-field">
                 <span class="att-field-label" id="attEntryDateLabel">Date</span>
@@ -639,7 +642,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 </script>
 <script src="attendance-auth.js?v=12"></script>
-<script src="attendance.js?v=12"></script>
+<script src="attendance.js?v=13"></script>
 <script>
 document.getElementById("brandName").textContent = SITE_DATA.hero.name;
 document.getElementById("footerName").textContent = SITE_DATA.hero.name;

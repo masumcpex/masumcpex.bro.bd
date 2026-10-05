@@ -1441,6 +1441,52 @@
 }
 .att-share-self-btn:hover{ background:var(--color-accent-soft); }
 
+/* ===== Collapsible Mark Attendance card ===== */
+.att-entry-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  background:none;
+  border:none;
+  padding:0;
+  cursor:pointer;
+  text-align:left;
+}
+.att-entry-toggle-icon{ transition:transform 0.15s ease; flex-shrink:0; color:var(--color-muted); }
+.att-entry-card.is-collapsed .att-entry-toggle-icon{ transform:rotate(-90deg); }
+.att-entry-card.is-collapsed .att-entry-form{ display:none; }
+
+/* ===== Compact summary cards: secondary stats collapse behind "More" ===== */
+.att-summary-grid[data-compact="true"] .att-stat-card.att-stat-secondary{ display:none; }
+.att-summary-more-btn{
+  grid-column:1 / -1;
+  padding:0.55rem;
+  border:1px dashed var(--color-border);
+  border-radius:10px;
+  background:var(--color-surface);
+  color:var(--color-accent);
+  font-size:0.82rem;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* ===== History: cap rows on mobile behind "View All" ===== */
+.att-history-table-wrap[data-capped="true"] tbody tr:nth-child(n+6){ display:none; }
+.att-history-view-all{
+  display:block;
+  width:100%;
+  margin-top:0.6rem;
+  padding:0.5rem;
+  border:1px solid var(--color-border);
+  border-radius:8px;
+  background:var(--color-surface);
+  color:var(--color-accent);
+  font-size:0.82rem;
+  font-weight:600;
+  cursor:pointer;
+}
+
 /* ===== Report an Issue (shared view only) ===== */
 .att-report-btn{
   display:none;

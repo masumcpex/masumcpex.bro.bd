@@ -232,6 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     exportPdfBtn: document.getElementById("attExportPdfBtn"),
     shareSelfBtn: document.getElementById("attShareSelfBtn"),
+    entryCard: document.getElementById("attEntryCard"),
+    entryToggle: document.getElementById("attEntryToggle"),
     reportIssueBtn: document.getElementById("attReportIssueBtn"),
     reportIssueModal: document.getElementById("attReportIssueModal"),
     reportIssueModalClose: document.getElementById("attReportIssueModalClose"),
@@ -750,21 +752,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderSummary(summary) {
     if (!els.summaryGrid) return;
-    const cards = [
+    const primary = [
       { key: "total", value: `${round1(summary.totalHours)}h`, label: "Total Hours" },
       { key: "duty", value: summary.dutyDays, label: "Duty Days" },
       { key: "leave", value: summary.leaveDays, label: "Leave" },
+      { key: "avg", value: `${round1(summary.avgHours)}h`, label: "Avg / Duty Day" },
+    ];
+    const secondary = [
       { key: "off", value: summary.offDays, label: "Off Days" },
       { key: "holiday", value: summary.holidayDays, label: "Holiday" },
       { key: "marked", value: summary.markedDays, label: "Days Marked" },
-      { key: "avg", value: `${round1(summary.avgHours)}h`, label: "Avg / Duty Day" },
     ];
-    els.summaryGrid.innerHTML = cards.map((c) => `
-      <div class="att-stat-card" data-stat="${c.key}">
+    const cardHtml = (c, secondaryCls) => `
+      <div class="att-stat-card${secondaryCls ? " att-stat-secondary" : ""}" data-stat="${c.key}">
         <div class="att-stat-value">${c.value}</div>
         <div class="att-stat-label">${c.label}</div>
       </div>
-    `).join("");
+    `;
+    const wasCompact = els.summaryGrid.getAttribute("data-compact") !== "false";
+    els.summaryGrid.setAttribute("data-compact", wasCompact ? "true" : "false");
+    els.summaryGrid.innerHTML =
+      primary.map((c) => cardHtml(c, false)).join("") +
+      secondary.map((c) => cardHtml(c, true)).join("") +
+      `<button type="button" class="att-summary-more-btn" id="attSummaryMoreBtn">${wasCompact ? "+ More Statistics" : "− Fewer Statistics"}</button>`;
+    document.getElementById("attSummaryMoreBtn")?.addEventListener("click", () => {
+      const grid = els.summaryGrid;
+      const nowCompact = grid.getAttribute("data-compact") !== "false";
+      grid.setAttribute("data-compact", nowCompact ? "false" : "true");
+      const btn = document.getElementById("attSummaryMoreBtn");
+      if (btn) btn.textContent = nowCompact ? "− Fewer Statistics" : "+ More Statistics";
+    });
   }
 
   function renderCalendar() {
@@ -818,6 +835,38 @@ document.addEventListener("DOMContentLoaded", () => {
         </tr>
       `;
     }).join("");
+
+    const btn = ensureHistoryViewAllBtn();
+    if (btn) {
+      if (monthRecords.length > 5) {
+        els.historyTableWrap?.setAttribute("data-capped", "true");
+        btn.hidden = false;
+        btn.textContent = `View All (${monthRecords.length})`;
+      } else {
+        els.historyTableWrap?.removeAttribute("data-capped");
+        btn.hidden = true;
+      }
+    }
+  }
+
+  function ensureHistoryViewAllBtn() {
+    if (!els.historyTableWrap) return null;
+    let btn = document.getElementById("attHistoryViewAll");
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.id = "attHistoryViewAll";
+      btn.className = "att-history-view-all";
+      btn.addEventListener("click", () => {
+        const capped = els.historyTableWrap?.getAttribute("data-capped") !== "false";
+        els.historyTableWrap?.setAttribute("data-capped", capped ? "false" : "true");
+        btn.textContent = capped
+          ? "Show Less"
+          : `View All (${AttendanceCalc.filterMonth(records, viewYear, viewMonth).length})`;
+      });
+      els.historyTableWrap.insertAdjacentElement("afterend", btn);
+    }
+    return btn;
   }
 
   /* ---------------- Member actions ---------------- */
@@ -1275,6 +1324,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ---------------- PDF export ---------------- */
+  if (els.entryCard && window.innerWidth < 720) {
+    els.entryCard.classList.add("is-collapsed");
+    els.entryToggle?.setAttribute("aria-expanded", "false");
+  }
+  els.entryToggle?.addEventListener("click", () => {
+    const collapsed = els.entryCard?.classList.toggle("is-collapsed");
+    els.entryToggle.setAttribute("aria-expanded", String(!collapsed));
+  });
+
   els.shareSelfBtn?.addEventListener("click", async () => {
     if (!selectedMemberId) return;
     await openShareModal(selectedMemberId);
