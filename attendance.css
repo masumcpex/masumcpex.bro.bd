@@ -1454,8 +1454,10 @@
   text-align:left;
 }
 .att-entry-toggle-icon{ transition:transform 0.15s ease; flex-shrink:0; color:var(--color-muted); }
-.att-entry-card.is-collapsed .att-entry-toggle-icon{ transform:rotate(-90deg); }
-.att-entry-card.is-collapsed .att-entry-form{ display:none; }
+@media (max-width: 720px){
+  .att-entry-card:not(.is-open) .att-entry-toggle-icon{ transform:rotate(-90deg); }
+  .att-entry-card:not(.is-open) .att-entry-form{ display:none; }
+}
 
 /* ===== Compact summary cards: secondary stats collapse behind "More" ===== */
 .att-summary-grid[data-compact="true"] .att-stat-card.att-stat-secondary{ display:none; }

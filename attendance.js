@@ -1324,13 +1324,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ---------------- PDF export ---------------- */
-  if (els.entryCard && window.innerWidth < 720) {
-    els.entryCard.classList.add("is-collapsed");
-    els.entryToggle?.setAttribute("aria-expanded", "false");
-  }
+  // Default state (collapsed on mobile, open on desktop) is handled purely
+  // by CSS media query below — no JS width check, so there's no load-timing
+  // race. The toggle just flips an override class either way.
   els.entryToggle?.addEventListener("click", () => {
-    const collapsed = els.entryCard?.classList.toggle("is-collapsed");
-    els.entryToggle.setAttribute("aria-expanded", String(!collapsed));
+    const open = els.entryCard?.classList.toggle("is-open");
+    els.entryToggle.setAttribute("aria-expanded", String(Boolean(open)));
   });
 
   els.shareSelfBtn?.addEventListener("click", async () => {
