@@ -1441,6 +1441,34 @@
 }
 .att-share-self-btn:hover{ background:var(--color-accent-soft); }
 
+/* ===== Clean Attendance-app header (hide full-site nav on this page only) ===== */
+.site-header .main-nav,
+.site-header .header-cta,
+.site-header #searchToggle,
+.site-header .menu-toggle,
+.site-header .search-panel,
+#mobileMenu{
+  display:none !important;
+}
+.site-header .header-inner{ justify-content:space-between; }
+.brand-text{ display:flex; flex-direction:column; line-height:1.15; }
+.brand-subtitle{
+  font-size:0.72rem;
+  font-weight:600;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--color-accent);
+}
+.site-header .header-tools{ display:flex; align-items:center; }
+.site-header #attUserBar{ margin:0; }
+
+/* ===== Compact daily attendance cards: 3 per row on mobile ===== */
+@media (max-width: 520px){
+  .att-weekdays{ display:none; }
+  .att-calendar-grid{ grid-template-columns:repeat(3, 1fr); gap:8px; }
+  .att-cal-empty{ display:none; }
+}
+
 /* ===== Collapsible Mark Attendance card ===== */
 .att-entry-toggle{
   display:flex;

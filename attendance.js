@@ -301,6 +301,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mainContent) mainContent.hidden = false;
   }
 
+  // Move the existing profile chip (photo/name/dropdown — built and wired
+  // elsewhere) into the site header's tools slot, so it sits next to the
+  // "Masum / Attendance" brand instead of its old spot further down the
+  // page. This only relocates the node; none of its own logic changes.
+  const headerTools = document.querySelector(".site-header .header-tools");
+  const userBarEl = document.getElementById("attUserBar");
+  if (headerTools && userBarEl) headerTools.appendChild(userBarEl);
+
   const SELECTED_KEY = "masum_attendance_selected_member";
 
   let members = [];

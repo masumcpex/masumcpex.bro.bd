@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="attendance.css?v=14">
+<link rel="stylesheet" href="attendance.css?v=15">
 </head>
 <body>
 
@@ -67,7 +67,10 @@
   <div class="header-inner">
     <a href="index.html#home" class="brand" data-nav="home">
       <span class="brand-mark"><img src="yellow.webp" alt="Masum" width="50" height="50"></span>
-      <span class="brand-name" id="brandName">Masum</span>
+      <span class="brand-text">
+        <span class="brand-name" id="brandName">Masum</span>
+        <span class="brand-subtitle">Attendance</span>
+      </span>
     </a>
 
     <nav class="main-nav" id="mainNav" aria-label="প্রধান মেনু">
@@ -642,7 +645,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 </script>
 <script src="attendance-auth.js?v=12"></script>
-<script src="attendance.js?v=14"></script>
+<script src="attendance.js?v=15"></script>
 <script>
 document.getElementById("brandName").textContent = SITE_DATA.hero.name;
 document.getElementById("footerName").textContent = SITE_DATA.hero.name;
