@@ -10,7 +10,6 @@
 <link rel="icon" href="yellow.webp" type="image/webp">
 <link rel="apple-touch-icon" href="yellow.webp">
 <link rel="manifest" href="site.webmanifest">
-  
 <meta property="og:type" content="website">
 <meta property="og:title" content="Masum Cpex — Personal Digital Space">
 <meta property="og:description" content="মাসুম বিল্লাহর একটি নতুন প্ল্যাটফর্ম। এখানে আমার বিভিন্ন কাজ, শর্ট নোটস এবং বিশেষ চিন্তাগুলো শেয়ার করা হয়।">
@@ -25,8 +24,6 @@
 <meta name="twitter:title" content="Masum Cpex — Personal Digital Space">
 <meta name="twitter:description" content="মাসুম বিল্লাহর একটি নতুন প্ল্যাটফর্ম। এখানে আমার বিভিন্ন কাজ, শর্ট নোটস এবং বিশেষ চিন্তাগুলো শেয়ার করা হয়।">
 <meta name="twitter:image" content="https://masumcpex.bro.bd/bd.png">
-  
-<meta name="twitter:image" content="https://masumcpex.bro.bd/bd.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -35,7 +32,7 @@
   "alternateName": "মাসুম",
   "url": "https://masumcpex.bro.bd/",
   "image": "https://masumcpex.bro.bd/bd.png",
-  "description": "লেখক, শিক্ষার্থী ও নির্মাতা। বই, জার্নাল, আর্টিকেল ও প্রজেক্টের ব্যক্তিগত ডিজিটাল খাতা লেখেন।",
+  "description": "শিক্ষার্থী ও নির্মাতা। বই, জার্নাল, আর্টিকেল ও টুলসের ব্যক্তিগত ডিজিটাল খাতা।",
   "sameAs": [
     "https://www.facebook.com/masumcpex",
     "https://www.instagram.com/masumcpex",
@@ -49,265 +46,9 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<header class="site-header" id="siteHeader">
-  <div class="header-inner">
-    <a href="#home" class="brand" data-nav="home">
-      <span class="brand-mark"><img src="yellow.webp" alt="Masum" width="50" height="50"></span>
-      <span class="brand-name" id="brandName">Masum</span>
-    </a>
-
-    <nav class="main-nav" id="mainNav" aria-label="প্রধান মেনু">
-      <a href="#home" data-nav="home">Home</a>
-      <a href="#about" data-nav="about">About</a>
-      <a href="#journey" data-nav="journey">Journey</a>
-      <a href="https://masumcpex.com/index.html#library" data-nav="library">Library</a>
-      <a href="#journal" data-nav="journal">Journal</a>
-      <a href="projects.html" data-nav="projects">Projects</a>
-      <a href="#articles" data-nav="articles">Articles</a>
-      <a href="#contact" data-nav="contact">Contact</a>
-    </nav>
-
-    <div class="header-tools">
-      <a href="#contact" class="header-cta" data-nav="contact">
-        Let's Talk
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-      </a>
-      <button class="icon-btn" id="searchToggle" aria-label="সার্চ">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      </button>
-      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="মেনু" aria-expanded="false">
-        <svg class="menu-icon-bars" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        <svg class="menu-icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="search-panel" id="searchPanel" role="search">
-    <div class="search-panel-inner">
-      <label for="searchInput" class="sr-only">বই, জার্নাল, আর্টিকেল বা প্রজেক্ট খুঁজুন</label>
-      <input type="text" id="searchInput" placeholder="খুঁজুন...">
-      <button class="icon-btn" id="searchClose" aria-label="সার্চ বন্ধ করুন">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-    <div class="search-results" id="searchResults" aria-live="polite"></div>
-  </div>
-</header>
-
-<div class="mobile-menu" id="mobileMenu">
-  <button class="icon-btn mobile-menu-close" id="mobileMenuClose" aria-label="মেনু বন্ধ করুন">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-  </button>
-  <nav class="mobile-menu-nav" aria-label="মোবাইল মেনু">
-    <a href="#home" data-nav="home">
-      <span>Home</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-    </a>
-    <a href="#about" data-nav="about">
-      <span>About</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-    </a>
-    <a href="#journey" data-nav="journey">
-      <span>Journey</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-    </a>
-    <a href="https://masumcpex.com/index.html#library" data-nav="library">
-      <span>Library</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-    </a>
-    <a href="projects.html" data-nav="projects">
-      <span>Projects</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-    </a>
-    <a href="#articles" data-nav="articles">
-      <span>Articles</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-    </a>
-    <a href="#contact" data-nav="contact">
-      <span>Contact</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-    </a>
-  </nav>
-
-  <div class="mobile-menu-social">
-    <a href="https://www.facebook.com/masumcpex" target="_blank" rel="noopener" aria-label="Facebook">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-    </a>
-    <a href="https://www.instagram.com/masumcpex" target="_blank" rel="noopener" aria-label="Instagram">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
-    </a>
-    <a href="https://t.me/masumcpex" target="_blank" rel="noopener" aria-label="Telegram">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4z"></path></svg>
-    </a>
-  </div>
-</div>
-
-<main>
-
-  <section class="page" id="home">
-    <div class="hero">
-      <h1 class="hero-name" id="heroName"></h1>
-      <p class="hero-role" id="heroRole"></p>
-      <p class="hero-tagline" id="heroTagline"></p>
-      <div class="hero-visual">
-        <img class="hero-visual-img" src="bd.png" alt="Masum" width="500" height="500" loading="eager" fetchpriority="high">
-      </div>
-    </div>
-
-    <div class="section-block">
-      <div class="eyebrow">সর্বশেষ</div>
-      <h2 class="section-title">সাম্প্রতিক সংযোজন</h2>
-      <div class="highlight-grid card-grid" id="homeHighlights"></div>
-    </div>
-  </section>
-
-  <section class="page" id="about">
-    <div class="page-inner narrow">
-      <div class="eyebrow">পরিচিতি</div>
-      <h2 class="section-title" id="aboutTitle"></h2>
-      <div class="about-grid">
-        <img class="about-photo" id="aboutPhoto" src="" alt="" loading="lazy">
-        <div class="about-text" id="aboutText"></div>
-      </div>
-      <div class="stat-row" id="aboutStats"></div>
-    </div>
-  </section>
-
-  <section class="page" id="journey">
-    <div class="page-inner">
-      <div class="eyebrow">Journey</div>
-      <h2 class="section-title">My Journey</h2>
-      <p class="section-sub">Four moments that shaped my digital journey.</p>
-      <div class="timeline" id="journeyTimeline"></div>
-    </div>
-  </section>
-
-  <section class="page" id="library">
-    <div class="page-inner">
-      <div class="eyebrow">Library</div>
-      <h2 class="section-title">বইয়ের জগতে প্রবেশ করুন</h2>
-      <p class="section-sub">নিচের তালিকা থেকে বই পড়ুন বা ডাউনলোড করুন।</p>
-      <div class="card-grid" id="bookGrid"></div>
-    </div>
-  </section>
-
-  <section class="page" id="journal">
-    <div class="page-inner">
-      <div class="eyebrow">Journal</div>
-      <h2 class="section-title">ব্যক্তিগত জার্নাল</h2>
-      <p class="section-sub">গল্প, অনুভূতি আর দৈনন্দিন ভাবনার পাতা।</p>
-      <div class="filter-row" id="journalFilters"></div>
-      <div class="list-grid" id="journalList"></div>
-    </div>
-  </section>
-
-  <section class="page" id="articles">
-    <div class="page-inner">
-      <div class="eyebrow">Articles</div>
-      <h2 class="section-title">ব্লগ ও লেখালেখি</h2>
-      <div class="filter-row" id="articleFilters"></div>
-      <div class="list-grid" id="articleList"></div>
-    </div>
-  </section>
-
-  <section class="page" id="contact">
-    <div class="page-inner">
-      <div class="contact-grid">
-        <div class="contact-info">
-          <div class="eyebrow">Contact</div>
-          <h2 class="section-title">Get In Touch With Me</h2>
-          <p class="section-sub">যেকোনো বিষয়ে সরাসরি ইমেইল, ফোন অথবা সোশ্যাল লিংকের মাধ্যমে যুক্ত হোন।</p>
-
-          <div class="contact-info-list">
-            <div class="contact-info-item">
-              <span class="contact-info-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              </span>
-              <div class="contact-info-text">
-                <strong>Location</strong>
-                <span id="contactLocation"></span>
-              </div>
-            </div>
-            <div class="contact-info-item">
-              <span class="contact-info-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-              </span>
-              <div class="contact-info-text">
-                <strong>Phone Number</strong>
-                <span id="contactPhone"></span>
-              </div>
-            </div>
-            <div class="contact-info-item">
-              <span class="contact-info-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6 12 13 2 6"></path></svg>
-              </span>
-              <div class="contact-info-text">
-                <strong>Email Address</strong>
-                <span id="contactEmails"></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="social-row" id="socialRow"></div>
-        </div>
-
-        <form class="contact-form-card" action="mailto:info@masumcpex.com" method="post" enctype="text/plain">
-          <input type="text" name="name" placeholder="Your Name" autocomplete="name" required>
-          <input type="email" name="email" placeholder="Your Email" autocomplete="email" required>
-          <input type="tel" name="phone" placeholder="Your Phone" autocomplete="tel">
-          <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-          <button type="submit" class="contact-form-submit">Send Message</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<div class="modal-overlay" id="readModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal-box">
-    <button class="icon-btn modal-close" id="modalClose" aria-label="বন্ধ করুন">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    <div class="modal-eyebrow" id="modalCategory"></div>
-    <h3 class="modal-title" id="modalTitle"></h3>
-    <div class="modal-date" id="modalDate"></div>
-    <div class="modal-content" id="modalContent"></div>
-  </div>
-</div>
-
-<footer class="site-footer">
-  <p>© 2026 <strong id="footerName">Masum</strong>. All Rights Reserved.</p>
-</footer>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
-  import { getAuth } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAg31FzmZdCUFrOIswrzmInScujCOIBQQ",
-    authDomain: "masumcpex-attendance.firebaseapp.com",
-    projectId: "masumcpex-attendance",
-    storageBucket: "masumcpex-attendance.firebasestorage.app",
-    messagingSenderId: "412146945197",
-    appId: "1:412146945197:web:3b043e83d796c2f9e14a24",
-    measurementId: "G-5SW3CHQJD0"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-
-  const auth = getAuth(app);
-  window.auth = auth;
-</script>
-  
+<div id="app"></div>
+<noscript>এই সাইট দেখতে JavaScript চালু করুন।</noscript>
 <script src="data.js"></script>
 <script src="app.js"></script>
-<script src="ui.js"></script>
-<script>
-document.getElementById("brandName").textContent = SITE_DATA.hero.name;
-document.getElementById("footerName").textContent = SITE_DATA.hero.name;
-</script>
 </body>
 </html>

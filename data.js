@@ -1,10 +1,21 @@
 const SITE_DATA = {
 
+  nav: [
+    { label: "Home", route: "home" },
+    { label: "About", route: "about" },
+    { label: "Journey", route: "journey" },
+    { label: "Library", href: "https://masumcpex.com/index.html#library" },
+    { label: "Journal", route: "journal" },
+    { label: "Tools", route: "tools" },
+    { label: "Articles", route: "articles" },
+    { label: "Contact", route: "contact" }
+  ],
+
   hero: {
     photo: "bd.png",
     name: "Masum",
-    role: "Writer • Learner • Builder]",
-    tagline: "[এক লাইনের ট্যাগলাইন]",
+    role: "Learner • Builder",
+    tagline: "Learning never stops.",
     ctaText: "Library দেখুন",
     ctaLink: "https://masumcpex.com/index.html#library"
   },
@@ -30,8 +41,6 @@ const SITE_DATA = {
   journal: [],
 
   articles: [],
-
-  projects: [],
 
   tools: [
     {
