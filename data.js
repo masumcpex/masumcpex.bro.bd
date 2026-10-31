@@ -7,7 +7,6 @@ const SITE_DATA = {
     { label: "Library", href: "https://masumcpex.com/index.html#library" },
     { label: "Journal", route: "journal" },
     { label: "Tools", route: "tools" },
-    { label: "Articles", route: "articles" },
     { label: "Contact", route: "contact" }
   ],
 
@@ -39,8 +38,6 @@ const SITE_DATA = {
   library: [],
 
   journal: [],
-
-  articles: [],
 
   tools: [
     {

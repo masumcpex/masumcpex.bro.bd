@@ -70,7 +70,7 @@
       </div>
       <div class="search-panel" id="searchPanel" role="search">
         <div class="search-panel-inner">
-          <label for="searchInput" class="sr-only">বই, জার্নাল, আর্টিকেল বা টুল খুঁজুন</label>
+          <label for="searchInput" class="sr-only">বই, জার্নাল বা টুল খুঁজুন</label>
           <input type="text" id="searchInput" placeholder="খুঁজুন...">
           <button class="icon-btn" id="searchClose" aria-label="সার্চ বন্ধ করুন">${icon("close", 16)}</button>
         </div>
@@ -107,7 +107,6 @@
   const searchIndex = () => [
     ...(D.library || []).map((i) => ({ ...i, type: "বই", link: "https://masumcpex.com/index.html#library" })),
     ...(D.journal || []).map((i) => ({ ...i, type: "জার্নাল", link: routeHref("journal") })),
-    ...(D.articles || []).map((i) => ({ ...i, type: "আর্টিকেল", link: routeHref("articles") })),
     ...(D.tools || []).map((i) => ({ ...i, type: "টুল", link: toolHref(i) }))
   ];
 
@@ -320,7 +319,6 @@
         const latest = [
           D.library?.[0] && { label: "সর্বশেষ বই", title: D.library[0].title, link: "https://masumcpex.com/index.html#library" },
           D.journal?.[0] && { label: "সর্বশেষ জার্নাল", title: D.journal[0].title, link: routeHref("journal") },
-          D.articles?.[0] && { label: "সর্বশেষ আর্টিকেল", title: D.articles[0].title, link: routeHref("articles") },
           D.tools?.[0] && { label: "ফিচার্ড টুল", title: D.tools[0].title, link: routeHref("tools") }
         ].filter(Boolean);
         return `
@@ -341,7 +339,7 @@
                   <a class="card" href="${escAttr(i.link)}">
                     <div class="card-eyebrow">${esc(i.label)}</div>
                     <h3 class="card-title">${esc(i.title)}</h3>
-                  </a>`).join("") : `<div class="empty-state"><strong>এখনও কিছু যোগ করা হয়নি</strong>data.js-এ content যোগ করলে এখানে সর্বশেষ বই, জার্নাল, আর্টিকেল ও টুল দেখা যাবে।</div>`}
+                  </a>`).join("") : `<div class="empty-state"><strong>এখনও কিছু যোগ করা হয়নি</strong>data.js-এ content যোগ করলে এখানে সর্বশেষ বই, জার্নাল ও টুল দেখা যাবে।</div>`}
               </div>
             </div>
           </section>`;
@@ -409,11 +407,6 @@
     journal: {
       title: `Journal | ${D.hero.name}`,
       ...entriesView("journal", "Journal", "ব্যক্তিগত জার্নাল", "গল্প, অনুভূতি আর দৈনন্দিন ভাবনার পাতা।", "এখনও কোনো জার্নাল এন্ট্রি নেই", "মনের কথা লিখলে এখানে যোগ হবে।")
-    },
-
-    articles: {
-      title: `Articles | ${D.hero.name}`,
-      ...entriesView("articles", "Articles", "ব্লগ ও লেখালেখি", "", "এখনও কোনো আর্টিকেল প্রকাশিত হয়নি", "নতুন লেখা প্রকাশ হলে এখানে দেখা যাবে।")
     },
 
     contact: {
