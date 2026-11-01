@@ -329,17 +329,17 @@
       <div class="card-cta"><span class="btn-view">খুলুন ${icon("arrow", 14)}</span></div>
     </a>`;
 
-  const groupedTools = (list) => {
-    const groups = [];
-    list.forEach((t) => {
-      const name = t.group || "টুলস";
-      let g = groups.find((x) => x.name === name);
-      if (!g) { g = { name, items: [] }; groups.push(g); }
-      g.items.push(t);
-    });
-    return groups.map((g) => `
-      <h2 class="tools-group">${esc(g.name)}</h2>
-      <div class="card-grid">${g.items.map(toolCard).join("")}</div>`).join("");
+  const bnNum = (n) => String(n).replace(/\d/g, (x) => "০১২৩৪৫৬৭৮৯"[x]);
+
+  const groupCard = (g) => {
+    const count = (D.tools || []).filter((t) => t.group === g.id).length;
+    return `
+      <a href="${routeHref(`tools/${g.id}`)}" class="card tool-card">
+        <div class="tool-icon-badge">${icon(PATHS[g.icon] ? g.icon : "grid", 22)}</div>
+        <h3 class="card-title">${esc(g.title)}</h3>
+        <p class="card-desc">${esc(g.description || "")}</p>
+        <div class="card-cta"><span class="btn-view">${bnNum(count)}টি টুল ${icon("arrow", 14)}</span></div>
+      </a>`;
   };
 
   const VIEWS = {
@@ -350,7 +350,7 @@
         const latest = [
           D.library?.[0] && { label: "সর্বশেষ বই", title: D.library[0].title, link: "https://masumcpex.com/index.html#library" },
           D.journal?.[0] && { label: "সর্বশেষ জার্নাল", title: D.journal[0].title, link: routeHref("journal") },
-          D.tools?.length && { label: "টুলস", title: `${D.tools.length}টি টুল — ইনভয়েস, QR, PDF ও আরও অনেক কিছু`, link: routeHref("tools") }
+          D.tools?.length && { label: "টুলস", title: `${bnNum(D.tools.length)}টি টুল ও ডকুমেন্ট জেনারেটর`, link: routeHref("tools") }
         ].filter(Boolean);
         return `
           <section class="page">
@@ -480,28 +480,32 @@
     tools: {
       title: `Tools | ${D.hero.name}`,
       html: () => {
-        const tools = D.tools || [];
+        const groups = D.toolGroups || [];
         return `
           <section class="page"><div class="page-inner">
             <div class="eyebrow">Tools</div>
             <h1 class="section-title">টুলস</h1>
-            <p class="tools-sub">প্রতিদিনের কাজ সহজ করতে বানানো অ্যাপ ও টুল — সবকিছু এক জায়গায়।</p>
-            ${tools.length > 8 ? '<input type="search" class="tool-filter" id="toolFilter" placeholder="টুল খুঁজুন..." aria-label="টুল খুঁজুন">' : ""}
-            <div id="toolsGrid">${tools.length ? groupedTools(tools) : emptyState("এখনো কোনো টুল যোগ করা হয়নি", "নতুন টুল তৈরি হলে এখানে দেখা যাবে।")}</div>
+            <p class="tools-sub">একটি বিভাগ বেছে নিন।</p>
+            <div class="card-grid">${groups.length ? groups.map(groupCard).join("") : emptyState("এখনো কোনো টুল যোগ করা হয়নি", "নতুন টুল তৈরি হলে এখানে দেখা যাবে।")}</div>
           </div></section>`;
-      },
-      mount: (el) => {
-        const filter = el.querySelector("#toolFilter");
-        const grid = el.querySelector("#toolsGrid");
-        if (!filter) return;
-        filter.addEventListener("input", () => {
-          const q = filter.value.trim().toLowerCase();
-          const list = (D.tools || []).filter((t) => `${t.title} ${t.description || ""}`.toLowerCase().includes(q));
-          grid.innerHTML = list.length ? groupedTools(list) : emptyState("কিছু পাওয়া যায়নি", "অন্য শব্দ দিয়ে খুঁজে দেখুন।");
-          applyReveal(grid);
-        });
       }
     }
+  };
+
+  const groupView = (id) => {
+    const g = (D.toolGroups || []).find((x) => x.id === id);
+    if (!g) return null;
+    const list = (D.tools || []).filter((t) => t.group === id);
+    return {
+      title: `${g.title} | ${D.hero.name}`,
+      html: () => `
+        <section class="page"><div class="page-inner">
+          <a class="tool-back" href="${routeHref("tools")}">${icon("back", 16)} সব বিভাগ</a>
+          <h1 class="section-title">${esc(g.title)}</h1>
+          <p class="tools-sub">${esc(g.description || "")}</p>
+          <div class="card-grid">${list.map(toolCard).join("")}</div>
+        </div></section>`
+    };
   };
 
   let toolsLoading = null;
@@ -547,13 +551,16 @@
   const toolView = (id) => {
     const tool = (D.tools || []).find((t) => t.id === id);
     if (!tool || tool.url) return null;
+    const g = (D.toolGroups || []).find((x) => x.id === tool.group);
+    const sibs = (D.tools || []).filter((t) => t.group === tool.group && !t.url);
     return {
       title: `${tool.title} | ${D.hero.name}`,
       html: () => `
         <section class="page"><div class="page-inner wide">
-          <a class="tool-back" href="${routeHref("tools")}">${icon("back", 16)} সব টুল</a>
+          <a class="tool-back" href="${routeHref(g ? `tools/${g.id}` : "tools")}">${icon("back", 16)} ${esc(g ? g.title : "সব টুল")}</a>
           <h1 class="section-title">${esc(tool.title)}</h1>
           <p class="tools-sub">${esc(tool.description || "")}</p>
+          ${sibs.length > 1 ? `<div class="tool-sibs">${sibs.map((t) => `<a href="${routeHref(`tools/${t.id}`)}" class="${t.id === id ? "is-on" : ""}">${esc(t.title)}</a>`).join("")}</div>` : ""}
           <div class="tool-panel" id="toolMount"></div>
         </div></section>`,
       mount: (el) => mountTool(id, el.querySelector("#toolMount"))
@@ -582,7 +589,7 @@
     mountTicket++;
     const path = currentPath();
     const [name, sub] = path.split("/");
-    const view = name === "tools" && sub ? toolView(sub) || notFoundView : VIEWS[name] || notFoundView;
+    const view = name === "tools" && sub ? groupView(sub) || toolView(sub) || notFoundView : VIEWS[name] || notFoundView;
     const host = $("view");
     host.innerHTML = view.html();
     document.title = view.title || MAIN_TITLE;
