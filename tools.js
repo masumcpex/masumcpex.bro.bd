@@ -186,6 +186,55 @@
 .dp-doc .ql-indent-3{padding-left:9em}
 .dp-doc p,.dp-doc li,.dp-doc h1,.dp-doc h2,.dp-doc h3{break-inside:avoid}
 .dp-empty{color:#9aa3af;text-align:center;margin-top:30mm}
+.dt-subtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--space-2)}
+.dt-sum{display:grid;grid-template-columns:1fr auto;gap:4px 14px;font-size:.84rem;background:var(--color-bg-soft);border-radius:10px;padding:10px 12px;margin-bottom:var(--space-2)}
+.dt-sum b{text-align:right}
+.dt-pgsel{position:sticky;top:0;z-index:2;display:flex;gap:6px;margin-bottom:10px}
+.cg{border-collapse:collapse;font-size:.78rem}
+.cg th,.cg td{border:1px solid var(--color-border);padding:0;background:#fff}
+.cg th{background:#F8FAFC;font-weight:600;font-size:.7rem;padding:3px 4px;white-space:nowrap}
+.cg th input{text-align:center;padding:3px 2px}
+.cg input{width:100%;border:0;border-radius:0;padding:5px 4px;font:inherit;background:transparent;min-width:0;color:inherit;box-shadow:none}
+.cg input:focus{outline:2px solid var(--color-accent);outline-offset:-2px;box-shadow:none}
+.cg .w-i{width:76px}.cg .w-d{width:150px}.cg .w-u{width:40px}.cg .w-c{width:40px;text-align:center}.cg .w-q{width:62px;text-align:right}.cg .w-p{width:44px;text-align:right}
+.cg td.sh,.cg td.sh input{background:#d1d5db}
+.cg.shading input{pointer-events:none}
+.cg.shading td[data-sh]{cursor:pointer}
+.cg .tot{padding:3px 6px;text-align:right;white-space:nowrap;background:#F8FAFC;font-weight:600}
+.cg .act{white-space:nowrap;background:#F8FAFC}
+.cg .act button{border:0;background:none;cursor:pointer;padding:4px 5px;color:var(--color-accent);font-size:.82rem}
+.cg-sec td{background:#EFF6FF}
+.cg-gap td{background:#F8FAFC;color:var(--color-muted);font-size:.72rem;padding:3px 8px}
+.cl-pg{position:relative;background:#fff;color:#000;font-family:"Times New Roman","Liberation Serif",Times,serif;overflow:hidden}
+.cl-pg *{box-sizing:border-box}
+.dt-wrap>.cl-pg{position:absolute;left:0;top:0;transform-origin:top left;box-shadow:0 2px 14px rgba(20,30,50,.18)}
+.cl-p1{width:794px;height:1120px}
+.cl-p2{width:1123px;height:794px}
+.cl-a{position:absolute;white-space:nowrap;font-size:10px;line-height:12px}
+.cl-a.b{font-weight:700}
+.cl-title{width:482px;text-align:center;font-size:10.5px;letter-spacing:.3px}
+.cl-v{min-width:54px;text-align:right}
+.cl-a.ul{border-bottom:1px solid #000}
+.cl-a.dul{border-bottom:3px double #000;border-top:1px solid #000}
+.cl-ln{position:absolute;background:#000}
+.cl-led{position:absolute;border-collapse:collapse;table-layout:fixed;font-size:8.5px}
+.cl-led th,.cl-led td{border:1px solid #000;padding:0 3px;height:var(--rh);line-height:1;overflow:hidden;white-space:nowrap}
+.cl-led th{height:30px;font-weight:400;text-align:center;font-size:9px;line-height:11px;white-space:normal}
+.cl-led td.n{text-align:right}
+.cl-led td.c{text-align:center}
+.cl-led .t td{height:18px}
+.cl-t2{position:absolute;border-collapse:collapse;table-layout:fixed;font-size:8px}
+.cl-t2 th,.cl-t2 td{border:1px solid #555;padding:0 2px;height:var(--rh);line-height:1;overflow:hidden;white-space:nowrap}
+.cl-t2 th{border-color:#000;font-weight:700;text-align:center;font-size:8px;height:var(--rh)}
+.cl-t2 th.sm{font-weight:400;font-size:6.5px;padding:0}
+.cl-t2 td.n{text-align:right}
+.cl-t2 td.ct{text-align:center}
+.cl-t2 td.ic{font-size:6px;color:#333}
+.cl-t2 td.sh{background:#c9c9c9}
+.cl-t2 td.xx{padding:0;line-height:0}
+.cl-t2 td.xx svg{display:block}
+.cl-t2 tr.tt td{border-top:2px solid #000;height:calc(var(--rh) + 3px)}
+.dp-pdf .cl-pg,#dtPrint .cl-pg{position:relative;transform:none;box-shadow:none}
 @media(max-width:900px){
   .dt-tabs{display:flex}
   .dt-tw,.dt-tw.eq{grid-template-columns:1fr}
@@ -195,6 +244,7 @@
   .dt-qp{position:static}
 }
 @media print{
+  html,body{overflow:visible!important}
   body.dt-printing>*:not(#dtPrint){display:none!important}
   body.dt-printing{background:#fff}
   #dtPrint .dp-paper,#dtPrint .dp-doc-paper{position:static;transform:none;box-shadow:none;width:100%;min-height:0}
@@ -217,7 +267,7 @@
     host.id = "dtPrint";
     host.innerHTML = html;
     const st = document.createElement("style");
-    st.textContent = `@page{size:${pageSize};margin:0}`;
+    st.textContent = pageSize.charAt(0) === "@" ? pageSize : `@page{size:${pageSize};margin:0}`;
     document.head.appendChild(st);
     document.body.appendChild(host);
     document.body.classList.add("dt-printing");
@@ -250,16 +300,15 @@
         inner.innerHTML = o.html;
         holder.appendChild(inner);
         document.body.appendChild(holder);
-        return window.html2pdf().set({
+        const worker = window.html2pdf().set({
           margin: o.margin || 0,
           filename: o.name,
           image: { type: "jpeg", quality: 0.97 },
           html2canvas: { scale: 2, useCORS: true, backgroundColor: "#fff" },
           jsPDF: { unit: "mm", format: o.format || "a4", orientation: o.orient || "portrait" },
           pagebreak: o.pagebreak || { mode: ["css"], avoid: "tr" }
-        }).from(inner).save()
-          .then(() => toast("PDF ডাউনলোড হয়েছে।"))
-          .finally(() => holder.remove());
+        }).from(inner).save();
+        return Promise.resolve(worker).then(() => { holder.remove(); toast("PDF ডাউনলোড হয়েছে।"); }, (err) => { holder.remove(); throw err; });
       })
       .catch(() => toast("PDF তৈরি করা যায়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।"))
       .then(finish);
@@ -956,7 +1005,376 @@
     });
   };
 
-  const IMPL = { saved: mountSaved, settings: mountSettings, img: mountImg, qr: mountQr, editor: mountEditor };
+  /* ---------- প্রগ্রেস ক্লেইম ---------- */
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const fmtDate = (s) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+    return m ? `${m[3]}-${MON[+m[2] - 1]}-${m[1].slice(2)}` : String(s || "");
+  };
+  const pn = (s) => { const v = parseFloat(String(s == null ? "" : s).replace(/,/g, "")); return isFinite(v) ? v : 0; };
+  const r2 = (v) => Math.round((v + 1e-9) * 100) / 100;
+  const dsh = (v) => (v ? f2(v) : "-");
+  const bl = (s, v) => (String(s == null ? "" : s).trim() === "" ? "" : f2(v));
+
+  const claimFresh = () => ({
+    h: { project: "", sub: "", trade: "", date: today(), no: "" },
+    s: { ocs: "", vadd: "", vomit: "", maxret: "", varw: "", ret: "5", d1m: "", d1d: "", d1a: "", d2m: "", d2d: "", d2a: "", pn: "", pa: "", mat: "", a1: "", a2: "" },
+    led: [{ d: "", ds: "", p: "", n: "" }],
+    nb: 18, ut: Array(18).fill(""), un: Array(18).fill(""),
+    rows: [{ t: "sec", l: "A", n: "" }, { t: "it", i: "", d: "", u: "m", c: Array(18).fill(""), q: "", r: "", p: "100", sh: [] }]
+  });
+  const claimFix = (c) => {
+    const f = claimFresh();
+    c.h = Object.assign(f.h, c.h || {});
+    c.s = Object.assign(f.s, c.s || {});
+    c.led = Array.isArray(c.led) && c.led.length ? c.led : f.led;
+    c.nb = Math.max(1, Math.min(24, parseInt(c.nb, 10) || 18));
+    const fit = (a) => { a = Array.isArray(a) ? a.slice(0, c.nb) : []; while (a.length < c.nb) a.push(""); return a; };
+    c.ut = fit(c.ut);
+    c.un = fit(c.un);
+    c.rows = Array.isArray(c.rows) && c.rows.length ? c.rows : f.rows;
+    c.rows.forEach((r) => { if (r.t === "it") { r.c = fit(r.c); r.sh = Array.isArray(r.sh) ? r.sh : []; } });
+    return c;
+  };
+
+  const claimCalc = (c) => {
+    const s = c.s;
+    const rows = c.rows.map((r) => {
+      if (r.t !== "it") return null;
+      const tot = r.c.reduce((a, v) => a + pn(v), 0);
+      const pct = String(r.p).trim() === "" ? 100 : pn(r.p);
+      return { tot, amt: r2(tot * pn(r.q) * pn(r.r) * pct / 100) };
+    });
+    const work = r2(rows.reduce((a, x) => a + (x ? x.amt : 0), 0));
+    const gross = r2(work + pn(s.varw));
+    let ret = r2(gross * pn(s.ret) / 100);
+    const mx = pn(s.maxret);
+    if (mx > 0 && ret > mx) ret = mx;
+    const net = r2(gross - ret);
+    const cum = r2(net + pn(s.d1a) + pn(s.d2a));
+    const claim = r2(cum - pn(s.pa));
+    const pay = r2(c.led.reduce((a, x) => a + pn(x.p), 0));
+    const deb = r2(c.led.reduce((a, x) => a + pn(x.n), 0));
+    const paid = r2(pay - deb);
+    const due = r2(cum - paid - pn(s.mat) + pn(s.a1) + pn(s.a2));
+    return { rows, work, gross, ret, net, cum, claim, pay, deb, paid, due, rev: r2(pn(s.ocs) + pn(s.vadd) - pn(s.vomit)) };
+  };
+
+  const claimPage1 = (c) => {
+    const k = claimCalc(c), s = c.s, h = c.h, cur = esc(D.set.cur);
+    const A = (x, y, t, cls) => `<div class="cl-a${cls ? ` ${cls}` : ""}" style="left:${x}px;top:${y - 6}px">${t}</div>`;
+    const R = (x, y, t, cls) => `<div class="cl-a${cls ? ` ${cls}` : ""}" style="right:${794 - x}px;top:${y - 6}px">${t}</div>`;
+    const ln = (x, y, w, t) => `<div class="cl-ln" style="left:${x}px;top:${y}px;width:${w}px;height:${t || 1}px"></div>`;
+    const vln = (x, y, hh) => `<div class="cl-ln" style="left:${x}px;top:${y}px;width:1px;height:${hh}px"></div>`;
+    const row = (y, o) => {
+      let t = "";
+      if (o.l) t += A(o.lx || 40, y, o.l);
+      if (o.x) t += A(o.x[0], y, o.x[1]);
+      if (o.col) t += A(292, y, ":");
+      if (o.rm !== 0) t += A(430, y, cur);
+      if (o.v !== undefined) t += R(498, y, o.v, `cl-v${o.u ? ` ${o.u}` : ""}`);
+      return t;
+    };
+    const n = (x) => esc(x);
+    let o = `<div class="cl-pg cl-p1">`;
+    o += `<div class="cl-ln" style="left:24px;top:76px;width:746px;height:1030px;background:none;border:1.5px solid #000"></div>`;
+    o += vln(506, 76, 1030) + ln(24, 172, 482) + ln(24, 318, 482, 2) + ln(24, 696, 482, 2) + ln(24, 1007, 746, 2) + ln(506, 1007, 264);
+    o += A(24, 98, "STATEMENT OF SUB-CONTRACTOR'S WORK DONE", "b cl-title");
+    o += A(52, 126, `<b>Project : ${n(h.project)}</b>`) + A(52, 140, `<b>Sub-Cont : ${n(h.sub)}</b>`) + A(52, 154, `<b>Trade : ${n(h.trade)}</b>`);
+    o += A(420, 118, "Date :") + R(498, 118, n(fmtDate(h.date)), "cl-v");
+    o += A(358, 140, "Progress Claim No :") + R(498, 140, n(h.no), "cl-v");
+    o += row(186, { l: "Original Contract Sum :", lx: 44, v: bl(s.ocs, pn(s.ocs)) });
+    o += row(204, { l: "Variation Order :", lx: 44, x: [172, "Additional"], v: dsh(pn(s.vadd)) });
+    o += row(252, { x: [172, "Omission"], v: dsh(pn(s.vomit)), u: "ul" });
+    o += row(280, { v: dsh(k.rev) });
+    o += row(308, { l: "Max. retention sum", lx: 170, col: 1, v: dsh(pn(s.maxret)) });
+    o += row(350, { l: "Total work done to date", col: 1, v: f2(k.work) });
+    o += row(377, { l: "Less previous work done", col: 1, rm: 0 });
+    o += row(405, { col: 1, rm: 0 });
+    o += row(446, { l: "Total variation works", col: 1, v: bl(s.varw, pn(s.varw)), u: "ul" });
+    o += row(473, { l: "Gross amount to date", col: 1, v: f2(k.gross) });
+    o += row(500, { l: "Less retention :", x: [188, `${n(s.ret)}%`], v: f2(k.ret), u: "ul" });
+    o += row(527, { l: "Total workdone less retention :", v: f2(k.net) });
+    o += row(556, { l: "Add : Dayworks", lx: 30, col: 1, x: [110, n(s.d1m)], v: bl(s.d1a, pn(s.d1a)) }) + A(168, 556, n(s.d1d));
+    o += row(584, { l: "Add : Others", lx: 30, col: 1, x: [110, n(s.d2m)], v: bl(s.d2a, pn(s.d2a)) }) + A(168, 584, n(s.d2d));
+    o += row(612, { l: "Total cumulative work done certified to date", lx: 30, v: f2(k.cum) });
+    o += row(641, { l: "Less : Previous work done certified (up to statement No.", lx: 30, x: [298, `${n(s.pn)} )`], v: dsh(pn(s.pa)) });
+    o += row(670, { v: f2(k.claim), u: "dul" });
+    o += row(718, { l: "Total Cumulative payments certified to date :", lx: 30, v: f2(k.cum) });
+    o += row(748, { l: "Less : Amount previously paid", lx: 30, v: f2(k.paid) });
+    o += row(779, { l: "Less : Materials cost", lx: 30, v: dsh(pn(s.mat)) });
+    o += row(808, { l: "ADD : ADVANCES", lx: 30, v: bl(s.a1, pn(s.a1)) });
+    o += row(837, { v: bl(s.a2, pn(s.a2)) });
+    o += row(866, { l: "Amount Due :", lx: 30, v: f2(k.due), u: "ul" });
+    o += A(30, 931, "Amount Recommended :");
+    o += A(76, 962, "Work Done :") + A(273, 962, cur) + ln(292, 968, 80);
+    o += A(76, 980, "Advance :") + A(273, 980, cur) + ln(292, 986, 80) + ln(448, 990, 58, 1) + ln(448, 993, 58, 1);
+    o += A(30, 1030, "Prepared by :") + ln(96, 1036, 110);
+    o += A(300, 1022, "Approved by :") + ln(362, 1028, 96);
+    o += A(30, 1076, "Checked by :") + ln(92, 1082, 114);
+    o += A(300, 1066, "Received by :") + ln(358, 1072, 100);
+    o += A(516, 1022, "Account Department :-");
+    o += A(516, 1086, "Certified by :") + ln(578, 1092, 150);
+    const rowsN = Math.max(68, c.led.length), rh = Math.min(12.4, 843 / rowsN);
+    let t = `<table class="cl-led" style="left:506px;top:76px;width:264px;--rh:${rh}px"><colgroup><col style="width:64px"><col style="width:68px"><col style="width:72px"><col style="width:60px"></colgroup>`;
+    t += `<tr><th>Date</th><th>Description</th><th>Payment</th><th>Debit<br>Note</th></tr>`;
+    for (let i = 0; i < rowsN; i++) {
+      const x = c.led[i];
+      t += x && (x.d || x.ds || x.p || x.n) ? `<tr><td class="c">${n(x.d)}</td><td class="c">${n(x.ds)}</td><td class="n">${bl(x.p, pn(x.p))}</td><td class="n">${dsh(pn(x.n))}</td></tr>` : `<tr><td></td><td></td><td></td><td></td></tr>`;
+    }
+    t += `<tr class="t"><td class="c">Total</td><td class="c">${k.deb ? "" : "-"}</td><td class="n">${f2(k.pay)}</td><td class="n">${dsh(k.deb)}</td></tr>`;
+    t += `<tr class="t"><td colspan="2" class="n">Total Payable :</td><td colspan="2" class="n">${f2(k.paid)}</td></tr></table>`;
+    return `${o}${t}</div>`;
+  };
+
+  const claimPage2 = (c) => {
+    const k = claimCalc(c), nb = c.nb, h = c.h, rows = c.rows;
+    const rh = Math.max(9, Math.min(13.5, 640 / (rows.length + 5)));
+    const fixed = 54 + 122 + 24 + 44 + 56 + 46 + 36 + 76;
+    const bw = Math.min(60, Math.floor((1079 - fixed) / nb));
+    const A = (x, y, t) => `<div class="cl-a" style="left:${x}px;top:${y}px">${t}</div>`;
+    let o = `<div class="cl-pg cl-p2" style="--rh:${rh}px">`;
+    o += A(22, 12, `<b>Project : ${esc(h.project)}</b>`) + A(22, 26, `<b>Sub-Cont : ${esc(h.sub)}</b>`) + A(22, 40, `<b>Trade : ${esc(h.trade)}</b>`);
+    o += `<div class="cl-a" style="right:30px;top:12px"><b>Date : ${esc(fmtDate(h.date))}</b></div><div class="cl-a" style="right:30px;top:28px"><b>Progress Claim No : ${esc(h.no)}</b></div>`;
+    let t = `<table class="cl-t2" style="left:22px;top:60px"><colgroup><col style="width:54px"><col style="width:122px"><col style="width:24px">${`<col style="width:${bw}px">`.repeat(nb)}<col style="width:44px"><col style="width:56px"><col style="width:46px"><col style="width:36px"><col style="width:76px"></colgroup>`;
+    t += `<tr><th rowspan="4">Item</th><th rowspan="4">Description</th><th rowspan="2">Unit</th><th colspan="${nb}">BLOCK</th><th rowspan="4">Total Unit<br>Done</th><th rowspan="4">QTY</th><th rowspan="4">Rate</th><th rowspan="4">%</th><th>Amount</th></tr>`;
+    t += `<tr>${Array.from({ length: nb }, (_, i) => `<th>${i + 1}</th>`).join("")}<th>RM per unit</th></tr>`;
+    t += `<tr><th rowspan="2">unit<br>type</th>${c.ut.map((v) => `<th>${esc(v)}</th>`).join("")}<th rowspan="2"></th></tr>`;
+    t += `<tr>${c.un.map((v) => `<th class="sm">${esc(v)}</th>`).join("")}</tr>`;
+    const blank = "<td></td>".repeat(nb);
+    rows.forEach((r, i) => {
+      if (r.t === "sec") t += `<tr><td class="ic"><b>${esc(r.l)}</b></td><td colspan="${2 + nb}"><b><u>${esc(r.n)}</u></b></td><td class="n">-</td><td></td><td></td><td></td><td class="n">-</td></tr>`;
+      else if (r.t === "gap") t += `<tr><td></td><td></td><td></td>${blank}<td class="n">-</td><td></td><td></td><td></td><td class="n">-</td></tr>`;
+      else {
+        const x = k.rows[i], sh = (key) => ((r.sh || []).indexOf(key) > -1 ? " sh" : "");
+        const cells = r.c.map((v, b) => (String(v).trim().toLowerCase() === "x" ? `<td class="xx"><svg width="${bw - 1}" height="${rh.toFixed(1)}" viewBox="0 0 ${bw - 1} ${rh.toFixed(1)}"><path d="M0 0L${bw - 1} ${rh.toFixed(1)}M${bw - 1} 0L0 ${rh.toFixed(1)}" stroke="#000" stroke-width=".7" fill="none"/></svg></td>` : `<td class="n${sh(String(b))}">${esc(v)}</td>`)).join("");
+        t += `<tr><td class="ic">${esc(r.i)}</td><td>${esc(r.d)}</td><td class="ct">${esc(r.u)}</td>${cells}<td class="n">${dsh(x.tot)}</td><td class="n${sh("q")}">${bl(r.q, pn(r.q))}</td><td class="n">${bl(r.r, pn(r.r))}</td><td class="n">${String(r.p).trim() === "" ? "" : `${esc(pn(r.p))}%`}</td><td class="n">${dsh(x.amt)}</td></tr>`;
+      }
+    });
+    t += `<tr class="tt"><td></td><td colspan="${2 + nb}"><b>TOTAL AMOUNT</b></td><td colspan="4"></td><td class="n"><b>${f2(k.work)}</b></td></tr></table>`;
+    return `${o}${t}</div>`;
+  };
+
+  const claimPdf = (c, name, btn) => {
+    const label = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = "তৈরি হচ্ছে...";
+    const mk = (html, w, hh) => {
+      const holder = document.createElement("div");
+      holder.style.cssText = "position:fixed;left:-99999px;top:0";
+      const el = document.createElement("div");
+      el.className = "dp-pdf";
+      el.style.cssText = `width:${w}px;height:${hh}px;background:#fff`;
+      el.innerHTML = html;
+      holder.appendChild(el);
+      document.body.appendChild(holder);
+      return { holder, el };
+    };
+    const opt = { margin: 0, image: { type: "jpeg", quality: 0.97 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: "#fff" }, jsPDF: { unit: "mm", format: "a4", orientation: "portrait" } };
+    let a = null, b = null;
+    const cleanup = () => { if (a) a.holder.remove(); if (b) b.holder.remove(); };
+    return loadScript(LIBS.pdf)
+      .then(() => (document.fonts && document.fonts.ready) || null)
+      .then(() => {
+        a = mk(claimPage1(c), 794, 1120);
+        b = mk(claimPage2(c), 1123, 794);
+        return Promise.resolve(window.html2pdf().set(opt).from(a.el).toPdf().get("pdf"));
+      })
+      .then((pdf) => Promise.resolve(window.html2pdf().set(opt).from(b.el).toCanvas().get("canvas")).then((cv) => {
+        pdf.addPage("a4", "landscape");
+        pdf.addImage(cv.toDataURL("image/jpeg", 0.97), "JPEG", 0, 0, 297, 210);
+        return pdf.save(name);
+      }))
+      .then(() => { cleanup(); toast("PDF ডাউনলোড হয়েছে (২ পেজ)।"); })
+      .catch(() => {
+        cleanup();
+        toast("একসাথে PDF হয়নি, পেজ আলাদা করে ডাউনলোড হচ্ছে।");
+        return exportPdf({ html: claimPage1(c), width: "794px", style: "height:1120px", name: name.replace(/\.pdf$/, "-p1.pdf") })
+          .then(() => exportPdf({ html: claimPage2(c), width: "1123px", style: "height:794px", name: name.replace(/\.pdf$/, "-p2.pdf"), orient: "landscape" }));
+      })
+      .then(() => { btn.disabled = false; btn.innerHTML = label; });
+  };
+
+  const mountClaim = (el) => {
+    let c = claimFix(D.drafts.claim ? clone(D.drafts.claim) : claimFresh());
+    let sub = "info", pg = 1, shade = false;
+    const commit = () => { D.drafts.claim = c; save(); };
+    const title = () => `Claim-${c.h.project || "project"}-PC${c.h.no || ""}`;
+
+    const ifield = (path, label, type) => {
+      const [g, key] = path.split(".");
+      return fieldHTML({ l: label, t: type || "text", k: key }, c[g][key], `data-f="${path}"`);
+    };
+    const infoHTML = () => `
+      <div class="dt-sum" data-ref="sum"></div>
+      <h3 class="dt-h">হেডার</h3>
+      ${ifield("h.project", "Project")}${ifield("h.sub", "Sub-Cont")}${ifield("h.trade", "Trade")}
+      <div class="dt-g2">${ifield("h.date", "তারিখ", "date")}${ifield("h.no", "Progress Claim No.")}</div>
+      <h3 class="dt-h">চুক্তি ও ভেরিয়েশন</h3>
+      ${ifield("s.ocs", "Original Contract Sum", "number")}
+      <div class="dt-g2">${ifield("s.vadd", "Variation — Additional", "number")}${ifield("s.vomit", "Variation — Omission", "number")}</div>
+      ${ifield("s.maxret", "Max. retention sum", "number")}
+      <h3 class="dt-h">কাজের হিসাব</h3>
+      ${ifield("s.varw", "Total variation works", "number")}${ifield("s.ret", "Retention %", "number")}
+      <div class="dt-g2">${ifield("s.d1m", "Dayworks — মাস")}${ifield("s.d1a", "Dayworks — টাকা", "number")}</div>${ifield("s.d1d", "Dayworks — বিবরণ")}
+      <div class="dt-g2">${ifield("s.d2m", "Others — মাস")}${ifield("s.d2a", "Others — টাকা", "number")}</div>${ifield("s.d2d", "Others — বিবরণ")}
+      <h3 class="dt-h">আগের ক্লেইম ও কর্তন</h3>
+      <div class="dt-g2">${ifield("s.pn", "Previous statement No.")}${ifield("s.pa", "Previous work done certified", "number")}</div>
+      ${ifield("s.mat", "Materials cost", "number")}
+      <div class="dt-g2">${ifield("s.a1", "ADD : Advances", "number")}${ifield("s.a2", "ADD : (দ্বিতীয় সারি)", "number")}</div>`;
+
+    const ledHTML = () => `
+      <p class="dt-sub">পেজ ১-এর ডানদিকের পেমেন্ট তালিকা। মোট পেমেন্ট থেকে ‘Amount previously paid’ নিজে হিসাব হবে।</p>
+      <div class="dt-sc"><table class="dt-it"><tr><th>Date</th><th>Description</th><th>Payment</th><th>Debit Note</th><th></th></tr>
+      ${c.led.map((x, i) => `<tr><td><input data-lg="${i}.d" value="${esc(x.d)}" placeholder="dd/mm/yy"></td><td><input data-lg="${i}.ds" value="${esc(x.ds)}"></td><td><input data-lg="${i}.p" type="number" step="any" inputmode="decimal" value="${esc(x.p)}"></td><td><input data-lg="${i}.n" type="number" step="any" inputmode="decimal" value="${esc(x.n)}"></td><td><button class="dt-x" type="button" data-ldel="${i}" aria-label="মুছুন">×</button></td></tr>`).join("")}</table></div>
+      <button class="dt-btn sm" type="button" data-ladd="1">${ic("plus", 14)} সারি যোগ</button>`;
+
+    const actBtns = (i, last) => `<button type="button" data-ra="up:${i}" aria-label="উপরে">↑</button><button type="button" data-ra="dn:${i}" aria-label="নিচে">↓</button><button type="button" data-ra="dup:${i}" aria-label="কপি">⧉</button><button type="button" data-ra="del:${i}" aria-label="মুছুন" style="color:var(--color-error)">×</button>`;
+    const sheetHTML = () => {
+      const nb = c.nb;
+      let h = `<div class="dt-g2" style="margin-bottom:10px"><div class="dt-f"><label>ব্লক / ইউনিট কলাম (১–২৪)</label><input type="number" min="1" max="24" data-nb="1" value="${nb}"></div><div class="dt-f"><label>সব সারিতে %</label><button class="dt-btn sm" type="button" data-bulkp="1" style="width:100%;justify-content:center">% বসান</button></div></div>`;
+      h += `<div class="dt-tb"><button class="dt-btn sm${shade ? " p" : ""}" type="button" data-shade="1">▨ গ্রে রঙ ${shade ? "চালু" : "বন্ধ"}</button></div><p class="dt-sub">ঘরে <b>x</b> লিখলে কাটা ঘর (N/A) হবে। গ্রে মোডে ঘরে ট্যাপ করলে রঙ হবে।</p>`;
+      h += `<div class="dt-sc"><table class="cg${shade ? " shading" : ""}"><thead><tr><th></th><th>Item</th><th>Description</th><th>Unit</th>${Array.from({ length: nb }, (_, i) => `<th>${i + 1}</th>`).join("")}<th>Total</th><th>QTY</th><th>Rate</th><th>%</th><th>Amount</th></tr>`;
+      h += `<tr><th colspan="4" style="text-align:right">unit type</th>${c.ut.map((v, i) => `<th><input data-ub="ut:${i}" value="${esc(v)}"></th>`).join("")}<th colspan="5"></th></tr>`;
+      h += `<tr><th colspan="4" style="text-align:right">unit name</th>${c.un.map((v, i) => `<th><input data-ub="un:${i}" value="${esc(v)}"></th>`).join("")}<th colspan="5"></th></tr></thead><tbody>`;
+      const kc = claimCalc(c);
+      c.rows.forEach((r, i) => {
+        if (r.t === "sec") h += `<tr class="cg-sec"><td class="act">${actBtns(i)}</td><td><input data-rf="${i}:l" value="${esc(r.l)}" placeholder="A"></td><td colspan="${3 + nb}"><input data-rf="${i}:n" value="${esc(r.n)}" placeholder="সেকশনের নাম"></td><td colspan="4"></td></tr>`;
+        else if (r.t === "gap") h += `<tr class="cg-gap"><td class="act">${actBtns(i)}</td><td colspan="${8 + nb}">— ফাঁকা সারি —</td></tr>`;
+        else {
+          const sh = (key) => ((r.sh || []).indexOf(key) > -1 ? " sh" : "");
+          h += `<tr><td class="act">${actBtns(i)}<button type="button" data-fill="${i}" aria-label="সব ঘর ভরুন">⇢</button></td><td><input class="w-i" data-rf="${i}:i" value="${esc(r.i)}"></td><td><input class="w-d" data-rf="${i}:d" value="${esc(r.d)}"></td><td><input class="w-u" data-rf="${i}:u" value="${esc(r.u)}"></td>`;
+          h += r.c.map((v, b) => `<td data-sh="${i}:${b}" class="${sh(String(b))}"><input class="w-c" data-ce="${i}:${b}" value="${esc(v)}"></td>`).join("");
+          h += `<td class="tot" data-rt="${i}">${dsh(kc.rows[i].tot)}</td><td data-sh="${i}:q" class="${sh("q")}"><input class="w-q" data-rf="${i}:q" value="${esc(r.q)}" inputmode="decimal"></td><td><input class="w-q" data-rf="${i}:r" value="${esc(r.r)}" inputmode="decimal"></td><td><input class="w-p" data-rf="${i}:p" value="${esc(r.p)}" inputmode="decimal"></td><td class="tot" data-ra2="${i}">${dsh(kc.rows[i].amt)}</td></tr>`;
+        }
+      });
+      h += `</tbody></table></div><div class="dt-tb" style="margin-top:10px"><button class="dt-btn sm" type="button" data-add="sec">${ic("plus", 14)} সেকশন</button><button class="dt-btn sm" type="button" data-add="it">${ic("plus", 14)} আইটেম</button><button class="dt-btn sm" type="button" data-add="gap">${ic("plus", 14)} ফাঁকা সারি</button></div><p class="dt-sub">মোট (TOTAL AMOUNT): <b data-gt="1">${f2(kc.work)}</b></p>`;
+      return h;
+    };
+
+    el.innerHTML = `${TABS}<div class="dt-tw" data-v="f"><div class="dt-fp">
+      <div class="dt-tb">
+        <button class="dt-btn p" type="button" data-act="pdf">${ic("dl")} PDF (২ পেজ)</button>
+        <button class="dt-btn" type="button" data-act="save">${ic("save")} সংরক্ষণ</button>
+        <button class="dt-btn" type="button" data-act="print">${ic("print")} প্রিন্ট</button>
+        <button class="dt-btn" type="button" data-act="reset">${ic("reset")} নতুন</button>
+      </div>
+      <div class="dt-subtabs"><button class="dt-btn sm p" type="button" data-sub="info">তথ্য ও হিসাব</button><button class="dt-btn sm" type="button" data-sub="led">পেমেন্ট তালিকা</button><button class="dt-btn sm" type="button" data-sub="sheet">মেজারমেন্ট শিট</button></div>
+      <div data-ref="pane"></div>
+    </div><div class="dt-pv" data-ref="stage"><div class="dt-pgsel"><button class="dt-btn sm p" type="button" data-pgsel="1">পেজ ১</button><button class="dt-btn sm" type="button" data-pgsel="2">পেজ ২</button></div><div class="dt-wrap" data-ref="wrap"></div></div></div>`;
+
+    const pane = q1(el, '[data-ref="pane"]'), stage = q1(el, '[data-ref="stage"]'), wrap = q1(el, '[data-ref="wrap"]');
+    const fit = () => {
+      const p = wrap.firstChild;
+      const w = pg === 1 ? 794 : 1123, hh = pg === 1 ? 1120 : 794, avail = stage.clientWidth - 24;
+      if (!p || avail <= 0) return;
+      const sc = Math.min(1, avail / w);
+      p.style.transform = `scale(${sc})`;
+      wrap.style.width = `${w * sc}px`;
+      wrap.style.height = `${hh * sc}px`;
+    };
+    const updateSums = () => {
+      const k = claimCalc(c), s = q1(el, '[data-ref="sum"]');
+      if (!s) return;
+      const line = (l, v) => `<span>${l}</span><b>${D.set.cur} ${f2(v)}</b>`;
+      s.innerHTML = line("Total work done", k.work) + line("Retention", k.ret) + line("Total cumulative certified", k.cum) + line("এই ক্লেইম (cumulative − previous)", k.claim) + line("Amount previously paid", k.paid) + line("Amount Due", k.due);
+    };
+    const draw = () => { wrap.innerHTML = pg === 1 ? claimPage1(c) : claimPage2(c); fit(); updateSums(); };
+    let raf = 0;
+    const redraw = () => { commit(); if (raf) return; raf = requestAnimationFrame(() => { raf = 0; draw(); }); };
+    const renderPane = () => {
+      pane.innerHTML = sub === "info" ? infoHTML() : sub === "led" ? ledHTML() : sheetHTML();
+      el.querySelectorAll("[data-sub]").forEach((b) => b.classList.toggle("p", b.dataset.sub === sub));
+      updateSums();
+    };
+    const rowTotals = (i) => {
+      const k = claimCalc(c), t = q1(el, `[data-rt="${i}"]`), a = q1(el, `[data-ra2="${i}"]`), g = q1(el, "[data-gt]");
+      if (t && k.rows[i]) { t.textContent = dsh(k.rows[i].tot); a.textContent = dsh(k.rows[i].amt); }
+      if (g) g.textContent = f2(k.work);
+    };
+
+    renderPane();
+    draw();
+    const stop = watchWidth(stage, fit);
+    bindTabs(el, fit);
+
+    el.addEventListener("input", (e) => {
+      const t = e.target, d = t.dataset;
+      if (d.f) { const [g, key] = d.f.split("."); c[g][key] = t.value; }
+      else if (d.lg) { const [i, key] = d.lg.split("."); c.led[+i][key] = t.value; }
+      else if (d.ub) { const [w, i] = d.ub.split(":"); c[w][+i] = t.value; }
+      else if (d.ce) { const [i, b] = d.ce.split(":"); c.rows[+i].c[+b] = t.value; rowTotals(+i); }
+      else if (d.rf) { const [i, key] = d.rf.split(":"); c.rows[+i][key] = t.value; if (/^[qrp]$/.test(key)) rowTotals(+i); }
+      else return;
+      redraw();
+    });
+    el.addEventListener("change", (e) => {
+      if (!e.target.dataset.nb) return;
+      const nb = Math.max(1, Math.min(24, parseInt(e.target.value, 10) || c.nb));
+      c.nb = nb;
+      claimFix(c);
+      renderPane();
+      redraw();
+    });
+    el.addEventListener("click", (e) => {
+      const td = e.target.closest("[data-sh]");
+      if (td && shade) {
+        const [i, key] = td.dataset.sh.split(":"), r = c.rows[+i], at = (r.sh || []).indexOf(key);
+        if (at > -1) r.sh.splice(at, 1); else r.sh.push(key);
+        td.classList.toggle("sh", at === -1);
+        redraw();
+        return;
+      }
+      const b = e.target.closest("button");
+      if (!b) return;
+      const d = b.dataset;
+      const rebuild = () => { claimFix(c); renderPane(); redraw(); };
+      if (d.sub) { sub = d.sub; renderPane(); }
+      else if (d.pgsel) { pg = +d.pgsel; el.querySelectorAll("[data-pgsel]").forEach((x) => x.classList.toggle("p", x === b)); draw(); stage.scrollTop = 0; }
+      else if (d.ladd) { c.led.push({ d: "", ds: "", p: "", n: "" }); rebuild(); }
+      else if (d.ldel !== undefined) { c.led.splice(+d.ldel, 1); if (!c.led.length) c.led.push({ d: "", ds: "", p: "", n: "" }); rebuild(); }
+      else if (d.add) {
+        c.rows.push(d.add === "sec" ? { t: "sec", l: "", n: "" } : d.add === "gap" ? { t: "gap" } : { t: "it", i: "", d: "", u: "m", c: Array(c.nb).fill(""), q: "", r: "", p: "100", sh: [] });
+        rebuild();
+        if (c.rows.length > 70) toast("পেজ ২-এ সারি ৭০টির বেশি হলে লেখা খুব ছোট হবে।");
+      } else if (d.ra) {
+        const [op, ix] = d.ra.split(":"), i = +ix;
+        if (op === "up" && i > 0) { const t = c.rows[i]; c.rows[i] = c.rows[i - 1]; c.rows[i - 1] = t; }
+        else if (op === "dn" && i < c.rows.length - 1) { const t = c.rows[i]; c.rows[i] = c.rows[i + 1]; c.rows[i + 1] = t; }
+        else if (op === "dup") c.rows.splice(i + 1, 0, clone(c.rows[i]));
+        else if (op === "del") { c.rows.splice(i, 1); if (!c.rows.length) c.rows.push({ t: "gap" }); }
+        rebuild();
+      } else if (d.fill !== undefined) {
+        const v = prompt("এই সারির সব খালি ঘরে কত বসাবেন? (যেমন 2)", "2");
+        if (v === null) return;
+        c.rows[+d.fill].c = c.rows[+d.fill].c.map((x) => (String(x).trim() === "" ? v : x));
+        rebuild();
+      } else if (d.bulkp) {
+        const v = prompt("সব আইটেম সারিতে কত % বসাবেন? (যেমন 90)", "90");
+        if (v === null) return;
+        c.rows.forEach((r) => { if (r.t === "it") r.p = v; });
+        rebuild();
+      } else if (d.shade) { shade = !shade; renderPane(); }
+      else if (d.act === "pdf") claimPdf(c, `${safeName(title())}.pdf`, b);
+      else if (d.act === "print") {
+        printHTML(`<div style="page:cl1;break-after:page">${claimPage1(c)}</div><div style="page:cl2">${claimPage2(c)}</div>`, "@page cl1{size:A4 portrait;margin:0}@page cl2{size:A4 landscape;margin:0}", safeName(title()));
+      } else if (d.act === "save") {
+        D.docs.push({ id: Date.now(), t: "claim", ti: `${c.h.project || "Claim"} — PC ${c.h.no || ""}`, d: clone(c), ts: new Date().toISOString() });
+        save();
+        toast("সংরক্ষিত হয়েছে। ‘সংরক্ষিত ডকুমেন্ট’-এ দেখতে পাবেন।");
+      } else if (d.act === "reset") {
+        if (!confirm("সব তথ্য মুছে নতুন ক্লেইম শুরু করবেন?")) return;
+        c = claimFresh();
+        delete D.drafts.claim;
+        save();
+        renderPane();
+        draw();
+      }
+    });
+    return () => { stop(); if (raf) cancelAnimationFrame(raf); };
+  };
+
+  const IMPL = { claim: mountClaim, saved: mountSaved, settings: mountSettings, img: mountImg, qr: mountQr, editor: mountEditor };
 
   window.SiteTools = {
     has: (id) => !!(DOCS[id] || IMPL[id]),

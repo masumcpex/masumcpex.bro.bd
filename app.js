@@ -481,12 +481,13 @@
       title: `Tools | ${D.hero.name}`,
       html: () => {
         const groups = D.toolGroups || [];
+        const featured = (D.tools || []).filter((t) => t.featured);
         return `
           <section class="page"><div class="page-inner">
             <div class="eyebrow">Tools</div>
             <h1 class="section-title">টুলস</h1>
             <p class="tools-sub">একটি বিভাগ বেছে নিন।</p>
-            <div class="card-grid">${groups.length ? groups.map(groupCard).join("") : emptyState("এখনো কোনো টুল যোগ করা হয়নি", "নতুন টুল তৈরি হলে এখানে দেখা যাবে।")}</div>
+            <div class="card-grid">${featured.length || groups.length ? featured.map(toolCard).join("") + groups.map(groupCard).join("") : emptyState("এখনো কোনো টুল যোগ করা হয়নি", "নতুন টুল তৈরি হলে এখানে দেখা যাবে।")}</div>
           </div></section>`;
       }
     }

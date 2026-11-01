@@ -43,11 +43,21 @@ const SITE_DATA = {
     { id: "business", icon: "receipt", title: "ব্যবসা", description: "ইনভয়েস, কোটেশন, রিসিপ্ট ও পে-স্লিপ" },
     { id: "office", icon: "mail", title: "অফিস ও ব্যক্তিগত", description: "চিঠি, সার্টিফিকেট, সিভি ও চুক্তিপত্র" },
     { id: "studio", icon: "doc", title: "এডিটর ও PDF টুলস", description: "ডকুমেন্ট এডিটর, ছবি থেকে PDF ও QR কোড" },
-    { id: "systems", icon: "build", title: "আমার সিস্টেম", description: "হাজিরা, প্রগ্রেস ক্লেইম ও ফাইন্যান্স" },
     { id: "data", icon: "set", title: "সেটিং ও ডেটা", description: "কোম্পানির তথ্য, সংরক্ষিত ডকুমেন্ট ও ব্যাকআপ" }
   ],
 
   tools: [
+    { id: "claim", featured: true, icon: "build", title: "প্রগ্রেস ক্লেইম", description: "সাব-কন্ট্রাক্টরের ওয়ার্ক ডান স্টেটমেন্ট ও মেজারমেন্ট শিট — ২ পেজের PDF।" },
+    { id: "finance", featured: true, icon: "wallet", title: "ফাইন্যান্স ট্র্যাকার", description: "আয়-ব্যয় ও ফ্যামিলি সাপোর্টের হিসাব।", url: "https://masumcpex.com/Finance.html" },
+    {
+      id: "attendance",
+      featured: true,
+      icon: "calendar",
+      status: "Live",
+      title: "Attendance",
+      description: "দলের সদস্যদের দৈনিক হাজিরা, কর্মঘণ্টা ও মাসিক ছুটি এক জায়গায় ট্র্যাক করুন। মাসিক ক্যালেন্ডার, সামারি স্ট্যাটস ও ডাউনলোডযোগ্য PDF রিপোর্টসহ।",
+      url: "attendance.html"
+    },
     { id: "invoice", group: "business", icon: "receipt", title: "ইনভয়েস", description: "বিল ও ইনভয়েস তৈরি করে PDF করুন।" },
     { id: "quote", group: "business", icon: "quote", title: "কোটেশন", description: "দামের প্রস্তাব বানিয়ে পাঠান।" },
     { id: "receipt", group: "business", icon: "wallet", title: "মানি রিসিপ্ট", description: "টাকা প্রাপ্তির রসিদ তৈরি করুন।" },
@@ -59,17 +69,6 @@ const SITE_DATA = {
     { id: "editor", group: "studio", icon: "doc", title: "ডকুমেন্ট এডিটর", description: "বাংলায় লিখে A4/A5 PDF করুন।" },
     { id: "img", group: "studio", icon: "image", title: "ছবি থেকে PDF", description: "একাধিক ছবি এক PDF-এ জুড়ুন।" },
     { id: "qr", group: "studio", icon: "qr", title: "QR কোড জেনারেটর", description: "লিংক, ওয়াই-ফাই ও কন্টাক্টের QR কোড।" },
-    {
-      id: "attendance",
-      group: "systems",
-      icon: "calendar",
-      status: "Live",
-      title: "Attendance",
-      description: "দলের সদস্যদের দৈনিক হাজিরা, কর্মঘণ্টা ও মাসিক ছুটি এক জায়গায় ট্র্যাক করুন। মাসিক ক্যালেন্ডার, সামারি স্ট্যাটস ও ডাউনলোডযোগ্য PDF রিপোর্টসহ।",
-      url: "attendance.html"
-    },
-    { id: "claim", group: "systems", icon: "build", title: "প্রগ্রেস ক্লেইম", description: "নির্মাণ কাজের ক্লেইম ও মেজারমেন্ট শিট PDF।", url: "claim.html" },
-    { id: "finance", group: "systems", icon: "wallet", title: "ফাইন্যান্স ট্র্যাকার", description: "আয়-ব্যয় ও ফ্যামিলি সাপোর্টের হিসাব।", url: "https://masumcpex.com/Finance.html" },
     { id: "saved", group: "data", icon: "save", title: "সংরক্ষিত ডকুমেন্ট", description: "আগে সংরক্ষণ করা ডকুমেন্ট খুলুন বা মুছুন।" },
     { id: "settings", group: "data", icon: "set", title: "সেটিং", description: "কোম্পানির তথ্য, ডকুমেন্টের রঙ ও ব্যাকআপ।" }
   ],
