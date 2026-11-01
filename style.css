@@ -911,6 +911,7 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 .tool-card{
   display:flex;
   flex-direction:column;
+  padding:var(--space-3);
 }
 .tool-icon-badge{
   width:46px; height:46px;
@@ -955,3 +956,13 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 }
 .tool-back:hover{ color:var(--color-accent-hover); }
 .tool-panel{ margin-top:var(--space-3); }
+
+.page-inner.wide{ max-width:1280px; }
+.tools-group{
+  font-family:var(--font-display);
+  font-size:1.15rem;
+  margin:var(--space-4) 0 var(--space-2);
+  color:var(--color-text);
+}
+#toolsGrid > .tools-group:first-child{ margin-top:var(--space-2); }
+.tool-loading{ color:var(--color-muted); padding:var(--space-3) 0; }

@@ -23,6 +23,24 @@
     grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect>',
     pin: '<path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>',
     phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>',
+    dl: '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"></path>',
+    save: '<path d="M5 3h12l3 3v15H5zM8 3v6h8M8 21v-7h8v7"></path>',
+    print: '<path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"></path>',
+    reset: '<path d="M4 12a8 8 0 108-8M4 4v5h5"></path>',
+    plus: '<path d="M12 5v14M5 12h14"></path>',
+    trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path>',
+    receipt: '<path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2zM9 8h6M9 12h6"></path>',
+    quote: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"></path>',
+    wallet: '<path d="M3 7h16a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2zM3 7l2-3h12M16 13h2"></path>',
+    award: '<path d="M12 14a5 5 0 100-10 5 5 0 000 10zM8.5 13.5L7 21l5-3 5 3-1.5-7.5"></path>',
+    user: '<path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0"></path>',
+    pen: '<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"></path>',
+    doc: '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8zM14 3v5h5M9 13h6M9 17h6"></path>',
+    build: '<path d="M4 21V5a1 1 0 011-1h8a1 1 0 011 1v16M14 9h5a1 1 0 011 1v11M3 21h18M8 8h2M8 12h2M8 16h2"></path>',
+    image: '<path d="M4 5h16v14H4zM8 10h.01M4 17l5-5 4 4 3-3 4 4"></path>',
+    set: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M14 4v4M10 10v4M16 16v4"></path>',
+    qr: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z"></path>',
+    clock: '<path d="M12 7v5l3 2M12 21a9 9 0 100-18 9 9 0 000 18z"></path>',
     mail: '<rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6 12 13 2 6"></path>'
   };
 
@@ -311,6 +329,19 @@
       <div class="card-cta"><span class="btn-view">খুলুন ${icon("arrow", 14)}</span></div>
     </a>`;
 
+  const groupedTools = (list) => {
+    const groups = [];
+    list.forEach((t) => {
+      const name = t.group || "টুলস";
+      let g = groups.find((x) => x.name === name);
+      if (!g) { g = { name, items: [] }; groups.push(g); }
+      g.items.push(t);
+    });
+    return groups.map((g) => `
+      <h2 class="tools-group">${esc(g.name)}</h2>
+      <div class="card-grid">${g.items.map(toolCard).join("")}</div>`).join("");
+  };
+
   const VIEWS = {
     home: {
       title: MAIN_TITLE,
@@ -319,7 +350,7 @@
         const latest = [
           D.library?.[0] && { label: "সর্বশেষ বই", title: D.library[0].title, link: "https://masumcpex.com/index.html#library" },
           D.journal?.[0] && { label: "সর্বশেষ জার্নাল", title: D.journal[0].title, link: routeHref("journal") },
-          D.tools?.[0] && { label: "ফিচার্ড টুল", title: D.tools[0].title, link: routeHref("tools") }
+          D.tools?.length && { label: "টুলস", title: `${D.tools.length}টি টুল — ইনভয়েস, QR, PDF ও আরও অনেক কিছু`, link: routeHref("tools") }
         ].filter(Boolean);
         return `
           <section class="page">
@@ -456,9 +487,7 @@
             <h1 class="section-title">টুলস</h1>
             <p class="tools-sub">প্রতিদিনের কাজ সহজ করতে বানানো অ্যাপ ও টুল — সবকিছু এক জায়গায়।</p>
             ${tools.length > 8 ? '<input type="search" class="tool-filter" id="toolFilter" placeholder="টুল খুঁজুন..." aria-label="টুল খুঁজুন">' : ""}
-            <div class="card-grid" id="toolsGrid">
-              ${tools.length ? tools.map(toolCard).join("") : `<article class="card"><h3 class="card-title">এখনো কোনো টুল যোগ করা হয়নি</h3><p class="card-desc">নতুন টুল তৈরি হলে এখানে দেখা যাবে।</p></article>`}
-            </div>
+            <div id="toolsGrid">${tools.length ? groupedTools(tools) : emptyState("এখনো কোনো টুল যোগ করা হয়নি", "নতুন টুল তৈরি হলে এখানে দেখা যাবে।")}</div>
           </div></section>`;
       },
       mount: (el) => {
@@ -468,27 +497,66 @@
         filter.addEventListener("input", () => {
           const q = filter.value.trim().toLowerCase();
           const list = (D.tools || []).filter((t) => `${t.title} ${t.description || ""}`.toLowerCase().includes(q));
-          grid.innerHTML = list.length ? list.map(toolCard).join("") : emptyState("কিছু পাওয়া যায়নি", "অন্য শব্দ দিয়ে খুঁজে দেখুন।");
+          grid.innerHTML = list.length ? groupedTools(list) : emptyState("কিছু পাওয়া যায়নি", "অন্য শব্দ দিয়ে খুঁজে দেখুন।");
           applyReveal(grid);
         });
       }
     }
   };
 
+  let toolsLoading = null;
+  let teardown = null;
+  let mountTicket = 0;
+
+  const loadToolsScript = () => {
+    if (window.SiteTools) return Promise.resolve();
+    if (!toolsLoading) {
+      toolsLoading = new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = "tools.js?v=1";
+        s.onload = resolve;
+        s.onerror = () => { toolsLoading = null; s.remove(); reject(new Error("tools.js")); };
+        document.head.appendChild(s);
+      });
+    }
+    return toolsLoading;
+  };
+
+  const mountTool = (id, el) => {
+    const ticket = ++mountTicket;
+    const stale = () => ticket !== mountTicket || !el.isConnected;
+    el.innerHTML = '<p class="tool-loading">লোড হচ্ছে...</p>';
+    loadToolsScript()
+      .then(() => {
+        if (stale()) return null;
+        if (!window.SiteTools.has(id)) { el.innerHTML = emptyState("টুলটি পাওয়া যায়নি", "লিংকটি ভুল হতে পারে।"); return null; }
+        return window.SiteTools.mount(id, el, { esc, escAttr, icon, tools: D.tools || [] });
+      })
+      .then((stop) => {
+        if (!stop) return;
+        if (stale()) stop();
+        else teardown = stop;
+      })
+      .catch(() => {
+        if (stale()) return;
+        el.innerHTML = `${emptyState("টুল লোড হয়নি", "ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।")}<button class="btn-view" type="button" id="toolRetry">আবার চেষ্টা করুন</button>`;
+        el.querySelector("#toolRetry")?.addEventListener("click", () => mountTool(id, el));
+      });
+  };
+
   const toolView = (id) => {
     const tool = (D.tools || []).find((t) => t.id === id);
-    const mod = TOOL_MODULES[id];
-    if (!tool || !mod) return null;
+    if (!tool || tool.url) return null;
     return {
       title: `${tool.title} | ${D.hero.name}`,
       html: () => `
-        <section class="page"><div class="page-inner">
+        <section class="page"><div class="page-inner wide">
           <a class="tool-back" href="${routeHref("tools")}">${icon("back", 16)} সব টুল</a>
           <h1 class="section-title">${esc(tool.title)}</h1>
           <p class="tools-sub">${esc(tool.description || "")}</p>
           <div class="tool-panel" id="toolMount"></div>
         </div></section>`,
-      mount: (el) => mod.mount(el.querySelector("#toolMount"), { esc, escAttr, icon })
+      mount: (el) => mountTool(id, el.querySelector("#toolMount"))
     };
   };
 
@@ -510,6 +578,8 @@
       location.replace(`#/${location.hash.slice(1)}`);
       return;
     }
+    if (teardown) { teardown(); teardown = null; }
+    mountTicket++;
     const path = currentPath();
     const [name, sub] = path.split("/");
     const view = name === "tools" && sub ? toolView(sub) || notFoundView : VIEWS[name] || notFoundView;
