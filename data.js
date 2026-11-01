@@ -47,7 +47,6 @@ const SITE_DATA = {
   ],
 
   tools: [
-    { id: "claim", featured: true, icon: "build", title: "প্রগ্রেস ক্লেইম", description: "সাব-কন্ট্রাক্টরের ওয়ার্ক ডান স্টেটমেন্ট ও মেজারমেন্ট শিট — ২ পেজের PDF।" },
     { id: "finance", featured: true, icon: "wallet", title: "ফাইন্যান্স ট্র্যাকার", description: "আয়-ব্যয় ও ফ্যামিলি সাপোর্টের হিসাব।", url: "https://masumcpex.com/Finance.html" },
     {
       id: "attendance",
