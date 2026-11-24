@@ -10,4 +10,6 @@
       <image:title>Masum Billah</image:title>
     </image:image>
   </url>
+  <url><loc>https://masumcpex.bro.bd/attendance.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://masumcpex.bro.bd/legal.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

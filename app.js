@@ -4,7 +4,8 @@
 
   const D = SITE_DATA;
   const app = document.getElementById("app");
-  const BASE = app ? "" : "index.html";
+  const isSPA = !!app && app.dataset.page !== "legal";
+  const BASE = isSPA ? "" : "index.html";
   const MAIN_TITLE = "Masum — Personal Digital Space";
 
   const PATHS = {
@@ -41,6 +42,8 @@
     set: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M14 4v4M10 10v4M16 16v4"></path>',
     qr: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z"></path>',
     clock: '<path d="M12 7v5l3 2M12 21a9 9 0 100-18 9 9 0 000 18z"></path>',
+    up: '<path d="M12 19V5M5 12l7-7 7 7"></path>',
+    shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path><path d="M9 12l2 2 4-4"></path>',
     mail: '<rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6 12 13 2 6"></path>'
   };
 
@@ -70,16 +73,86 @@
       : `<a ${attrs}>${esc(item.label)}</a>`;
   };
 
+
+  const LEGAL = [
+    { label: "Privacy Policy", href: "legal.html#privacy-policy" },
+    { label: "Terms of Service", href: "legal.html#terms" },
+    { label: "Cookie Policy", href: "legal.html#cookies" },
+    { label: "Disclaimer", href: "legal.html#disclaimer" }
+  ];
+
+  const footerHTML = () => {
+    const c = D.contact || {};
+    const email = (c.emails || [])[0] || "";
+    const explore = [
+      { label: "Home", href: "index.html#/home" },
+      { label: "About", href: "index.html#/about" },
+      { label: "Journey", href: "index.html#/journey" },
+      { label: "Attendance", href: "attendance.html" },
+      { label: "Tools", href: "index.html#/tools" },
+      { label: "Contact", href: "index.html#/contact" }
+    ];
+    const more = [
+      { label: "Library", href: "https://masumcpex.com/index.html#library", ext: 1 },
+      { label: "Articles", href: "https://masumcpex.com/articles.html", ext: 1 },
+      { label: "Finance Tracker", href: "https://masumcpex.com/Finance.html", ext: 1 },
+      { label: "masumcpex.com", href: "https://masumcpex.com", ext: 1 }
+    ];
+    const list = (arr) => arr.map((l) => `<li><a href="${escAttr(l.href)}"${l.ext ? ' target="_blank" rel="noopener"' : ""}>${esc(l.label)}</a></li>`).join("");
+    const letters = "masumcpex".split("").map((ch, i) => `<span style="--d:${i * 55}ms">${ch}</span>`).join("");
+    return `
+    <footer class="site-footer" id="siteFooter">
+      <div class="footer-inner">
+        <div class="footer-cta">
+          <p class="footer-cta-text">কিছু বানাতে চান? কথা বলি।</p>
+          ${email ? `<a class="footer-mail" href="mailto:${escAttr(email)}">${esc(email)} ${icon("arrow", 18, 2)}</a>` : ""}
+        </div>
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html#/home" class="footer-logo"><img src="yellow.webp" alt="" width="40" height="40"><span>Masum <em>cpex</em></span></a>
+            <p>জ্ঞান, কাজ ও সৃজনশীলতার একটি ব্যক্তিগত ডিজিটাল স্পেস।</p>
+            <div class="footer-social">${(c.socials || []).map((x) => `<a href="${escAttr(x.url)}" target="_blank" rel="noopener" aria-label="${escAttr(x.label)}">${icon(x.label, 18, 1.8)}</a>`).join("")}</div>
+          </div>
+          <nav class="footer-col" aria-label="Explore"><h4>Explore</h4><ul>${list(explore)}</ul></nav>
+          <nav class="footer-col" aria-label="More"><h4>More</h4><ul>${list(more)}</ul></nav>
+          <nav class="footer-col" aria-label="Legal"><h4>Legal</h4><ul>${list(LEGAL)}</ul></nav>
+        </div>
+      </div>
+      <div class="footer-mark" aria-hidden="true">${letters}</div>
+      <div class="footer-bottom">
+        <p>© ${new Date().getFullYear()} <strong>Masum Cpex</strong>. All rights reserved.</p>
+        <p class="footer-bottom-links">${LEGAL.slice(0, 2).map((l) => `<a href="${escAttr(l.href)}">${esc(l.label)}</a>`).join("")}</p>
+      </div>
+    </footer>`;
+  };
+
+  const CONSENT_KEY = "mc_cookie_consent";
+  const getConsent = () => { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } };
+  const setConsent = (v) => { try { localStorage.setItem(CONSENT_KEY, v); } catch (e) { /* ignore */ } };
+
+  const cookieHTML = () => `
+    <div class="cookie-bar" id="cookieBar" role="dialog" aria-live="polite" aria-label="কুকি নোটিশ" hidden>
+      <div class="cookie-icon">${icon("shield", 20, 1.8)}</div>
+      <div class="cookie-body">
+        <strong>আপনার গোপনীয়তা গুরুত্বপূর্ণ</strong>
+        <p>সাইট চালাতে প্রয়োজনীয় স্টোরেজ ব্যবহার হয়। ভিজিটর পরিসংখ্যান (Google Analytics) শুধু আপনার অনুমতি পেলে চালু হবে। <a href="legal.html#cookies">বিস্তারিত</a></p>
+      </div>
+      <div class="cookie-actions">
+        <button type="button" class="cookie-btn cookie-ghost" id="cookieDecline">না, ধন্যবাদ</button>
+        <button type="button" class="cookie-btn cookie-solid" id="cookieAccept">ঠিক আছে</button>
+      </div>
+    </div>`;
+
   const chromeHTML = () => `
     <header class="site-header" id="siteHeader">
       <div class="header-inner">
-        <a href="#/home" class="brand" data-nav="home">
+        <a href="${routeHref("home")}" class="brand" data-nav="home">
           <span class="brand-mark"><img src="yellow.webp" alt="${escAttr(D.hero.name)}" width="50" height="50"></span>
           <span class="brand-name" id="brandName">${esc(D.hero.name)}</span>
         </a>
         <nav class="main-nav" id="mainNav" aria-label="প্রধান মেনু">${D.nav.map((n) => navLink(n, false)).join("")}</nav>
         <div class="header-tools">
-          <a href="#/contact" class="header-cta" data-nav="contact">Let's Talk ${icon("arrow", 12)}</a>
+          <a href="${routeHref("contact")}" class="header-cta" data-nav="contact">Let's Talk ${icon("arrow", 12)}</a>
           <button class="icon-btn" id="searchToggle" aria-label="সার্চ">${icon("search")}</button>
           <button class="icon-btn menu-toggle" id="menuToggle" aria-label="মেনু" aria-expanded="false">
             ${icon("bars", 18, 2, "menu-icon-bars")}${icon("close", 18, 2, "menu-icon-close")}
@@ -88,7 +161,7 @@
       </div>
       <div class="search-panel" id="searchPanel" role="search">
         <div class="search-panel-inner">
-          <label for="searchInput" class="sr-only">বই, জার্নাল বা টুল খুঁজুন</label>
+          <label for="searchInput" class="sr-only">বই, টুল বা পেজ খুঁজুন</label>
           <input type="text" id="searchInput" placeholder="খুঁজুন...">
           <button class="icon-btn" id="searchClose" aria-label="সার্চ বন্ধ করুন">${icon("close", 16)}</button>
         </div>
@@ -116,21 +189,28 @@
       </div>
     </div>
 
-    <footer class="site-footer">
-      <p>© 2026 <strong id="footerName">${esc(D.hero.name)}</strong>. All Rights Reserved.</p>
-    </footer>`;
+    ${footerHTML()}
+    ${cookieHTML()}
+    <button class="to-top" id="toTop" aria-label="উপরে যান">${icon("up", 18, 2.2)}</button>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>`;
 
   const toolHref = (t) => t.url || routeHref(`tools/${t.id}`);
 
   const searchIndex = () => [
-    ...(D.library || []).map((i) => ({ ...i, type: "বই", link: "https://masumcpex.com/index.html#library" })),
-    ...(D.journal || []).map((i) => ({ ...i, type: "জার্নাল", link: routeHref("journal") })),
+    { type: "পেজ", title: "About — আমার পরিচিতি", link: routeHref("about") },
+    { type: "পেজ", title: "Journey — আমার বইয়ের যাত্রা", link: routeHref("journey") },
+    { type: "পেজ", title: "Contact — যোগাযোগ", link: routeHref("contact") },
+    { type: "পোর্টাল", title: "Attendance — টিম হাজিরা ও কর্মঘণ্টা", link: "attendance.html" },
+    { type: "লিগ্যাল", title: "Privacy Policy", link: "legal.html#privacy-policy" },
+    { type: "লিগ্যাল", title: "Terms of Service", link: "legal.html#terms" },
+    { type: "লিগ্যাল", title: "Cookie Policy", link: "legal.html#cookies" },
+    ...(D.journey || []).filter((i) => i.link).map((i) => ({ type: "বই", title: i.title, link: i.link })),
     ...(D.tools || []).map((i) => ({ ...i, type: "টুল", link: toolHref(i) }))
   ];
 
   let revealObserver = null;
   const applyReveal = (scope) => {
-    const els = (scope || document).querySelectorAll(".card, .section-title, .hero, .timeline-item");
+    const els = (scope || document).querySelectorAll(".timeline-item");
     els.forEach((el) => el.classList.add("reveal"));
     if ("IntersectionObserver" in window) {
       if (!revealObserver) {
@@ -171,7 +251,7 @@
           mobileMenu.classList.remove("is-open", "is-closing");
           document.body.style.overflow = "";
           if (goHome) {
-            if (app) location.hash = "#/home";
+            if (isSPA) location.hash = "#/home";
             else location.href = "index.html#/home";
           }
         }, 220);
@@ -227,6 +307,41 @@
     $("modalClose")?.addEventListener("click", closeModal);
     modal?.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+  };
+
+  const bindExtras = () => {
+    const toTop = $("toTop");
+    const bar = $("scrollProgress");
+    const onScroll = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      if (bar) bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+      if (toTop) toTop.classList.toggle("is-show", window.scrollY > 600);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    toTop?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    const footer = $("siteFooter");
+    if (footer) {
+      if ("IntersectionObserver" in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((en) => {
+            footer.classList.toggle("is-in", en.isIntersecting);
+          });
+        }, { threshold: 0.35 });
+        io.observe(footer.querySelector(".footer-mark") || footer);
+      } else footer.classList.add("is-in");
+    }
+
+    const cookie = $("cookieBar");
+    if (cookie) {
+      if (!getConsent()) setTimeout(() => { cookie.hidden = false; requestAnimationFrame(() => cookie.classList.add("is-show")); }, 1200);
+      const hide = () => { cookie.classList.remove("is-show"); setTimeout(() => { cookie.hidden = true; }, 300); };
+      $("cookieAccept")?.addEventListener("click", () => { setConsent("granted"); hide(); initAnalytics(); });
+      $("cookieDecline")?.addEventListener("click", () => { setConsent("denied"); hide(); });
+    }
   };
 
   const openModal = (item) => {
@@ -292,34 +407,6 @@
     applyReveal(listEl);
   };
 
-  const entriesView = (key, eyebrow, title, sub, emptyTitle, emptyDesc) => ({
-    html: () => `
-      <section class="page"><div class="page-inner">
-        <div class="eyebrow">${eyebrow}</div>
-        <h2 class="section-title">${title}</h2>
-        ${sub ? `<p class="section-sub">${sub}</p>` : ""}
-        <div class="filter-row" id="entryFilters"></div>
-        <div class="list-grid" id="entryList"></div>
-      </div></section>`,
-    mount: (el) => {
-      const items = D[key] || [];
-      const listEl = el.querySelector("#entryList");
-      const filterEl = el.querySelector("#entryFilters");
-      mountList(listEl, items, key, emptyTitle, emptyDesc);
-      if (!items.length) { filterEl.remove(); return; }
-      const cats = ["সব", ...new Set(items.map((i) => i.category).filter(Boolean))];
-      filterEl.innerHTML = cats.map((c, i) => `<button class="chip ${i === 0 ? "is-active" : ""}" data-cat="${escAttr(c)}">${esc(c)}</button>`).join("");
-      filterEl.querySelectorAll(".chip").forEach((chip) => {
-        chip.addEventListener("click", () => {
-          filterEl.querySelectorAll(".chip").forEach((c) => c.classList.remove("is-active"));
-          chip.classList.add("is-active");
-          const cat = chip.dataset.cat;
-          mountList(listEl, cat === "সব" ? items : items.filter((i) => i.category === cat), key, "কিছু পাওয়া যায়নি", "এই ক্যাটাগরিতে এখনও কিছু নেই।");
-        });
-      });
-    }
-  });
-
   const toolCard = (t) => `
     <a href="${escAttr(toolHref(t))}" class="card tool-card"${isExternal(t.url || "") ? ' target="_blank" rel="noopener"' : ""}>
       <div class="tool-icon-badge">${icon(PATHS[t.icon] ? t.icon : "grid", 22)}</div>
@@ -347,30 +434,82 @@
       title: MAIN_TITLE,
       html: () => {
         const hero = D.hero;
-        const latest = [
-          D.library?.[0] && { label: "সর্বশেষ বই", title: D.library[0].title, link: "https://masumcpex.com/index.html#library" },
-          D.journal?.[0] && { label: "সর্বশেষ জার্নাল", title: D.journal[0].title, link: routeHref("journal") },
-          D.tools?.length && { label: "টুলস", title: `${bnNum(D.tools.length)}টি টুল ও ডকুমেন্ট জেনারেটর`, link: routeHref("tools") }
-        ].filter(Boolean);
+        const books = (D.journey || []).filter((j) => j.link);
+        const toolCount = (D.tools || []).length;
         return `
-          <section class="page">
-            <div class="hero">
-              <h1 class="hero-name">${esc(hero.name)}</h1>
-              <p class="hero-role">${esc(hero.role)}</p>
-              <p class="hero-tagline">${esc(hero.tagline)}</p>
-              <div class="hero-visual">
-                <img class="hero-visual-img" src="${escAttr(hero.photo)}" alt="${escAttr(hero.name)}" width="500" height="500" loading="eager" fetchpriority="high">
+          <section class="page home">
+            <div class="hero2">
+              <div class="hero2-copy">
+                <a class="hero2-pill" href="attendance.html"><span class="live-dot"></span>Attendance পোর্টাল এখন লাইভ</a>
+                <h1 class="hero2-title">শিখি, লিখি,<br>আর কাজের জিনিস বানাই।</h1>
+                <p class="hero2-sub">আমি ${esc(hero.name)}। বই লিখি, ফ্রি টুলস বানাই, আর শেখা থামাই না।</p>
+                <div class="hero2-cta">
+                  <a class="btn btn-primary" href="${escAttr(hero.ctaLink)}" target="_blank" rel="noopener">${esc(hero.ctaText)}</a>
+                  <a class="btn btn-outline" href="${routeHref("tools")}">টুলস দেখুন</a>
+                </div>
+              </div>
+              <div class="hero2-art">
+                <div class="hero2-frame"></div>
+                <img class="hero2-img" src="${escAttr(hero.photo)}" alt="${escAttr(hero.name)}" width="500" height="500" loading="eager" fetchpriority="high">
+                <span class="hero2-tag">${esc(hero.role)}</span>
               </div>
             </div>
+
+            <div class="stat-strip">
+              <div><strong>${bnNum(books.length)}</strong><span>প্রকাশিত বই</span></div>
+              <div><strong>${bnNum(toolCount)}</strong><span>ফ্রি টুল ও জেনারেটর</span></div>
+              <div><strong>${bnNum(1)}</strong><span>লাইভ Attendance পোর্টাল</span></div>
+              <div><strong>${bnNum(2)}</strong><span>ওয়েবসাইট, একই ঠিকানা থেকে</span></div>
+            </div>
+
             <div class="section-block">
-              <div class="eyebrow">সর্বশেষ</div>
-              <h2 class="section-title">সাম্প্রতিক সংযোজন</h2>
-              <div class="highlight-grid card-grid">
-                ${latest.length ? latest.map((i) => `
-                  <a class="card" href="${escAttr(i.link)}">
-                    <div class="card-eyebrow">${esc(i.label)}</div>
-                    <h3 class="card-title">${esc(i.title)}</h3>
-                  </a>`).join("") : `<div class="empty-state"><strong>এখনও কিছু যোগ করা হয়নি</strong>data.js-এ content যোগ করলে এখানে সর্বশেষ বই, জার্নাল ও টুল দেখা যাবে।</div>`}
+              <h2 class="section-title">এখানে যা পাবেন</h2>
+              <p class="section-sub">তিনটা জিনিস নিয়ে কাজ করি: ব্যবহারযোগ্য পোর্টাল, প্রতিদিনের টুলস আর লেখা।</p>
+              <div class="feature-grid">
+                <a class="feature feature-main" href="attendance.html">
+                  <span class="feature-badge"><span class="live-dot"></span>Live</span>
+                  <div class="feature-icon">${icon("calendar", 26)}</div>
+                  <h3>Attendance পোর্টাল</h3>
+                  <p>দলের দৈনিক হাজিরা, কর্মঘণ্টা আর মাসিক ছুটি এক জায়গায়। মাসিক ক্যালেন্ডার, সামারি আর PDF রিপোর্টসহ।</p>
+                  <span class="feature-link">খুলুন ${icon("arrow", 16)}</span>
+                </a>
+                <a class="feature" href="${routeHref("tools")}">
+                  <div class="feature-icon">${icon("grid", 24)}</div>
+                  <h3>ডকুমেন্ট টুলস</h3>
+                  <p>ইনভয়েস, সিভি, চিঠি, QR কোড, ছবি থেকে PDF। ব্রাউজারেই তৈরি, কোনো সাইন-আপ ছাড়া।</p>
+                  <span class="feature-link">${bnNum(toolCount)}টি টুল দেখুন ${icon("arrow", 16)}</span>
+                </a>
+                <a class="feature" href="${escAttr(hero.ctaLink)}" target="_blank" rel="noopener">
+                  <div class="feature-icon">${icon("book", 24)}</div>
+                  <h3>বই ও লেখালেখি</h3>
+                  <p>জীবন, অনুভূতি আর সংগ্রামের গল্প নিয়ে লেখা বই এবং প্রবন্ধ।</p>
+                  <span class="feature-link">Library খুলুন ${icon("arrow", 16)}</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="section-block">
+              <h2 class="section-title">আমার বইগুলো</h2>
+              <ul class="book-list">
+                ${books.map((b) => `
+                  <li><a href="${escAttr(b.link)}" target="_blank" rel="noopener">
+                    <span class="book-year">${esc(b.year)}</span>
+                    <span class="book-title">${esc(b.title)}</span>
+                    <span class="book-go">${icon("arrow", 18)}</span>
+                  </a></li>`).join("")}
+              </ul>
+            </div>
+
+            <div class="section-block">
+              <div class="cta-band">
+                <div>
+                  <h2>একসাথে কিছু বানাতে চান?</h2>
+                  <p>প্রশ্ন, পরামর্শ বা কাজের প্রস্তাব, যেকোনো কিছু নিয়ে লিখুন।</p>
+                </div>
+                <div class="cta-band-actions">
+                  <a class="btn btn-sun" href="${routeHref("contact")}">যোগাযোগ করুন</a>
+                  <a class="btn btn-ghost-light" href="https://t.me/masumcpex" target="_blank" rel="noopener">Telegram</a>
+                </div>
               </div>
             </div>
           </section>`;
@@ -435,11 +574,6 @@
       }
     },
 
-    journal: {
-      title: `Journal | ${D.hero.name}`,
-      ...entriesView("journal", "Journal", "ব্যক্তিগত জার্নাল", "গল্প, অনুভূতি আর দৈনন্দিন ভাবনার পাতা।", "এখনও কোনো জার্নাল এন্ট্রি নেই", "মনের কথা লিখলে এখানে যোগ হবে।")
-    },
-
     contact: {
       title: `Contact | ${D.hero.name}`,
       html: () => {
@@ -465,15 +599,26 @@
                   ${(c.socials || []).map((s) => `<a href="${escAttr(s.url)}" target="_blank" rel="noopener" aria-label="${escAttr(s.label)}">${icon(s.label, 18, 1.8)}</a>`).join("")}
                 </div>
               </div>
-              <form class="contact-form-card" action="mailto:${escAttr((c.emails || [])[0] || "")}" method="post" enctype="text/plain">
-                <input type="text" name="name" placeholder="Your Name" autocomplete="name" required>
-                <input type="email" name="email" placeholder="Your Email" autocomplete="email" required>
-                <input type="tel" name="phone" placeholder="Your Phone" autocomplete="tel">
-                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                <button type="submit" class="contact-form-submit">Send Message</button>
+              <form class="contact-form-card" id="contactForm" data-to="${escAttr((c.emails || [])[0] || "")}">
+                <input type="text" name="name" placeholder="আপনার নাম" autocomplete="name" required>
+                <input type="email" name="email" placeholder="আপনার ইমেইল" autocomplete="email" required>
+                <input type="tel" name="phone" placeholder="ফোন (ঐচ্ছিক)" autocomplete="tel">
+                <textarea name="message" placeholder="আপনার বার্তা" rows="5" required></textarea>
+                <button type="submit" class="contact-form-submit">বার্তা পাঠান</button>
+                <p class="form-note">বোতাম চাপলে আপনার ইমেইল অ্যাপ খুলবে, সেখান থেকে পাঠাতে হবে।</p>
               </form>
             </div>
           </div></section>`;
+      },
+      mount: (el) => {
+        const f = el.querySelector("#contactForm");
+        if (!f) return;
+        f.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const v = (n) => (f.elements[n] ? f.elements[n].value.trim() : "");
+          const body = `নাম: ${v("name")}\nইমেইল: ${v("email")}${v("phone") ? `\nফোন: ${v("phone")}` : ""}\n\n${v("message")}`;
+          location.href = `mailto:${f.dataset.to}?subject=${encodeURIComponent("ওয়েবসাইট থেকে বার্তা — " + v("name"))}&body=${encodeURIComponent(body)}`;
+        });
       }
     },
 
@@ -600,7 +745,10 @@
     applyReveal(host);
   };
 
+  let analyticsStarted = false;
   const initAnalytics = async () => {
+    if (analyticsStarted || getConsent() !== "granted") return;
+    analyticsStarted = true;
     try {
       const [{ initializeApp }, { getAnalytics }] = await Promise.all([
         import("https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js"),
@@ -620,18 +768,51 @@
     }
   };
 
+  const markActive = () => {
+    const file = location.pathname.split("/").pop() || "index.html";
+    if (file.startsWith("attendance")) {
+      document.querySelectorAll('.main-nav a[data-nav="attendance"], .mobile-menu-nav a[data-nav="attendance"]').forEach((l) => l.classList.add("is-active"));
+    }
+  };
+
   document.addEventListener("DOMContentLoaded", () => {
+    if (app && app.dataset.page === "legal") {
+      const tpl = document.getElementById("pageContent");
+      app.innerHTML = chromeHTML();
+      $("view").innerHTML = tpl ? tpl.innerHTML : "";
+      document.querySelectorAll('.main-nav a[data-nav]').forEach((l) => l.classList.remove("is-active"));
+      bindChrome();
+      bindExtras();
+      bindLegal();
+      return;
+    }
     if (app) {
       app.innerHTML = chromeHTML();
       bindChrome();
+      bindExtras();
       window.addEventListener("hashchange", render);
       render();
       initAnalytics();
     } else {
       setText("brandName", D.hero.name);
-      setText("footerName", D.hero.name);
+      const oldFooter = document.querySelector("footer.site-footer");
+      if (oldFooter) oldFooter.outerHTML = footerHTML() + cookieHTML() + `<button class="to-top" id="toTop" aria-label="উপরে যান">${icon("up", 18, 2.2)}</button><div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>`;
       bindChrome();
-      applyReveal(document);
+      bindExtras();
+      markActive();
     }
   });
+
+  const bindLegal = () => {
+    const links = [...document.querySelectorAll(".legal-toc a")];
+    const secs = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+    if (!secs.length || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) links.forEach((a) => a.classList.toggle("is-on", a.getAttribute("href") === "#" + en.target.id));
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    secs.forEach((x) => io.observe(x));
+    if (location.hash) setTimeout(() => document.querySelector(location.hash)?.scrollIntoView(), 80);
+  };
 })();

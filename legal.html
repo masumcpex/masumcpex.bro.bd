@@ -1,202 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Legal — Attendance</title>
-<style>
-  :root{
-    --teal:#0d9488;
-    --teal-dark:#0f766e;
-    --text:#1e293b;
-    --text-dim:#64748b;
-    --border:#e2e8f0;
-    --bg:#f8fafc;
-  }
-  *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-  body{
-    margin:0;
-    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.65;
-  }
-  .wrap{
-    max-width:760px;
-    margin:0 auto;
-    padding:2.5rem 1.25rem 4rem;
-  }
-  header{
-    display:flex;
-    align-items:center;
-    gap:0.75rem;
-    margin-bottom:1.25rem;
-  }
-  .logo{
-    width:38px; height:38px;
-    border-radius:10px;
-    background:linear-gradient(160deg, var(--teal) 0%, var(--teal-dark) 100%);
-    display:flex; align-items:center; justify-content:center;
-    color:#fff; font-weight:700; font-size:1rem; flex-shrink:0;
-  }
-  h1{ font-size:1.6rem; margin:0; color:var(--text); }
-  .updated{ color:var(--text-dim); font-size:0.85rem; margin:0.15rem 0 0; }
-
-  nav{
-    display:flex;
-    gap:0.5rem;
-    flex-wrap:wrap;
-    margin-bottom:1.5rem;
-    position:sticky;
-    top:0;
-    background:var(--bg);
-    padding:0.6rem 0;
-    z-index:5;
-  }
-  nav a{
-    font-size:0.85rem;
-    font-weight:600;
-    color:var(--teal-dark);
-    background:#fff;
-    border:1px solid var(--border);
-    padding:0.4rem 0.85rem;
-    border-radius:999px;
-    text-decoration:none;
-  }
-  nav a:hover{ background:var(--bg); }
-
-  section{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:1.75rem 1.5rem;
-    box-shadow:0 1px 2px rgba(15,23,42,0.04);
-    margin-bottom:1.5rem;
-    scroll-margin-top:4.2rem;
-  }
-  section > h2:first-child{ margin-top:0; }
-  h2{ font-size:1.25rem; margin:0 0 0.75rem; color:var(--text); }
-  h3{ font-size:1.05rem; margin:1.5rem 0 0.5rem; color:var(--text); }
-  h3:first-of-type{ margin-top:0; }
-  p, li{ color:#334155; font-size:0.96rem; }
-  ul{ margin:0.4rem 0; padding-left:1.3rem; }
-  li{ margin-bottom:0.35rem; }
-  a{ color:var(--teal-dark); }
-  .contact{
-    background:var(--bg);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:1rem 1.1rem;
-    margin-top:0.5rem;
-    font-size:0.95rem;
-  }
-  footer{ text-align:center; color:var(--text-dim); font-size:0.8rem; margin-top:1rem; }
-</style>
+<title>Legal — Privacy, Terms, Cookies | Masum Cpex</title>
+<meta name="description" content="Masum Cpex ওয়েবসাইট ও Attendance পোর্টালের Privacy Policy, Terms of Service, Cookie Policy এবং Disclaimer।">
+<meta name="theme-color" content="#F2F5F3">
+<link rel="canonical" href="https://masumcpex.bro.bd/legal.html">
+<link rel="icon" href="yellow.webp" type="image/webp">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">A</div>
-      <div>
-        <h1>Legal</h1>
-        <p class="updated">Last updated: September 2026</p>
-      </div>
-    </header>
+<div id="app" data-page="legal"></div>
+<noscript>এই পেজ দেখতে JavaScript চালু করুন।</noscript>
 
-    <nav>
-      <a href="#privacy">Privacy Policy</a>
+<template id="pageContent">
+<div class="legal-wrap">
+  <div class="legal-head">
+    <h1>Legal</h1>
+    <p>এই পেজে masumcpex.bro.bd ও এর Attendance পোর্টাল, টুলসের গোপনীয়তা, ব্যবহারের শর্ত ও কুকি নীতি সহজ ভাষায় দেওয়া আছে। সর্বশেষ হালনাগাদ: নভেম্বর ২০২৬।</p>
+  </div>
+  <div class="legal-grid">
+    <nav class="legal-toc" aria-label="সূচিপত্র">
+      <a href="#privacy-policy">Privacy Policy</a>
       <a href="#terms">Terms of Service</a>
       <a href="#cookies">Cookie Policy</a>
+      <a href="#disclaimer">Disclaimer</a>
+      <a href="#contact-legal">যোগাযোগ</a>
     </nav>
+    <div class="legal-doc">
 
-    <!-- ================= PRIVACY POLICY ================= -->
-    <section id="privacy">
-      <h2>Privacy Policy</h2>
-      <p>This Privacy Policy explains how the Attendance app ("we", "our", "the app") collects, uses, and protects information when you sign in and use the app to track attendance and working hours for your team.</p>
+      <section id="privacy-policy"><span id="privacy"></span>
+        <h2>Privacy Policy</h2>
+        <p>এই নীতিতে "আমরা" মানে Masum Cpex। এখানে বলা আছে এই ওয়েবসাইট, টুলস এবং Attendance পোর্টাল ব্যবহার করলে কোন তথ্য কীভাবে ব্যবহার হয়।</p>
 
-      <h3>Information we collect</h3>
-      <ul>
-        <li><strong>Account information:</strong> when you sign in with email/password, Google, or Facebook, we receive your name, email address, and profile photo (if provided by that sign-in method).</li>
-        <li><strong>Attendance data:</strong> daily attendance records, status (present/absent), and timestamps that you or your team enter into the app.</li>
-        <li><strong>Team member data:</strong> names of team members added to the app, and who added them.</li>
-      </ul>
+        <h3>আমরা কোন তথ্য সংগ্রহ করি</h3>
+        <ul>
+          <li><strong>অ্যাকাউন্ট তথ্য (শুধু Attendance পোর্টাল):</strong> ইমেইল/পাসওয়ার্ড, Google বা Facebook দিয়ে সাইন-ইন করলে আপনার নাম, ইমেইল ঠিকানা এবং প্রোফাইল ছবি (থাকলে)।</li>
+          <li><strong>Attendance ডেটা:</strong> দৈনিক হাজিরা, উপস্থিতির অবস্থা, কর্মঘণ্টা, ছুটি এবং টিম সদস্যদের নাম, যা আপনি বা আপনার টিম পোর্টালে লেখে।</li>
+          <li><strong>টুলসের ডেটা:</strong> ইনভয়েস, সিভি, চিঠি ইত্যাদি টুলে আপনি যা লেখেন, তা আপনার ব্রাউজারেই থাকে। সংরক্ষণ করলে তা ব্রাউজারের লোকাল স্টোরেজে জমা হয়, আমাদের সার্ভারে পাঠানো হয় না।</li>
+          <li><strong>ভিজিটর পরিসংখ্যান:</strong> আপনি অনুমতি দিলে Google Analytics (Firebase) দিয়ে পেজ ভিউ ও ডিভাইসের ধরনের মতো সাধারণ, অপরিচিত তথ্য।</li>
+          <li><strong>যোগাযোগ:</strong> Contact ফর্মের বোতাম চাপলে আপনার নিজের ইমেইল অ্যাপ খোলে। আপনি পাঠালে তবেই আমরা আপনার নাম, ইমেইল ও বার্তা পাই।</li>
+        </ul>
 
-      <h3>How we use this information</h3>
-      <ul>
-        <li>To let you sign in securely and identify your account.</li>
-        <li>To display your name and profile photo inside the app (e.g. in the account menu).</li>
-        <li>To record and display attendance and working-hour data for your team.</li>
-        <li>To generate summaries and downloadable reports (e.g. PDF) at your request.</li>
-      </ul>
-      <p>We do not sell, rent, or share your personal information with third parties for advertising or marketing purposes.</p>
+        <h3>তথ্য কীভাবে ব্যবহার হয়</h3>
+        <ul>
+          <li>নিরাপদে সাইন-ইন করা এবং আপনার অ্যাকাউন্ট চেনা।</li>
+          <li>হাজিরা ও কর্মঘণ্টা দেখানো এবং আপনার অনুরোধে সামারি ও PDF রিপোর্ট বানানো।</li>
+          <li>সাইটের কার্যকারিতা ঠিক রাখা ও উন্নত করা।</li>
+          <li>আপনার বার্তার উত্তর দেওয়া।</li>
+        </ul>
+        <p>আমরা আপনার ব্যক্তিগত তথ্য বিক্রি, ভাড়া বা বিজ্ঞাপনের জন্য তৃতীয় পক্ষের সঙ্গে শেয়ার করি না।</p>
 
-      <h3>How we store and protect information</h3>
-      <p>Data is stored using Firebase (a Google Cloud service) with access rules that require you to be signed in before any data can be read or written. We take reasonable technical measures to protect your data from unauthorized access.</p>
+        <h3>তথ্য কোথায় থাকে ও কীভাবে সুরক্ষিত</h3>
+        <p>Attendance ডেটা Google Firebase (Google Cloud) এ রাখা হয়। সাইন-ইন করা ছাড়া ডেটা পড়া বা লেখা যায় না, এমন অ্যাক্সেস নিয়ম চালু আছে। অননুমোদিত প্রবেশ ঠেকাতে আমরা যুক্তিসংগত প্রযুক্তিগত ব্যবস্থা নিই, তবে ইন্টারনেটে কোনো ব্যবস্থাই শতভাগ নিরাপদ নয়।</p>
 
-      <h3>Sign in with Google and Facebook</h3>
-      <p>If you choose to sign in with Google or Facebook, we only request basic profile information (name, email address, and profile photo) needed to create and identify your account. We do not post to your Google or Facebook account or access any other data from those services.</p>
+        <h3>Google ও Facebook দিয়ে সাইন-ইন</h3>
+        <p>এই পদ্ধতি বেছে নিলে আমরা শুধু মৌলিক প্রোফাইল তথ্য (নাম, ইমেইল, ছবি) নিই। আপনার অ্যাকাউন্টে কিছু পোস্ট করি না এবং অন্য কোনো তথ্যে ঢুকি না।</p>
 
-      <h3>Data retention and deletion</h3>
-      <p>We keep your account and attendance data for as long as your account is active, or as needed to provide the app's functionality. You can request deletion of your account and associated data at any time by contacting us using the details below.</p>
+        <h3>তৃতীয় পক্ষের সেবা</h3>
+        <p>সাইটে Google Fonts, Firebase এবং PDF তৈরির লাইব্রেরি (cdnjs) ব্যবহার হয়। এসব সেবা আপনার IP ঠিকানার মতো প্রযুক্তিগত তথ্য পেতে পারে। বাইরের লিংকে (যেমন Google Play Books, Telegram, Facebook) গেলে তাদের নিজস্ব নীতি প্রযোজ্য।</p>
 
-      <h3>Children's privacy</h3>
-      <p>This app is intended for workplace attendance tracking and is not directed at children. We do not knowingly collect information from children.</p>
+        <h3>তথ্য সংরক্ষণ ও মুছে ফেলা</h3>
+        <p>অ্যাকাউন্ট সক্রিয় থাকা পর্যন্ত বা সেবা দেওয়ার প্রয়োজনে ডেটা রাখা হয়। অ্যাকাউন্ট ও সংশ্লিষ্ট ডেটা মুছতে চাইলে নিচের ইমেইলে জানান। টুলসের লোকাল ডেটা আপনি ব্রাউজার থেকেই মুছতে পারেন।</p>
 
-      <h3>Changes to this policy</h3>
-      <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last updated" date.</p>
-    </section>
+        <h3>শিশুদের গোপনীয়তা</h3>
+        <p>এই সাইট ও পোর্টাল শিশুদের জন্য তৈরি নয়। আমরা জেনেশুনে শিশুদের তথ্য সংগ্রহ করি না।</p>
 
-    <!-- ================= TERMS OF SERVICE ================= -->
-    <section id="terms">
-      <h2>Terms of Service</h2>
-      <p>By creating an account or using the Attendance app, you agree to the following terms.</p>
+        <h3>নীতিতে পরিবর্তন</h3>
+        <p>নীতি বদলালে এই পেজে নতুন তারিখসহ প্রকাশ করা হবে।</p>
+      </section>
 
-      <h3>Use of the service</h3>
-      <ul>
-        <li>The app is provided to help you and your team record and manage daily attendance and working hours.</li>
-        <li>You are responsible for the accuracy of the attendance data you enter.</li>
-        <li>You agree not to use the app for any unlawful purpose or to attempt to access another user's account or data without authorization.</li>
-      </ul>
+      <section id="terms">
+        <h2>Terms of Service</h2>
+        <p>সাইট, টুলস বা Attendance পোর্টাল ব্যবহার করলে আপনি নিচের শর্তগুলো মেনে নিচ্ছেন।</p>
 
-      <h3>Accounts</h3>
-      <p>You are responsible for keeping your login credentials confidential and for all activity that happens under your account. Notify us immediately if you suspect unauthorized use of your account.</p>
+        <h3>ব্যবহারের নিয়ম</h3>
+        <ul>
+          <li>সেবাগুলো ব্যক্তিগত ও পেশাগত কাজে সহায়তার জন্য দেওয়া হয়েছে।</li>
+          <li>আপনার দেওয়া তথ্যের সঠিকতার দায়িত্ব আপনার। টুলে বানানো ইনভয়েস, চুক্তিপত্র বা সনদ ব্যবহারের আগে নিজে যাচাই করে নিন।</li>
+          <li>বেআইনি কাজে ব্যবহার, অন্যের অ্যাকাউন্ট বা ডেটায় অনুমতি ছাড়া ঢোকার চেষ্টা, বা সেবার ক্ষতি করা নিষিদ্ধ।</li>
+        </ul>
 
-      <h3>Availability and changes</h3>
-      <p>We aim to keep the app available and working correctly, but we do not guarantee uninterrupted or error-free service. Features may be added, changed, or removed at any time.</p>
+        <h3>অ্যাকাউন্ট</h3>
+        <p>লগইন তথ্য গোপন রাখা এবং আপনার অ্যাকাউন্টে হওয়া সব কাজের দায়িত্ব আপনার। অননুমোদিত ব্যবহার সন্দেহ হলে দ্রুত জানান।</p>
 
-      <h3>Disclaimer and limitation of liability</h3>
-      <p>The app is provided "as is" without warranties of any kind. To the fullest extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from your use of the app.</p>
+        <h3>মেধাস্বত্ব</h3>
+        <p>সাইটের ডিজাইন, লেখা, বই ও কোডের অধিকার Masum Cpex-এর। অনুমতি ছাড়া অন্য কোথাও বাণিজ্যিকভাবে কপি বা পুনঃপ্রকাশ করা যাবে না। টুল দিয়ে আপনার বানানো ডকুমেন্টের মালিকানা আপনার।</p>
 
-      <h3>Termination</h3>
-      <p>We may suspend or terminate access to the app for any account that violates these Terms or is used in a way that could harm the service or other users.</p>
+        <h3>সেবার প্রাপ্যতা ও পরিবর্তন</h3>
+        <p>সেবা চালু রাখার চেষ্টা করি, তবে নিরবচ্ছিন্ন বা ত্রুটিমুক্ত থাকার নিশ্চয়তা দিই না। ফিচার যেকোনো সময় যোগ, বদল বা বন্ধ হতে পারে।</p>
 
-      <h3>Changes to these Terms</h3>
-      <p>We may update these Terms from time to time. Continued use of the app after changes are posted means you accept the updated Terms.</p>
-    </section>
+        <h3>দায় সীমাবদ্ধতা</h3>
+        <p>সেবা "যেমন আছে" ভিত্তিতে দেওয়া হয়। আইনে যতটা অনুমোদিত, ব্যবহার থেকে হওয়া পরোক্ষ বা আনুষঙ্গিক ক্ষতির জন্য আমরা দায়ী নই।</p>
 
-    <!-- ================= COOKIE POLICY ================= -->
-    <section id="cookies">
-      <h2>Cookie Policy</h2>
-      <p>This app uses cookies and similar local storage technologies (such as browser local storage) to support core functionality.</p>
+        <h3>অ্যাকাউন্ট বন্ধ করা</h3>
+        <p>শর্ত ভাঙলে বা সেবা ও অন্য ব্যবহারকারীর ক্ষতি হতে পারে এমন ব্যবহার হলে অ্যাকাউন্ট স্থগিত বা বন্ধ করা হতে পারে।</p>
 
-      <h3>What we use them for</h3>
-      <ul>
-        <li><strong>Keeping you signed in:</strong> so you don't have to log in again every time you open the app.</li>
-        <li><strong>Remembering preferences:</strong> such as your last-used view or settings within the app.</li>
-        <li><strong>Security:</strong> authentication providers (Google, Facebook, Firebase) may set their own cookies as part of the sign-in process.</li>
-      </ul>
-      <p>We do not use cookies for third-party advertising or cross-site tracking.</p>
+        <h3>শর্তে পরিবর্তন</h3>
+        <p>শর্ত বদলালে এই পেজে প্রকাশ করা হবে। পরিবর্তনের পরও ব্যবহার চালিয়ে গেলে নতুন শর্ত মেনে নেওয়া হয়েছে বলে ধরা হবে।</p>
+      </section>
 
-      <h3>Managing cookies</h3>
-      <p>You can clear cookies and site data at any time through your browser settings. Doing so may sign you out of the app and reset any saved preferences.</p>
-    </section>
+      <section id="cookies">
+        <h2>Cookie Policy</h2>
+        <p>এই সাইট কুকি এবং ব্রাউজারের লোকাল স্টোরেজের মতো প্রযুক্তি ব্যবহার করে।</p>
 
-    <div class="contact">
-      Questions about any of the above? Contact us at <a href="mailto:info@masumcpex.com">info@masumcpex.com</a>
+        <h3>কী কাজে ব্যবহার হয়</h3>
+        <ul>
+          <li><strong>প্রয়োজনীয়:</strong> Attendance পোর্টালে লগইন ধরে রাখা, আপনার সেটিং ও সংরক্ষিত ডকুমেন্ট মনে রাখা, আর কুকি নোটিশে আপনার পছন্দ সেভ করা।</li>
+          <li><strong>পরিসংখ্যান (ঐচ্ছিক):</strong> Google Analytics শুধু আপনি "ঠিক আছে" চাপলে চালু হয়। "না, ধন্যবাদ" চাপলে চালু হয় না।</li>
+          <li><strong>নিরাপত্তা:</strong> Google, Facebook ও Firebase সাইন-ইনের সময় নিজেদের কুকি ব্যবহার করতে পারে।</li>
+        </ul>
+        <p>আমরা বিজ্ঞাপন বা সাইট জুড়ে ট্র্যাকিংয়ের জন্য কুকি ব্যবহার করি না।</p>
+
+        <h3>কুকি নিয়ন্ত্রণ</h3>
+        <p>ব্রাউজার সেটিং থেকে যেকোনো সময় কুকি ও সাইট ডেটা মুছতে পারেন। তাতে আপনি পোর্টাল থেকে সাইন-আউট হতে পারেন এবং লোকালি সংরক্ষিত ডকুমেন্ট ও সেটিং মুছে যেতে পারে। কুকি নোটিশের পছন্দ বদলাতে ব্রাউজার থেকে এই সাইটের ডেটা মুছলেই ব্যানার আবার আসবে।</p>
+      </section>
+
+      <section id="disclaimer">
+        <h2>Disclaimer</h2>
+        <ul>
+          <li>এই সাইটের লেখা ও বই ব্যক্তিগত অভিজ্ঞতা ও মতামতভিত্তিক। এগুলো পেশাদার আইনি, আর্থিক বা চিকিৎসা পরামর্শ নয়।</li>
+          <li>টুলস দিয়ে বানানো ডকুমেন্ট (ইনভয়েস, চুক্তিপত্র, সনদ ইত্যাদি) কেবল সহায়তার জন্য। গুরুত্বপূর্ণ ক্ষেত্রে বিশেষজ্ঞের মতামত নিন।</li>
+          <li>বাইরের ওয়েবসাইটের কনটেন্ট ও নীতির দায় সেই সাইটের।</li>
+          <li>সর্বোচ্চ যত্নে তৈরি হলেও সব তথ্য সব সময় নির্ভুল বা হালনাগাদ থাকবে, এমন নিশ্চয়তা নেই।</li>
+        </ul>
+      </section>
+
+      <section id="contact-legal">
+        <div class="legal-contact">
+          <h3 style="margin-top:0">প্রশ্ন আছে?</h3>
+          <p>উপরের যেকোনো বিষয়ে যোগাযোগ করুন: <a href="mailto:info@masumcpex.com">info@masumcpex.com</a></p>
+        </div>
+      </section>
+
     </div>
-
-    <footer>&copy; 2026 Attendance. All rights reserved.</footer>
   </div>
+</div>
+</template>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
