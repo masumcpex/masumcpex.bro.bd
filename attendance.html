@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Official Attendance Portal — টিম হাজিরা ও কর্মঘণ্টা ব্যবস্থাপনা | Masum</title>
+<meta name="description" content="অফিসিয়াল অ্যাটেনডেন্স পোর্টাল — দৈনিক হাজিরা, কর্মঘণ্টা ও মাসিক রেকর্ড নির্ভুলভাবে ট্র্যাক করুন। লাইভ ক্যালেন্ডার, সামারি স্ট্যাটস এবং ডাউনলোডযোগ্য PDF রিপোর্টসহ একটি নিরাপদ, প্রফেশনাল Attendance Management System।">
+<meta name="theme-color" content="#F2F5F3">
+<link rel="canonical" href="https://masumcpex.bro.bd/attendance.html">
+<link rel="icon" href="assets/img/yellow.webp" type="image/webp">
+<link rel="apple-touch-icon" href="assets/img/yellow.webp">
+<link rel="manifest" href="site.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Official Attendance Portal — টিম হাজিরা ও কর্মঘণ্টা ব্যবস্থাপনা | Masum">
+<meta property="og:description" content="অফিসিয়াল অ্যাটেনডেন্স পোর্টাল — দৈনিক হাজিরা, কর্মঘণ্টা ও মাসিক রেকর্ড নির্ভুলভাবে ট্র্যাক করুন। লাইভ ক্যালেন্ডার, সামারি স্ট্যাটস এবং ডাউনলোডযোগ্য PDF রিপোর্টসহ একটি নিরাপদ, প্রফেশনাল Attendance Management System।">
+<meta property="og:image" content="https://masumcpex.bro.bd/assets/img/bd.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="500">
+<meta property="og:image:height" content="500">
+<meta property="og:url" content="https://masumcpex.bro.bd/attendance.html">
+<meta property="og:locale" content="bn_BD">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Attendance Management System — টিম হাজিরা ও কর্মঘণ্টা ট্র্যাকার | Masum">
+<meta name="twitter:description" content="দলের সদস্যদের দৈনিক হাজিরা, কর্মঘণ্টা ও মাসিক ছুটি এক জায়গায় ট্র্যাক করুন — মাসিক ক্যালেন্ডার, সামারি স্ট্যাটস ও PDF রিপোর্টসহ।">
+<meta name="twitter:image" content="https://masumcpex.bro.bd/assets/img/bd.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "WorkTrack — Attendance Management System",
+  "url": "https://masumcpex.bro.bd/attendance.html",
+  "description": "দলের সদস্যদের দৈনিক হাজিরা, কর্মঘণ্টা ও মাসিক ছুটি ট্র্যাক করার জন্য একটি ফ্রি অনলাইন Attendance Management System। মাসিক ক্যালেন্ডার, সারাংশ পরিসংখ্যান ও PDF রিপোর্ট ডাউনলোডের সুবিধাসহ।",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any (Web Browser)",
+  "isAccessibleForFree": true,
+  "image": "https://masumcpex.bro.bd/assets/img/bd.png",
+  "author": {
+    "@type": "Person",
+    "name": "Masum Billah",
+    "url": "https://masumcpex.bro.bd/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://masumcpex.bro.bd/" },
+    { "@type": "ListItem", "position": 2, "name": "Attendance", "item": "https://masumcpex.bro.bd/attendance.html" }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/attendance.css?v=15">
+</head>
+<body>
+
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="index.html#/home" class="brand" data-nav="home">
+      <span class="brand-mark"><img src="assets/img/yellow.webp" alt="Masum" width="50" height="50"></span>
+      <span class="brand-text">
+        <span class="brand-name" id="brandName">Masum</span>
+        <span class="brand-subtitle">Attendance</span>
+      </span>
+    </a>
+
+    <nav class="main-nav" id="mainNav" aria-label="প্রধান মেনু">
+      <a href="index.html#/home" data-nav="home">Home</a>
+      <a href="index.html#/about" data-nav="about">About</a>
+      <a href="index.html#/journey" data-nav="journey">Journey</a>
+      <a href="https://masumcpex.com/index.html#library" data-nav="library">Library</a>
+      <a href="attendance.html" data-nav="attendance">Attendance</a>
+      <a href="index.html#/tools" data-nav="tools">Tools</a>
+      <a href="index.html#/contact" data-nav="contact">Contact</a>
+    </nav>
+
+    <div class="header-tools">
+      <a href="index.html#/contact" class="header-cta" data-nav="contact">
+        Let's Talk
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+      </a>
+      <button class="icon-btn" id="searchToggle" aria-label="সার্চ">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="মেনু" aria-expanded="false">
+        <svg class="menu-icon-bars" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <svg class="menu-icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="search-panel" id="searchPanel" role="search">
+    <div class="search-panel-inner">
+      <label for="searchInput" class="sr-only">বই, টুল বা পেজ খুঁজুন</label>
+      <input type="text" id="searchInput" placeholder="খুঁজুন...">
+      <button class="icon-btn" id="searchClose" aria-label="সার্চ বন্ধ করুন">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults" aria-live="polite"></div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="icon-btn mobile-menu-close" id="mobileMenuClose" aria-label="মেনু বন্ধ করুন">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  </button>
+  <nav class="mobile-menu-nav" aria-label="মোবাইল মেনু">
+    <a href="index.html#/home" data-nav="home">
+      <span>Home</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#/about" data-nav="about">
+      <span>About</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#/journey" data-nav="journey">
+      <span>Journey</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="https://masumcpex.com/index.html#library" data-nav="library">
+      <span>Library</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#/tools" data-nav="tools">
+      <span>Tools</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+    <a href="index.html#/contact" data-nav="contact">
+      <span>Contact</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+    </a>
+  </nav>
+
+  <div class="mobile-menu-social">
+    <a href="https://www.facebook.com/masumcpex" target="_blank" rel="noopener" aria-label="Facebook">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </a>
+    <a href="https://www.instagram.com/masumcpex" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+    </a>
+    <a href="https://t.me/masumcpex" target="_blank" rel="noopener" aria-label="Telegram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4z"></path></svg>
+    </a>
+  </div>
+</div>
+
+<main>
+  <section class="page" id="attendance">
+    <div class="page-inner">
+
+      <div class="att-auth-gate" id="attAuthGate" hidden>
+        <div class="att-auth-shell">
+
+          <div class="att-auth-panel">
+            <div class="att-auth-brand-row">
+              <img src="assets/img/yellow.webp" alt="" width="36" height="36" class="att-auth-logo">
+              <span class="att-auth-brand-name">Attendance</span>
+            </div>
+
+            <div class="att-auth-tabs" role="tablist">
+              <button type="button" class="att-auth-tab is-active" id="attTabSignIn" role="tab" aria-selected="true">Sign In</button>
+              <button type="button" class="att-auth-tab" id="attTabRegister" role="tab" aria-selected="false">Register</button>
+            </div>
+
+            <!-- SIGN IN -->
+            <form class="att-auth-form is-active" id="attSignInForm" novalidate>
+              <h3 class="att-auth-title">Welcome Back!</h3>
+              <p class="att-auth-sub">Sign in to manage your attendance and working hours.</p>
+
+              <div class="att-auth-field">
+                <label class="att-auth-label" for="attSignInEmail">Email Address</label>
+                <div class="att-auth-input-wrap">
+                  <svg class="att-auth-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M4 6h16v12H4z"></path><path d="M4 7l8 6 8-6"></path></svg>
+                  <input type="email" id="attSignInEmail" class="att-auth-input" placeholder="Enter your email" autocomplete="email">
+                </div>
+              </div>
+
+              <div class="att-auth-field">
+                <label class="att-auth-label" for="attSignInPassword">Password</label>
+                <div class="att-auth-input-wrap">
+                  <svg class="att-auth-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+                  <input type="password" id="attSignInPassword" class="att-auth-input" placeholder="Enter your password" autocomplete="current-password">
+                  <button type="button" class="att-auth-eye" data-target="attSignInPassword" aria-label="Show password">
+                    <svg class="att-eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <svg class="att-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.4 21.4 0 0 1 5.06-5.94"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a21.5 21.5 0 0 1-2.16 3.19"></path><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="button" class="att-auth-forgot" id="attForgotPasswordBtn">Forgot Password?</button>
+
+              <p class="att-auth-msg" id="attSignInMsg" role="alert" aria-live="polite"></p>
+
+              <button type="submit" class="att-auth-submit" id="attSignInSubmit">
+                <span class="att-auth-submit-label">Sign In</span>
+                <span class="att-auth-spinner" hidden></span>
+              </button>
+
+              <div class="att-auth-divider"><span>or</span></div>
+
+              <div class="att-social-row">
+                <button type="button" class="att-social-btn att-facebook-btn" id="attFacebookSignIn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.89h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"></path></svg>
+                  Facebook
+                </button>
+                <button type="button" class="att-social-btn att-google-btn" id="attGoogleSignIn">
+                  <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6.1 29.6 4 24 4c-7.7 0-14.3 4.4-17.7 10.7z"></path><path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 35.1 27 36 24 36c-5.3 0-9.7-3.1-11.3-7.9l-6.6 5.1C9.6 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.4-2.3 4.4-4.3 5.9l6.6 5.6C40.9 36.7 44 31 44 24c0-1.3-.1-2.7-.4-3.5z"></path></svg>
+                  Google
+                </button>
+              </div>
+
+              <p class="att-auth-switch">Don't have an account? <button type="button" class="att-auth-link" id="attGoToRegister">Register</button></p>
+            </form>
+
+            <!-- REGISTER -->
+            <form class="att-auth-form" id="attRegisterForm" novalidate hidden>
+              <h3 class="att-auth-title">Create Account</h3>
+              <p class="att-auth-sub">Register to start tracking your attendance and working hours.</p>
+
+              <div class="att-auth-field-row">
+                <div class="att-auth-field">
+                  <label class="att-auth-label" for="attRegFirstName">First Name</label>
+                  <div class="att-auth-input-wrap">
+                    <input type="text" id="attRegFirstName" class="att-auth-input" placeholder="First name" autocomplete="given-name">
+                  </div>
+                </div>
+                <div class="att-auth-field">
+                  <label class="att-auth-label" for="attRegLastName">Last Name</label>
+                  <div class="att-auth-input-wrap">
+                    <input type="text" id="attRegLastName" class="att-auth-input" placeholder="Last name" autocomplete="family-name">
+                  </div>
+                </div>
+              </div>
+
+              <div class="att-auth-field">
+                <label class="att-auth-label" for="attRegEmail">Email Address</label>
+                <div class="att-auth-input-wrap">
+                  <svg class="att-auth-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"></path><path d="M4 7l8 6 8-6"></path></svg>
+                  <input type="email" id="attRegEmail" class="att-auth-input" placeholder="Enter your email" autocomplete="email">
+                </div>
+              </div>
+
+              <div class="att-auth-field">
+                <label class="att-auth-label" for="attRegPassword">Password</label>
+                <div class="att-auth-input-wrap">
+                  <svg class="att-auth-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+                  <input type="password" id="attRegPassword" class="att-auth-input" placeholder="Create a password" autocomplete="new-password">
+                  <button type="button" class="att-auth-eye" data-target="attRegPassword" aria-label="Show password">
+                    <svg class="att-eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <svg class="att-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.4 21.4 0 0 1 5.06-5.94"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a21.5 21.5 0 0 1-2.16 3.19"></path><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="att-auth-field">
+                <label class="att-auth-label" for="attRegConfirmPassword">Confirm Password</label>
+                <div class="att-auth-input-wrap">
+                  <svg class="att-auth-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+                  <input type="password" id="attRegConfirmPassword" class="att-auth-input" placeholder="Re-enter your password" autocomplete="new-password">
+                  <button type="button" class="att-auth-eye" data-target="attRegConfirmPassword" aria-label="Show password">
+                    <svg class="att-eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <svg class="att-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.4 21.4 0 0 1 5.06-5.94"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a21.5 21.5 0 0 1-2.16 3.19"></path><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                  </button>
+                </div>
+              </div>
+
+              <p class="att-auth-msg" id="attRegisterMsg" role="alert" aria-live="polite"></p>
+
+              <button type="submit" class="att-auth-submit" id="attRegisterSubmit">
+                <span class="att-auth-submit-label">Create Account</span>
+                <span class="att-auth-spinner" hidden></span>
+              </button>
+
+              <p class="att-auth-switch">Already have an account? <button type="button" class="att-auth-link" id="attGoToSignIn">Sign In</button></p>
+            </form>
+
+            <!-- FORGOT PASSWORD -->
+            <div class="att-auth-form" id="attForgotForm" hidden>
+              <h3 class="att-auth-title">Reset Password</h3>
+              <p class="att-auth-sub">Enter your email address and we'll send you a link to reset your password.</p>
+
+              <div class="att-auth-field">
+                <label class="att-auth-label" for="attForgotEmail">Email Address</label>
+                <div class="att-auth-input-wrap">
+                  <svg class="att-auth-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"></path><path d="M4 7l8 6 8-6"></path></svg>
+                  <input type="email" id="attForgotEmail" class="att-auth-input" placeholder="Enter your email" autocomplete="email">
+                </div>
+              </div>
+
+              <p class="att-auth-msg" id="attForgotMsg" role="alert" aria-live="polite"></p>
+
+              <button type="button" class="att-auth-submit" id="attForgotSubmit">
+                <span class="att-auth-submit-label">Send Reset Link</span>
+                <span class="att-auth-spinner" hidden></span>
+              </button>
+
+              <p class="att-auth-switch"><button type="button" class="att-auth-link" id="attBackToSignIn">Back to Sign In</button></p>
+            </div>
+          </div>
+
+          <div class="att-auth-brand-panel">
+            <div class="att-auth-brand-deco" aria-hidden="true">
+              <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
+                <rect x="20" y="26" width="140" height="128" rx="16" stroke="rgba(255,255,255,0.35)" stroke-width="2"></rect>
+                <line x1="20" y1="58" x2="160" y2="58" stroke="rgba(255,255,255,0.35)" stroke-width="2"></line>
+                <line x1="55" y1="14" x2="55" y2="40" stroke="rgba(255,255,255,0.55)" stroke-width="4" stroke-linecap="round"></line>
+                <line x1="125" y1="14" x2="125" y2="40" stroke="rgba(255,255,255,0.55)" stroke-width="4" stroke-linecap="round"></line>
+                <circle cx="55" cy="86" r="7" fill="rgba(255,255,255,0.85)"></circle>
+                <circle cx="90" cy="86" r="7" fill="rgba(255,255,255,0.35)"></circle>
+                <circle cx="125" cy="86" r="7" fill="rgba(255,255,255,0.35)"></circle>
+                <circle cx="55" cy="116" r="7" fill="rgba(255,255,255,0.35)"></circle>
+                <circle cx="90" cy="116" r="7" fill="rgba(255,255,255,0.85)"></circle>
+                <circle cx="125" cy="116" r="7" fill="rgba(255,255,255,0.35)"></circle>
+              </svg>
+            </div>
+            <h2 class="att-auth-brand-title">Track Your Work.<br>Manage Your Attendance.</h2>
+            <p class="att-auth-brand-text">Record daily working hours, monitor attendance, and view clean monthly summaries — all from one simple dashboard.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="att-user-bar" id="attUserBar" hidden>
+        <div class="att-profile" id="attProfile">
+          <button type="button" class="att-profile-trigger" id="attProfileTrigger" aria-haspopup="true" aria-expanded="false">
+            <span class="att-profile-avatar-wrap">
+              <img class="att-profile-avatar" id="attUserPhoto" alt="" hidden>
+              <span class="att-profile-avatar-fallback" id="attUserAvatarFallback" hidden></span>
+            </span>
+            <span class="att-profile-name" id="attUserName"></span>
+            <svg class="att-profile-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <div class="att-profile-dropdown" id="attProfileDropdown" role="menu" hidden>
+            <div class="att-profile-dropdown-header">
+              <span class="att-profile-dropdown-avatar-wrap">
+                <img class="att-profile-dropdown-avatar" id="attUserPhotoLarge" alt="" hidden>
+                <span class="att-profile-dropdown-avatar-fallback" id="attUserAvatarFallbackLarge" hidden></span>
+              </span>
+              <span class="att-profile-dropdown-name" id="attUserNameFull"></span>
+              <span class="att-profile-dropdown-email" id="attUserEmail"></span>
+            </div>
+            <div class="att-profile-dropdown-divider"></div>
+            <button type="button" class="att-profile-signout" id="attSignOutBtn" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="attMainContent" hidden>
+      <div class="eyebrow">Attendance Management</div>
+      <h2 class="section-title">Team Attendance</h2>
+      <p class="section-sub">Track team attendance, working hours and monthly records in one place.</p>
+
+      <div class="att-manage-wrap" id="attManageWrap">
+        <div class="att-manage-head">
+          <div>
+            <h3 class="att-manage-title">Team Members</h3>
+            <p class="att-manage-sub">Manage your workforce</p>
+          </div>
+          <button class="att-add-member-trigger" id="attAddMemberOpen" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Member
+          </button>
+        </div>
+      </div>
+
+      <div class="att-team-wrap" id="attTeamWrap">
+        <div class="empty-state" id="attMemberEmpty" hidden>
+          <strong>No members yet</strong>
+          Add your first member to start tracking attendance.
+        </div>
+        <div class="att-team-list" id="attMemberList"></div>
+      </div>
+
+      <div class="att-reports-wrap" id="attReportsWrap" hidden>
+        <div class="att-manage-head">
+          <div>
+            <h3 class="att-manage-title">Issue Reports</h3>
+            <p class="att-manage-sub">শেয়ার লিংক থেকে জমা হওয়া রিপোর্ট</p>
+          </div>
+        </div>
+        <div class="empty-state" id="attReportsEmpty" hidden>
+          <strong>কোনো রিপোর্ট নেই</strong>
+          এখনো কেউ কোনো সমস্যা রিপোর্ট করেনি।
+        </div>
+        <div class="att-reports-list" id="attReportsList"></div>
+      </div>
+
+      <div class="empty-state" id="attNoMemberState" hidden>
+        <strong>Select or add a member</strong>
+        Add a team member above, then select their card to open their attendance dashboard.
+      </div>
+
+      <div id="attDashboard" hidden>
+        <div class="att-head">
+          <div class="att-selected-member">
+            <span class="att-selected-avatar" id="attSelectedAvatar" aria-hidden="true">—</span>
+            <span class="att-selected-text">
+              <h3 class="att-person-title" id="attSelectedName">—</h3>
+              <span class="att-selected-sub">Attendance overview</span>
+            </span>
+          </div>
+          <button type="button" class="att-share-self-btn" id="attShareSelfBtn" aria-label="Share my attendance link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="10.6" x2="15.4" y2="6.4"></line><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"></line></svg>
+            Share
+          </button>
+          <div class="att-month-nav">
+            <button class="icon-btn att-month-btn" id="attPrevMonth" type="button" aria-label="আগের মাস">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div class="att-month-label" id="attMonthLabel" aria-live="polite">—</div>
+            <button class="icon-btn att-month-btn" id="attNextMonth" type="button" aria-label="পরের মাস">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+            <button class="att-today-btn" id="attTodayBtn" type="button">Today</button>
+          </div>
+        </div>
+
+        <div class="att-actions-row">
+          <button class="att-pdf-btn" id="attExportPdfBtn" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download PDF Report
+          </button>
+          <button class="att-report-btn" id="attReportIssueBtn" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Report an Issue
+          </button>
+          <button class="att-clear-btn" id="attClearMonthBtn" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+            Clear This Month
+          </button>
+        </div>
+
+        <div class="att-summary-grid" id="attSummaryGrid"></div>
+
+        <div class="att-grid-2col">
+          <div class="att-entry-card" id="attEntryCard">
+            <button type="button" class="att-entry-toggle" id="attEntryToggle" aria-expanded="true">
+              <h3 class="att-entry-title">Mark Attendance <span class="att-entry-title-name" id="attEntryMemberName"></span></h3>
+              <svg class="att-entry-toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <form class="att-entry-form" id="attEntryForm" novalidate>
+              <div class="att-field">
+                <span class="att-field-label" id="attEntryDateLabel">Date</span>
+                <div class="att-entry-date" id="attEntryDate" aria-labelledby="attEntryDateLabel">—</div>
+              </div>
+              <div class="att-field">
+                <label class="att-field-label" for="attEntryHours">Hours Worked</label>
+                <input type="number" id="attEntryHours" name="hours" inputmode="decimal" min="0" max="24" step="0.25" placeholder="e.g. 8.0">
+              </div>
+              <div class="att-field">
+                <label class="att-field-label" for="attEntryStatus">Status</label>
+                <select id="attEntryStatus" name="status">
+                  <option value="duty">Duty</option>
+                  <option value="leave">Leave</option>
+                  <option value="off">Off</option>
+                  <option value="holiday">Holiday</option>
+                </select>
+              </div>
+              <button type="submit" class="att-save-btn">Save Attendance</button>
+            </form>
+            <p class="att-form-msg" id="attEntryMsg" role="alert" aria-live="polite"></p>
+          </div>
+
+          <div class="att-calendar-card">
+            <div class="att-weekdays">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="att-calendar-grid" id="attCalendarGrid"></div>
+            <div class="att-legend">
+              <span class="att-legend-item"><i class="att-dot att-dot-duty"></i>Duty</span>
+              <span class="att-legend-item"><i class="att-dot att-dot-leave"></i>Leave</span>
+              <span class="att-legend-item"><i class="att-dot att-dot-off"></i>Off</span>
+              <span class="att-legend-item"><i class="att-dot att-dot-holiday"></i>Holiday</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="att-history-wrap">
+          <h3 class="att-history-title">History</h3>
+          <div class="empty-state" id="attHistoryEmpty" hidden>
+            <strong>No attendance records yet</strong>
+            Start recording your daily working hours to see your monthly statistics here.
+            <button class="att-cta-btn" id="attEmptyCta" type="button">Mark Today's Attendance</button>
+          </div>
+          <div class="att-history-table-wrap" id="attHistoryTableWrap">
+            <table class="att-history-table">
+              <thead>
+                <tr><th>Date</th><th>Day</th><th>Hours</th><th>Status</th><th>Action</th></tr>
+              </thead>
+              <tbody id="attHistoryBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="modal-overlay" id="attModal" role="dialog" aria-modal="true" aria-labelledby="attModalTitle">
+  <div class="modal-box att-modal-box">
+    <button class="icon-btn modal-close" id="attModalClose" type="button" aria-label="বন্ধ করুন">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h3 class="modal-title" id="attModalTitle">Edit Attendance</h3>
+    <div class="modal-date" id="attModalDateDisplay"></div>
+    <form class="att-entry-form" id="attEditForm" novalidate>
+      <input type="hidden" id="attEditDateKey">
+      <div class="att-field">
+        <label class="att-field-label" for="attEditHours">Hours Worked</label>
+        <input type="number" id="attEditHours" name="hours" inputmode="decimal" min="0" max="24" step="0.25" placeholder="e.g. 8">
+      </div>
+      <div class="att-field">
+        <label class="att-field-label" for="attEditStatus">Status</label>
+        <select id="attEditStatus" name="status">
+          <option value="duty">Duty</option>
+          <option value="leave">Leave</option>
+          <option value="off">Off</option>
+          <option value="holiday">Holiday</option>
+        </select>
+      </div>
+      <p class="att-form-msg" id="attEditMsg" role="alert" aria-live="polite"></p>
+      <div class="att-modal-actions">
+        <button type="button" class="att-delete-btn" id="attDeleteBtn">Delete</button>
+        <button type="submit" class="att-save-btn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="attReportIssueModal" role="dialog" aria-modal="true" aria-labelledby="attReportIssueModalTitle">
+  <div class="modal-box att-modal-box">
+    <button class="icon-btn modal-close" id="attReportIssueModalClose" type="button" aria-label="বন্ধ করুন">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h3 class="modal-title" id="attReportIssueModalTitle">Report an Issue</h3>
+    <form class="att-entry-form" id="attReportIssueForm" novalidate>
+      <div class="att-field">
+        <label class="att-field-label" for="attReportCategory">সমস্যার ধরন</label>
+        <select id="attReportCategory" class="att-select" required>
+          <option value="wrong_hours">ভুল ঘণ্টা (Wrong Hours)</option>
+          <option value="missing_entry">অনুপস্থিত/মার্ক না করা দিন (Missing Entry)</option>
+          <option value="wrong_status">ভুল স্ট্যাটাস (Wrong Status)</option>
+          <option value="duplicate">ডুপ্লিকেট এন্ট্রি (Duplicate Record)</option>
+          <option value="technical">টেকনিক্যাল সমস্যা (Technical Issue)</option>
+          <option value="other">অন্য কিছু (Other)</option>
+        </select>
+      </div>
+      <div class="att-field">
+        <label class="att-field-label" for="attReportDate">কোন তারিখ নিয়ে সমস্যা (ঐচ্ছিক)</label>
+        <input type="date" id="attReportDate">
+      </div>
+      <div class="att-field">
+        <label class="att-field-label" for="attReportDescription">বিস্তারিত লিখুন</label>
+        <textarea id="attReportDescription" rows="4" maxlength="1000" placeholder="সমস্যাটি বিস্তারিত লিখুন..." required></textarea>
+      </div>
+      <p class="att-form-msg" id="attReportFormMsg"></p>
+      <button type="submit" class="att-save-btn">Submit Report</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="attAddMemberModal" role="dialog" aria-modal="true" aria-labelledby="attAddMemberModalTitle">
+  <div class="modal-box att-modal-box">
+    <button class="icon-btn modal-close" id="attAddMemberModalClose" type="button" aria-label="বন্ধ করুন">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <h3 class="modal-title" id="attAddMemberModalTitle">Add Team Member</h3>
+    <form class="att-entry-form" id="attAddMemberForm" novalidate>
+      <div class="att-field">
+        <label class="att-field-label" for="attNewMemberName">Full Name</label>
+        <input type="text" id="attNewMemberName" name="memberName" placeholder="Enter member name" maxlength="60" autocomplete="off">
+      </div>
+      <p class="att-form-msg" id="attAddMemberMsg" role="alert" aria-live="polite"></p>
+      <div class="att-modal-actions">
+        <button type="button" class="att-modal-cancel-btn" id="attAddMemberCancel">Cancel</button>
+        <button type="submit" class="att-save-btn">Add Member</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="attConfirmModal" role="dialog" aria-modal="true" aria-labelledby="attConfirmModalTitle">
+  <div class="modal-box att-modal-box att-confirm-box">
+    <h3 class="modal-title" id="attConfirmModalTitle">Clear this month?</h3>
+    <p class="att-confirm-message" id="attConfirmModalMessage"></p>
+    <div class="att-modal-actions">
+      <button type="button" class="att-modal-cancel-btn" id="attConfirmModalCancel">Cancel</button>
+      <button type="button" class="att-delete-btn" id="attConfirmModalConfirm">Clear Month</button>
+    </div>
+  </div>
+</div>
+
+<div class="att-toast-wrap" id="attToastWrap" aria-live="polite"></div>
+
+<footer class="site-footer">
+  <p>© 2026 <strong id="footerName">Masum</strong>. All Rights Reserved.</p>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAq3iFzmZdcUFr0IswztrmIh5cuJCGIBQQ",
+  authDomain: "masumcpex-attendance.firebaseapp.com",
+  projectId: "masumcpex-attendance",
+  storageBucket: "masumcpex-attendance.firebasestorage.app",
+  messagingSenderId: "412146945197",
+  appId: "1:412146945197:web:3b043e83d796c2f9e14a24",
+  measurementId: "G-55W3CHQJDD"
+};
+firebase.initializeApp(firebaseConfig);
+</script>
+<script src="assets/js/attendance-auth.js?v=12"></script>
+<script src="assets/js/attendance.js?v=15"></script>
+<script>
+document.getElementById("brandName").textContent = SITE_DATA.hero.name;
+document.getElementById("footerName").textContent = SITE_DATA.hero.name;
+</script>
+</body>
+</html>
